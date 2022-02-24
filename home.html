@@ -1,0 +1,88 @@
+<!-- This is the HTML page for main page -->
+
+<!-- /*
+ * This code is provided solely for the personal and private use of students
+ * taking the CSC309H course at the University of Toronto. Copying for purposes
+ * other than this use is expressly prohibited. All forms of distribution of
+ * this code, including but not limited to public repositories on GitHub,
+ * GitLab, Bitbucket, or any other online platform, whether as given or with
+ * any changes, are expressly prohibited.
+*/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+ <head>
+ 	<meta charset="utf-8">
+    <title>Main page</title>
+    <link rel="stylesheet" type="text/css" href="home.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> <!-- For icons -->
+ </head>
+
+ <body>
+ 	<!-- The top menu -->
+ 	<div id="topMenu">
+        <ul>
+            <li>
+                <div class="logoContainer">
+                    <img class="logo" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                </div>
+            </li>
+            <li><a class="active" href="">Home</a></li>
+            <li><a href="">Books</a></li>
+            <li><a href="">Booklists</a></li>
+            <li>
+                <form>
+                <input type="text" name="search" placeholder="Search for books, booklists, and users..">
+                </form>
+            </li>
+            <li class="right"><a href="">Login / Resgiter</a></li>
+          </ul>
+ 	</div>
+
+	<!-- Recommendation books section -->
+ 	<div id="recommendation"> 
+		<h1 id="textDecoration">  Recommended books </h1>
+        <ul>
+            <li> <h2 class="bookTitle">Solaris<br><span id="text">Stanisław Herman Lem</span></h2><br>
+                <span>
+                    <img class="bookCover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                </span>
+            </li>
+            <li> <h2 class="bookTitle">Solaris<br><span id="text">Stanisław Herman Lem</span></h2><br>
+                <span>
+                    <img class="bookCover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                </span>
+            </li>
+        </ul>
+ 	</div>
+
+    <!-- Post section -->
+ 	<div id="post">
+        <div class="userProfileContainer">
+            <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+        </div>
+        <div class="postContent">
+            <h3 class="linkColor">user </h3>
+            <p>Book Name: <span><b>Solaris</b></span></p>
+            <p id="text">I really like this book!</p>
+            <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+        </div>
+ 	</div>
+
+     <div id="post">
+        <div class="userProfileContainer">
+            <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+        </div>
+        <div class="postContent">
+            <h3 class="linkColor">user </h3>
+            <p>Book Name: <span><b>Solaris</b></span></p>
+            <p id="text">I really like this book!</p>
+            <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+        </div>
+ 	</div> 
+
+
+ 		
+ </body>
+</html>
