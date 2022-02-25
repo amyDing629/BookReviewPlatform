@@ -167,13 +167,11 @@ body {
 
 .userProfileContainer {
     margin-top: 20px;
-	position: relative;
 	width: 80px;
 	float:left;
 }
 
 .userProfile {
-    position:relative;
 	margin-top: 10px;
 	margin-left: 10px;
 	margin-right: 10px;
