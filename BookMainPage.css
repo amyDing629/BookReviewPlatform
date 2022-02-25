@@ -1,0 +1,43 @@
+@import "home.css";
+
+body {
+	background-color: white;
+	margin: 0;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+#bookTable {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    background: rgb(147, 190, 149);
+    padding-left: 20px;
+}
+.descriptionsBox {
+    max-width: 500px;
+    height: auto;
+}
+.book {
+    margin-left: 10px;
+    padding-left: 20px;
+    border: 7px rgb(108, 150, 110) outset;
+    background-color: rgb(197, 209, 198);
+    width: 800px;
+    min-height: 300px;
+}
+
+table, td, th{
+	border: 1px dashed black;
+    width: 550px;
+    height: auto;
+    padding: 10px;
+}
+
+.cover {
+    width: 150px;
+    height: auto;
+    position: relative;
+    float: right;
+    top: 25%;
+    right: 5%;
+}
