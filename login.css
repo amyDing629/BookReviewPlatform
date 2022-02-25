@@ -1,0 +1,63 @@
+
+.logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+    height: 250px;
+	border-style: solid;
+	border-color: white;
+	border-radius: 50%;
+}
+
+
+/*** Login ***/
+.Login{
+    position:absolute;
+    margin-top: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+    width:80%;
+    padding: 20px 20px;
+    border-radius: 4px;
+    background-color: #ccc;
+    
+}
+
+.Login .form h2{
+    text-align: center;
+    color:white;
+    margin:20px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: x-large;
+    background:rgb(85, 124, 87);
+}
+.Login .form .form-element{  
+    margin:5px 15px;
+    text-align: center;
+}
+
+.Login .form .form-element label{  
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: large;
+}
+
+.Login .form .form-element button{  
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: larger;
+    width:50%;
+    height: 40px;
+    margin-top: 20px;
+    color: white;
+    background-color: rgb(85, 124, 87);
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.Login .form .form-element a{ 
+    display: block;
+    text-align: right;
+    font-weight: 600;
+ }

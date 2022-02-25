@@ -1,14 +1,3 @@
-<!-- This is the HTML page for main page -->
-
-<!-- /*
- * This code is provided solely for the personal and private use of students
- * taking the CSC309H course at the University of Toronto. Copying for purposes
- * other than this use is expressly prohibited. All forms of distribution of
- * this code, including but not limited to public repositories on GitHub,
- * GitLab, Bitbucket, or any other online platform, whether as given or with
- * any changes, are expressly prohibited.
-*/ -->
-
 <!DOCTYPE html>
 <html lang="en">
  
@@ -20,7 +9,7 @@
  </head>
 
  <body>
- 	<!-- The top menu -->
+ 	<!-- The Top Menu -->
  	<div id="topMenu">
         <ul>
             <li>
@@ -36,53 +25,82 @@
                 <input type="text" name="search" placeholder="Search for books, booklists, and users..">
                 </form>
             </li>
-            <li class="right"><a href="">Login / Regiter</a></li>
+            <li class="right">
+                <a href="login.html">Login/Register</a>
+            </li>
           </ul>
  	</div>
 
+
 	<!-- Recommendation books section -->
  	<div id="recommendation"> 
-		<h1 id="textDecoration">  Recommended books </h1>
+		<h1 class="textDecoration">  Recommended books </h1>
+        <h2 id="time"></h2>
         <ul>
-            <li> <h2 class="bookTitle">Solaris<br><span id="text">Stanisław Herman Lem</span></h2><br>
-                <span>
-                    <img class="bookCover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-                </span>
-            </li>
-            <li> <h2 class="bookTitle">Solaris<br><span id="text">Stanisław Herman Lem</span></h2><br>
-                <span>
-                    <img class="bookCover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-                </span>
-            </li>
+            <!-- Max 4 books -->
         </ul>
  	</div>
 
     <!-- Post section -->
- 	<div id="post">
-        <div class="userProfileContainer">
-            <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
-        </div>
-        <div class="postContent">
-            <h3 class="linkColor">user </h3>
-            <p>Book Name: <span><b>Solaris</b></span></p>
-            <p id="text">I really like this book!</p>
-            <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-        </div>
- 	</div>
+    <div id="posts">
+        <h1 class="textDecoration">  They are sharing now: </h1>
+        <ul>
+            <li>
+                <div class="post">
+                    <div class="userProfileContainer">
+                        <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                    </div>
+                    <div class="postContent">
+                        <h3><a class="linkColor" href="">username </a></h3>
+                        <h4></span>Book Name: <span class="linkColor"><a href=""><b>Solaris</b></a></span><span class="postTime">2022-03-01 18:05</span></h4>
+                        <p id="text">I really like this book!</p>
+                        <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                    </div>     
+                </div>
+            </li>  
+            <li>
+                <div class="post">
+                    <div class="userProfileContainer">
+                        <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                    </div>
+                    <div class="postContent">
+                        <h3><a class="linkColor" href="">username </a></h3>
+                        <h4></span>Book Name: <span class="linkColor"><a href=""><b>Solaris</b></a></span><span class="postTime">2022-03-01 18:05</span></h4>
+                        <p id="text">I really like this book!</p>
+                        <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                    </div>     
+                </div>
+            </li>  
+            <li>
+                <div class="post">
+                    <div class="userProfileContainer">
+                        <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                    </div>
+                    <div class="postContent">
+                        <h3><a class="linkColor" href="">username </a></h3>
+                        <h4></span>Book Name: <span class="linkColor"><a href=""><b>Solaris</b></a></span><span class="postTime">2022-03-01 18:05</span></h4>
+                        <p id="text">I really like this book!</p>
+                        <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                    </div>     
+                </div>
+            </li>  
+            <li>
+                <div class="post">
+                    <div class="userProfileContainer">
+                        <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                    </div>
+                    <div class="postContent">
+                        <h3><a class="linkColor" href="">username </a></h3>
+                        <h4></span>Book Name: <span class="linkColor"><a href=""><b>Solaris</b></a></span><span class="postTime">2022-03-01 18:05</span></h4>
+                        <p id="text">I really like this book!</p>
+                        <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
+                    </div>     
+                </div>
+            </li>  
+        </ul>
+    </div> 
 
-     <div id="post">
-        <div class="userProfileContainer">
-            <img class="userProfile" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
-        </div>
-        <div class="postContent">
-            <h3 class="linkColor">user </h3>
-            <p>Book Name: <span><b>Solaris</b></span></p>
-            <p id="text">I really like this book!</p>
-            <img class="postContentPicture" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-        </div>
- 	</div> 
 
-
- 		
+ 	<script type="text/javascript" src="mainpage.js"></script>	
  </body>
 </html>
