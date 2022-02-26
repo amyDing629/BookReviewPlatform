@@ -86,10 +86,11 @@ body {
     background-color: white;
     padding: 12px 20px 12px 40px;
     background-image: url(https://cdn.pixabay.com/photo/2017/11/10/05/24/magnifying-glass-2935435__340.png);
-    background-position: 5px 8px;
+    background-position: 5px 5px;
     background-size: 6.5%;
     background-repeat: no-repeat;
   }  
+
   
 
 /*** recommendation ***/
