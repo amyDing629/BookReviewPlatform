@@ -1,6 +1,6 @@
 // global variables
-let BooksNum = 0; 
-const BooksList = [] 
+var BooksNum = 0; 
+var BooksList = [] 
 
 class Book {
 	constructor(name, author, year, coverURL, description) {
@@ -41,8 +41,13 @@ window.onload = function displayAllBooks() {
         p1.appendChild(strong1)
 
         const span1 = document.createElement('span')
+        span1.className="bookTitle"
+        const a = document.createElement('a')
+        a.className = "linkColor"
+        a.href = ""
         const nameContent = document.createTextNode(BooksList[i].name)
-        span1.appendChild(nameContent)
+        a.appendChild(nameContent)
+        span1.appendChild(a)
         p1.appendChild(span1)
         div.appendChild(p1)
 
@@ -69,6 +74,7 @@ window.onload = function displayAllBooks() {
 
         // info table
         const table = document.createElement('table')
+        table.className = "bookinfo"
         const tbody = document.createElement('tbody')
         const tr1 = document.createElement('tr')
 	    const ID = document.createElement('th')
@@ -97,7 +103,5 @@ window.onload = function displayAllBooks() {
         div.appendChild(table)
 
         bookTable.appendChild(div)
-        bookTable.appendChild(document.createElement('br'))
 	}
 }
-
