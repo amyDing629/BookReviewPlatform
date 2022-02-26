@@ -1,3 +1,4 @@
+const log = console.log;
 
 /* Display time */
 /* reference: https://phpcoder.tech/display-current-date-and-time-in-html-using-javascript/ */
@@ -7,18 +8,18 @@ window.onload = function displayTime(){
     document.getElementById("time").innerText = date;
 }
 
-
+/* Admin can delete books */
 /********** Recommendation book display **********/
 const recommendedBooks = [];
 
 class Book {
 	constructor(bid, title, author, cover, link) {
-        this.bookId = bid; // get it from book detail page
+        // set book ID
+		this.bookId = bid;
 		this.title = title;
 		this.author = author;
         this.cover = cover;
         this.link = link; // link to book detail page
-
 
     }
 }
@@ -29,11 +30,12 @@ function BooksCallBack() {
     // books in recommendedBooks list should be added by admin user
     recommendedBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg'));
     recommendedBooks.push(new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'));
- }
+}
 
 const bookul = document.querySelector('#recommendation ul');
 BooksCallBack()
 displayRecommendations()
+
 
 // clean all before display
 function cleanRecommendation(){
@@ -79,6 +81,14 @@ function displayRecommendations(){
         p.appendChild(span1) 
         p.appendChild(span2) // Book id is here
 
+
+        let button = document.createElement('button')
+        button.innerText = 'delete'
+        button.className = 'delete'
+
+        let br = document.createElement('br')
+
+
         let img = document.createElement('img')
         img.className = 'bookCover'
         img.setAttribute('src', bookCover)
@@ -86,12 +96,44 @@ function displayRecommendations(){
 
         li.appendChild(h2)
         li.appendChild(p)
+
+        li.appendChild(button)
+        li.appendChild(br)
         li.appendChild(img)
         bookul.append(li)
         }
     }
 }
 
+
+bookul.addEventListener('click', removeBook)
+
+function removeBook(e){
+    e.preventDefault(); // prevent default action
+    log(recommendedBooks)
+
+    if (e.target.classList.contains('delete')) {
+        const li = e.target.parentElement
+        log(li)
+        const p = li.children[1]
+        const id = p.children[2].innerText
+        log(id)
+        for (let i=0; i<recommendedBooks.length; i++){
+            if (parseInt(recommendedBooks[i].bookId) == id){
+                log(recommendedBooks[i].bookId)
+                recommendedBooks.splice(i, 1) // start from index=id, remove 1 item
+                log(recommendedBooks)
+                const ul = li.parentElement
+                ul.removeChild(li)
+                displayRecommendations()
+                break;
+            }
+        }
+        
+
+    
+    }
+}
 
 
 

@@ -1,4 +1,6 @@
 
+/** After log in, end user can like others' posts **/
+
 /********** Posts display **********/
 let numberOfPosts = 0;
 const posts = [];
@@ -139,7 +141,11 @@ function displayPosts(){
             let icon = document.createElement('i')
             icon.className = 'fa fa-heart'
             icon.innerText = ' '+likes
+            let button = document.createElement('button')
+            button.className = 'like'
+            button.innerText = 'Like this post'
             likeh3.appendChild(icon)
+            likeh3.appendChild(button)
             contentDiv.appendChild(likeh3)
 
 
@@ -153,7 +159,30 @@ function displayPosts(){
 }
 
 
+postul.addEventListener('click', like)
+
+function like(e){
+    e.preventDefault(); // prevent default action
+
+    if (e.target.classList.contains('like')) {
+	
+		const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        posts[pid].likes ++
+
+
+        let length = contentDiv.children.length
+        length -= 1
+        const target = contentDiv.children[length]
+        const icon = target.children[0]
+
+        icon.innerText = ' '+ posts[pid].likes
+        
+	}
+
+}
 
 
 
-
+ 

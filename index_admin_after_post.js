@@ -1,11 +1,14 @@
 
+/** After log in, end user can like others' posts **/
+/** Admin can delete posts **/
+
 /********** Posts display **********/
-let numberOfPosts = 0;
 const posts = [];
 
 class Post {
-	constructor(booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
-		this.booktitle = booktitle;
+	constructor(pid,booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
+		this.postID = pid;
+        this.booktitle = booktitle;
         this.booklink = booklink;
 		this.poster = poster;
         this.posterlink = posterlink // if the current user does not login, cannot visit poster link (unsolved)
@@ -15,9 +18,6 @@ class Post {
         this.time = time;
         this.likes = likes; // only logined user can like? (unsolved)
 
-		// set post ID
-		this.postID = numberOfPosts;
-		numberOfPosts++;
     }
 }
 
@@ -25,13 +25,13 @@ function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post('Solaris', null, 'user', null,
+    posts.push(new Post(0, 'Solaris', null, 'user', null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post('Solaris', null, 'admin', null,
+    posts.push(new Post(1, 'Solaris', null, 'admin', null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
@@ -57,7 +57,7 @@ function cleanPosts(){
 }
 
 function displayPosts(){
-    // cleanPosts();
+    cleanPosts();
 
     for (let i=0; i<10; i++){
         if (posts[i] != null){
@@ -139,7 +139,15 @@ function displayPosts(){
             let icon = document.createElement('i')
             icon.className = 'fa fa-heart'
             icon.innerText = ' '+likes
+            let button = document.createElement('button')
+            button.className = 'like'
+            button.innerText = 'Like this post'
+            let button2 = document.createElement('button')
+            button2.className = 'delete'
+            button2.innerText = 'delete this post'
             likeh3.appendChild(icon)
+            likeh3.appendChild(button2)
+            likeh3.appendChild(button)
             contentDiv.appendChild(likeh3)
 
 
@@ -152,8 +160,61 @@ function displayPosts(){
     }
 }
 
+const likefield = document.querySelector('#posts .like')
+likefield.addEventListener('click', like)
 
+function like(e){
+    e.preventDefault(); // prevent default action
+    log('likes')
 
+    if (e.target.classList.contains('like')) {
+	
+		const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                posts[i].likes ++
+                let length = contentDiv.children.length
+                length -= 1
+                const target = contentDiv.children[length]
+                const icon = target.children[0]
 
+                icon.innerText = ' '+ posts[i].likes
+                break;
+            }
+        }
+        
+	}
 
+}
 
+const deletefield = document.querySelector('#posts .delete')
+deletefield.addEventListener('click', delete_post)
+
+function delete_post(e){
+    e.preventDefault(); // prevent default action
+    log('delete post')
+
+    if (e.target.classList.contains('delete')) {
+        const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                posts.splice(i, 1) // start from index=i, remove 1 item
+                const ul = contentDiv.parentElement.parentElement.parentElement
+                const li = contentDiv.parentElement.parentElement
+                ul.removeChild(li)
+                log(ul)
+                log(posts)
+                displayPosts()
+                break;
+            }
+        }
+
+    }
+
+}
+
+ 

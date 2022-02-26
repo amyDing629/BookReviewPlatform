@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+ <head>
+ 	<meta charset="utf-8">
+    <title>Main page</title>
+    <link rel="stylesheet" type="text/css" href="home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
+ </head>
+
+ <body>
+ 	<!-- The Top Menu -->
+ 	<div id="topMenu">
+        <ul>
+            <li>
+                <div class="logoContainer">
+                    <img class="logo" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                </div>
+            </li>
+            <li><a class="active" href="index.html">Home</a></li>
+            <li><a href="">Books</a></li>
+            <li><a href="">Booklists</a></li>
+            <li>
+                <form>
+                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
+                <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </li>
+            <li class="right">
+                <a href="login.html">Login/Register</a>
+            </li>
+          </ul>
+ 	</div>
+
+
+	<!-- Recommendation books section -->
+ 	<div id="recommendation"> 
+		<h1 class="textDecoration">  Recommended books </h1>
+        <h2 id="time"></h2>
+        <ul>
+            <!-- Max 4 books -->
+        </ul>
+ 	</div>
+
+    <!-- Post section -->
+    <div id="posts">
+        <h1 class="textDecoration">  They are sharing now: </h1>
+        <ul>
+            <!-- Max 10 posts -->
+
+        </ul>
+    </div> 
+
+ 	<script type="text/javascript" src="recommendation.js"></script>
+     <script type="text/javascript" src="home_post.js"></script>	
+    <script type="text/javascript" src="topmenu.js"></script>	
+ </body>
+</html>
