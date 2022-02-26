@@ -13,9 +13,9 @@ class EndUser {
 		this.username = username;
         this.password = password;
 
-		// set book ID
+		// set user id
 		this.userID = numberOfenduser;
-		numberOfenduser = 0;
+		numberOfenduser += 1;
     }
 }
 
@@ -24,9 +24,9 @@ class Admin {
 		this.username = username;
         this.password = password;
 
-		// set book ID
+		// set admin
 		this.adminID = numberOfadmin;
-		numberOfadmin = 0;
+		numberOfadmin += 1;
     }
 }
 
@@ -39,7 +39,7 @@ function EndUserCallBack() {
 function AdimnCallBack() {
     /// Get endusers from server
     // code below requires server call
-    endusers.push(new Admin('admin', 'admin'))
+    admins.push(new Admin('admin', 'admin'))
  }
 
 EndUserCallBack()
@@ -63,10 +63,10 @@ function change_page(){
         }
     }
     for (let j=0; j<admins.length;j++){
-        const admin = admins[i].username;
-        const adminpass = admins[i].password;
+        const admin = admins[j].username;
+        const adminpass = admins[j].password;
         if (admin == username && adminpass == password){
-            currentUser = admins[i];
+            currentUser = admins[j];
             window.location.href = "index_admin_after.html";
             return;
         }
