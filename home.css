@@ -1,9 +1,7 @@
 /*** CSS for home page ***/
 /* imports for fonts */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Yanone+Kaffeesatz:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Yanone+Kaffeesatz:wght@300&display=swap');
-
 
 /*** Removes default style from links ***/
 a {
@@ -16,16 +14,10 @@ body {
 	margin: 0;
 }
 
-#text{
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
-    font-size: medium;
-}
-
 .textDecoration{
     text-decoration: underline;
     font-family: 'Lobster', cursive;
 }
-
 
 /*** top Menu ***/
 
@@ -127,6 +119,10 @@ body {
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
+.bookId{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
 .bookAuthor{
     font-family: 'Yanone Kaffeesatz', sans-serif;
     font-size:large;
@@ -150,7 +146,7 @@ body {
 
 #posts ul li{
     list-style-type: none;
-	display: inline-block;
+	display: block;
     margin-left: 50px;
 }
 
@@ -163,6 +159,11 @@ body {
     border: 2px solid rgb(85, 124, 87);
     border-radius: 20px;
     width: 600px;
+}
+
+.postId{
+    float:right;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 .userProfileContainer {
@@ -198,6 +199,26 @@ body {
 .postContentPicture {
 	max-width: 400px;
 }
+
+.like{
+    margin-top:2px;
+    margin-bottom: 3px;
+    background-color: rgb(85, 124, 87);
+    color: white;
+    font-size: large;
+    float:right;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    border: 2px solid rgb(85, 124, 87);
+    border-radius: 20px;
+}
+
+.like:hover {
+    background-color: rgb(147, 190, 149);
+  }
+
+.fa-heart {
+    color:rgb(85, 124, 87);
+} 
 
 /** Some font color classes for you to use. **/
 
