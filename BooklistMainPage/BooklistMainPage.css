@@ -1,0 +1,123 @@
+@import "../HomeAndLogin/home.css";
+
+#booklistTable {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    background: rgb(147, 190, 149);
+    padding-left: 20px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.pageTitle {
+    font-family: 'Lobster', cursive;
+    font-size:xx-large;
+    font-style: oblique;
+    text-decoration-line: underline;
+}
+
+.booklist{
+    margin-left: 10px;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    border: 7px rgb(108, 150, 110) outset;
+    background-color: rgb(197, 209, 198);
+    width: 800px;
+    min-height: 300px;
+}
+
+.infoWrap{
+    width: 700px;
+    min-height: 50px;
+    display: flex;
+}
+.listname, .listCreator, .createTime {
+    min-width: 40px;
+    list-style: none;
+    text-align: left;
+    margin: 10px;
+    font-size: large;
+}
+
+.iconWrap{
+    min-width: 240px;
+    list-style:none;
+    position: relative;
+    float: right;
+    right: 10px;
+    bottom: 60px;
+    display: flex;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+.infoElement{
+    width: 150px;
+    height: 50px;
+}
+.likeIcon, .collectIcon{
+    width: 30px;
+    height: auto;
+    float: top;
+}
+
+.likeNum, .collectNum{
+    width: 150px;
+    font-size: small;
+    float: bottom;
+    margin-left: 5px;
+}
+
+.bookshelf{
+    background: url("../static/bookshelf.png");
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    width: 400px;
+    height: auto;
+    margin-left: 50px;
+}
+.bookimg{
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    margin: 5px;
+}
+
+.book{
+    top: 50px;
+	color: #5088e9;
+    text-indent: 10px;
+    border-collapse: 100px;
+    text-shadow: 4px 4px 20px rgb(92, 87, 46);
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+.booklink{
+    color:#5088e9;
+}
+.descriptionsBox {
+    width: 600px;
+    min-height: 50px;
+    padding-left: 50px;
+    font-size: medium;
+}
+
+.listID {
+    list-style: none;
+    float: left;
+    left:5px;
+}
+
+.deleteButton{
+    text-align: center;
+    font-size: 17px;
+    float:right;
+    margin-left: 100px;
+}
+
+.deleteIcon{
+    width: 15px;
+    left:5px;
+    padding-left: 5px;
+    padding-top: 1px;
+}

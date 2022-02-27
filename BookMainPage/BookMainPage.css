@@ -1,0 +1,55 @@
+@import "../HomeAndLogin/home.css";
+
+body {
+	background-color: white;
+	margin: 0;
+}
+
+#bookTable {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    background: rgb(147, 190, 149);
+    padding-left: 20px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+.descriptionsBox {
+    max-width: 500px;
+    height: auto;
+}
+.book {
+    margin-left: 10px;
+    padding-left: 20px;
+    border: 7px rgb(108, 150, 110) outset;
+    background-color: rgb(197, 209, 198);
+    width: 800px;
+    min-height: 300px;
+    margin-bottom: 10px;
+}
+
+table, td, th{
+	border: 3px dashed rgb(85, 97, 88);
+    color: rgb(64, 87, 58);
+    text-align: center;
+    background-color: rgb(205, 212, 179);
+    width: 550px;
+    height: auto;
+    padding: 10px;
+}
+
+.cover {
+    width: 150px;
+    height: auto;
+    position: relative;
+    float: right;
+    top: 25%;
+    right: 5%;
+    box-shadow: 4px 4px 20px rgb(255, 247, 179);
+}
+
+.pageTitle {
+    font-family: 'Lobster', cursive;
+    font-size:xx-large;
+    font-style: oblique;
+    text-decoration-line: underline;
+}
