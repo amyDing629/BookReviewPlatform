@@ -172,6 +172,10 @@ body {
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
+#posts .bookId{
+    font-family: 'Lobster', cursive;
+}
+
 .userProfileContainer {
     margin-top: 20px;
 	width: 80px;

@@ -1,22 +1,19 @@
 
 /********** Posts display **********/
-let numberOfPosts = 0;
 const posts = [];
 
 class Post {
-	constructor(booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
-		this.booktitle = booktitle;
+	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
+		this.postID = postID;
+        this.bookID = bookID;
+        this.booktitle = booktitle;
         this.booklink = booklink;
 		this.poster = poster;
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
-        this.likes = likes; // only logined user can like? (unsolved)
-
-		// set post ID
-		this.postID = numberOfPosts;
-		numberOfPosts++;
+        this.likes = likes; 
     }
 }
 
@@ -24,13 +21,13 @@ function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post('Solaris', null, 'user',
+    posts.push(new Post(0, 0, 'Solaris', '../BookDetail/BookDetail-Solaris.html', 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post('Solaris', null, 'admin',
+    posts.push(new Post(1, 0, 'Solaris', '../BookDetail/BookDetail-Solaris.html', 'admin',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
@@ -78,6 +75,7 @@ function displayPosts(){
             let likes = posts[i].likes
             let blink = posts[i].bookLink
             let pid = posts[i].postID
+            let bid = posts[i].bookID
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -94,6 +92,8 @@ function displayPosts(){
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
             spanid2.innerText = pid
+
+            
             userh3.appendChild(spanposter)
             userh3.appendChild(spanid2) // Post id is here
             userh3.appendChild(spanid1) // float right means pid should floatting first, then 'postid', which becomes 'postid:pid'
@@ -112,8 +112,17 @@ function displayPosts(){
             span2.className = 'postTime'
             span2.innerText = time
 
+            let spanid3 = document.createElement('span')
+            spanid3.className = 'bookId'
+            spanid3.innerText = ' bookID: '
+            let spanid4 = document.createElement('span')
+            spanid4.className = 'bookId'
+            spanid4.innerText = bid
+
             h4.appendChild(span1)
             h4.appendChild(span2)
+            h4.appendChild(spanid3) 
+            h4.appendChild(spanid4) // Book id is here
             contentDiv.appendChild(h4)
 
             let p = document.createElement('p')

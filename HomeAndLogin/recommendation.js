@@ -32,7 +32,7 @@ function BooksCallBack() {
     recommendedBooks.push(
         new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
         'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
-        '../BookDetail/BookDetail-Solaris.html'));
+        '../BookDetail/BookDetail-Solaris.html')); // need to change
  }
 
 const bookul = document.querySelector('#recommendation ul');

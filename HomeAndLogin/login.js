@@ -1,5 +1,4 @@
-const log = console.log;
-log(document)
+
 /****** User signin ******/
 let numberOfenduser = 0;
 const endusers = [];
@@ -57,7 +56,7 @@ function change_page(){
         const user = endusers[i].username;
         const pass = endusers[i].password;
         if (user == username && password == pass){
-            currentUser = endusers[i];
+            currentUser = user;
             window.location.href = "index_end_after.html";
             return;
         }
@@ -66,7 +65,7 @@ function change_page(){
         const admin = admins[j].username;
         const adminpass = admins[j].password;
         if (admin == username && adminpass == password){
-            currentUser = admins[j];
+            currentUser = admin;
             window.location.href = "index_admin_after.html";
             return;
         }
