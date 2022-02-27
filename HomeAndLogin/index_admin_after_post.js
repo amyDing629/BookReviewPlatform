@@ -4,6 +4,7 @@
 
 /********** Posts display **********/
 const posts = [];
+const collectedPosts = []; // collection of posts made by current user
 
 class Post {
 	constructor(pid,booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
@@ -145,9 +146,13 @@ function displayPosts(){
             let button2 = document.createElement('button')
             button2.className = 'delete'
             button2.innerText = 'delete this post'
+            let button3 = document.createElement('button')
+            button3.className = 'collect'
+            button3.innerText = 'Collect this post'
             likeh3.appendChild(icon)
-            likeh3.appendChild(button2)
-            likeh3.appendChild(button)
+            likeh3.appendChild(button2) // delete
+            likeh3.appendChild(button3) // collect
+            likeh3.appendChild(button) // like
             contentDiv.appendChild(likeh3)
 
 
@@ -160,7 +165,7 @@ function displayPosts(){
     }
 }
 
-const likefield = document.querySelector('#posts .like')
+let likefield = document.querySelector('#posts')
 likefield.addEventListener('click', like)
 
 function like(e){
@@ -184,12 +189,11 @@ function like(e){
                 break;
             }
         }
-        
+ 
 	}
-
 }
 
-const deletefield = document.querySelector('#posts .delete')
+let deletefield = document.querySelector('#posts')
 deletefield.addEventListener('click', delete_post)
 
 function delete_post(e){
@@ -212,9 +216,34 @@ function delete_post(e){
                 break;
             }
         }
-
     }
+}
 
+let collectfield = document.querySelector('#posts')
+collectfield.addEventListener('click', collect)
+
+function collect(e){
+    e.preventDefault(); // prevent default action
+
+    if (e.target.classList.contains('collect')) {
+	
+		const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                collectedPosts.push(posts[i])
+                log(contentDiv)
+                const length = contentDiv.children.length -1
+                log(length)
+                const target = contentDiv.children[length]
+                log(target)
+                const button = target.children[2]
+                button.className = 'aftercollect'
+                break;
+            }
+        } 
+	}
 }
 
  

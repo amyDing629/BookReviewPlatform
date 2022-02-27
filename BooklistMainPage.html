@@ -15,7 +15,7 @@
                 <img class="logo" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
             </div>
         </li>
-        <li><a class="active" href="./home.html">Home</a ></li>
+        <li><a class="active" href="./HomeAndLogin/index.html">Home</a ></li>
         <li><a href="./BookMainPage.html">Books</a ></li>
         <li><a href="./BooklistMainPage.html">Booklists</a ></li>
         <li>
@@ -23,12 +23,17 @@
             <input type="text" name="search" placeholder="Search for books, booklists, and users..">
             </form>
         </li>
-        <li class="right"><a href="">Login / Resgiter</a ></li>
+        <li class="right"><a href="./HomeAndLogin/login.html">Login / Resgiter</a ></li>
       </ul>
 </div>
 
+    <!-- All booklists -->
     <div id="booklistTable">
         <h2 class="pageTitle"> All Booklists:</h2>
+        <div id="sortWrap">
+            <button id="sort_default" onclick="sortDefault()">Sort by ID number</button>
+            <button id="sort_a_z" onclick="sortByAtoZ()">Sort by ID number</button>
+        </div>
         <br>
     </div>
     <script type="text/javascript" src="BooklistMainPage.js"></script>

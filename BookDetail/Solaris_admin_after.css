@@ -1,5 +1,3 @@
-/*** CSS for home page ***/
-/* imports for fonts */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Yanone+Kaffeesatz:wght@300&display=swap');
 
@@ -18,7 +16,6 @@ body {
     text-decoration: underline;
     font-family: 'Lobster', cursive;
 }
-
 /*** top Menu ***/
 
 .logoContainer {
@@ -95,53 +92,42 @@ body {
     background-repeat: no-repeat;
   }  
 
+
+
+.bookInfo{
+    padding: 5px;
+    background-color: rgb(147, 190, 149);
+}
+
+.coverContainer{
+    display: inline-block;
+    margin-left: 50px;
+}
+.cover {
+	width: 100px;
+    height: 153px;
+    border-radius: 2px;
+}
   
-  
-
-/*** recommendation ***/
-#recommendation {
-	padding: 5px;
-	background-color: rgb(147, 190, 149);
+.bookIntro {
+    display: inline-block;
+    margin-left: 10px;
 }
 
-#recommendation ul li{
-    margin-right: 20px;
-	font-weight: bold;
-	list-style: none; /* Gets rid of list bullet points */
-	text-align: center;
-	display: inline-block;
-}
-
-#time{
-    margin-left:8px;
-    font-family: 'Lobster', cursive;
-}
-
-.bookTitle {
-	padding: 3px;
-	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
+.publish{
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
-.bookId{
-    font-family: 'Yanone Kaffeesatz', sans-serif;
+.bookDescription{
+    margin-left: 50px;
+    margin-top: 20px;
+    overflow: auto;
+    width: 700px;
 }
 
-.bookAuthor{
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    font-size:large;
+.des{
+    font-size: 150%;
 }
-
-.bookCover {
-	margin-left: 10px;
-	margin-right: 10px;
-
-    width: 70%;
-    height: 70%;
-}
-
 
 /*** Posts ***/
 #posts{
@@ -222,6 +208,22 @@ body {
     background-color: rgb(147, 190, 149);
   }
 
+#posts .delete{
+    margin-top:2px;
+    margin-bottom: 3px;
+    background-color: red;
+    color: white;
+    font-size: large;
+    float:right;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    border: 2px solid rgb(85, 124, 87);
+    border-radius: 20px;
+}
+
+#posts .delete:hover {
+    background-color: black;
+  }
+
 .collect{
     margin-top:2px;
     margin-bottom: 3px;
@@ -245,6 +247,7 @@ body {
     border: 2px solid rgb(85, 124, 87);
     border-radius: 20px;
 }
+
 
 
 .fa-heart {

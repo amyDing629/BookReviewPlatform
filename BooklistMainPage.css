@@ -1,4 +1,20 @@
-@import "home.css";
+@import "./HomeAndLogin/home.css";
+
+#booklistTable {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    background: rgb(147, 190, 149);
+    padding-left: 20px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.pageTitle {
+    font-family: 'Lobster', cursive;
+    font-size:xx-large;
+    font-style: oblique;
+    text-decoration-line: underline;
+}
 
 .booklist{
     margin-left: 10px;
@@ -16,8 +32,7 @@
     display: flex;
 }
 .listname, .listCreator, .createTime {
-    width: 400px;
-    height: 20px;
+    min-width: 40px;
     list-style: none;
     text-align: left;
     margin: 10px;
@@ -25,7 +40,7 @@
 }
 
 .iconWrap{
-    width: 240px;
+    min-width: 240px;
     list-style:none;
     position: relative;
     float: right;
@@ -89,4 +104,18 @@
     list-style: none;
     float: left;
     left:5px;
+}
+
+.deleteButton{
+    text-align: center;
+    font-size: 17px;
+    float:right;
+    margin-left: 100px;
+}
+
+.deleteIcon{
+    width: 15px;
+    left:5px;
+    padding-left: 5px;
+    padding-top: 1px;
 }
