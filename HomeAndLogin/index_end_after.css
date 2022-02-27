@@ -222,6 +222,31 @@ body {
     background-color: rgb(147, 190, 149);
   }
 
+.collect{
+    margin-top:2px;
+    margin-bottom: 3px;
+    background-color: rgb(85, 124, 87);
+    color: white;
+    font-size: large;
+    float:right;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    border: 2px solid rgb(85, 124, 87);
+    border-radius: 20px;
+}
+
+.aftercollect{
+    margin-top:2px;
+    margin-bottom: 3px;
+    background-color: rgb(147, 190, 149);
+    color: white;
+    font-size: large;
+    float:right;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    border: 2px solid rgb(85, 124, 87);
+    border-radius: 20px;
+}
+
+
 .fa-heart {
     color:rgb(85, 124, 87);
 } 
