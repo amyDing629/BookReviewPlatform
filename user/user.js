@@ -228,7 +228,7 @@ adminUser.postList.push(new Post('Solaris', null, 'admin', null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
     '2022-02-20 3:02', 0));
 
-displayUserInfo(regularUser);
+displayUserInfo(adminUser);
 
 // Setup onclick
 const menuButtons = document.getElementsByClassName('menuButton');

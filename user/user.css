@@ -61,18 +61,15 @@
 	margin-top: 20px;
 }
 
-#menu ul {
+#menubar ul {
 	margin: 0px;
 	padding: 3px;
 	margin-top: 10px;
-	margin-left: 10px;
 	list-style: none; 
-	text-align: center;
-	
-	
+	margin-left: 10px;
 }
 
-#menu ul li {
+#menubar ul li {
 	margin-right: 40px;
 	display: inline-block;	
 }
@@ -103,6 +100,7 @@
     border-radius: 20px;
     width: 700px;	
 	overflow: auto;
+	list-style: none; 
 }
 
 #contents ul li {
@@ -132,6 +130,7 @@
 .contentTime {
 	font-family: 'Lobster', cursive;
     float: right;
+	margin-right: 50px;
 }
 
 .contentContext {
@@ -139,12 +138,10 @@
 	width: 650px;
 	float: left;
 	margin-bottom: 15px;
-	position: relative;
 	display: block;
 }
 
 .contentPic {
-	position: relative;
     display: block;
 }
 
@@ -152,7 +149,6 @@
     color:rgb(85, 124, 87);
 	margin-top: 10px;
 	float: left;
-	position: relative;;
 } 
 
 .likeButton {
@@ -162,6 +158,7 @@
 	font-size:100%;
 	border-radius: 10px;
 	background-color: rgb(166, 207, 147);
+	margin-bottom: 10px;
 }
 
 /** Some font color classes for you to use. **/
