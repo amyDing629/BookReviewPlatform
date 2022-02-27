@@ -4,7 +4,7 @@
 let numberOfUsers = 0;
 const users = [];
 
-/********************** User object ***********************/
+/********************** Object ***********************/
 class User {
 	constructor(userName, password) {
 		this.userName = userName;
@@ -27,7 +27,62 @@ class AdminUser extends User {
     }
 }
 
-/********************** Functions ************************/
+class Post {
+	constructor(booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
+		this.booktitle = booktitle;
+        this.booklink = booklink;
+		this.poster = poster;
+        this.posterlink = posterlink // if the current user does not login, cannot visit poster link (unsolved)
+        this.posterProfile = posterProfile;
+        this.pic = pic;
+        this.content = content; 
+        this.time = time;
+        this.likes = likes; // only logined user can like? (unsolved)
+
+		// set post ID
+		this.postID = numberOfPosts;
+		numberOfPosts++;
+    }
+}
+/********************** Functions On Click ***********************/
+function menuButtonsOnClick(e) {
+    // Change button color
+    changeButtonColor(e.target);
+    
+    let userID = parseInt(document.getElementById('id').innterHTML)
+    // Find user
+    let user = null;
+    for (user of users) {
+        if (user.userID == userID) {
+            // Display contents depending on which button is clicked  
+            if (e.target.innerHTML.contains('Posts')) {
+                displayUserPosts(user);
+            }
+            else if (e.target.innerHTML.contains('Lists')) {
+                displayUserBooklists(user);
+            }
+            else if (e.target.innerHTML.contains('Collections')) {
+                displayUserCollections(user);
+            }
+            else if (e.target.innerHTML.contains('Manage')) {
+                displayManageWindow();
+            }
+            else {
+                displayEditBooksWindow();
+            }
+            break;  
+        }
+    }
+}
+
+/* If 'Edit' is clicked, display edition page.
+   If 'Submit' is clicked, display confirmed information */
+function profileButtonsOnClick(e) {
+    // TODO
+}
+
+
+/********************** DOM Functions ************************/
 function displayUserInfo(user) {
     document.getElementById('userName').innerHTML = user.userName;
     document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
@@ -54,19 +109,34 @@ function displayUserInfo(user) {
     }
 }
 
-function menuButtonsOnClick(e) {
+function changeButtonColor(target) {
     let changeBackTarget = document.getElementsByClassName('menuButtonSelected')[0];
     changeBackTarget.classList.add('menuButton');
     changeBackTarget.classList.remove('menuButtonSelected');
-    let target = e.target;
     target.classList.add('menuButtonSelected');
     target.classList.remove('menuButton');
-    
 }
 
-function profileButtonsOnClick(e) {
+function displayUserPosts(user) {
 
 }
+
+function displayUserBooklists(user) {
+
+}
+
+function displayUserCollections(user){
+
+}
+
+function displayManageWindow() {
+
+}
+
+function displayEditBooksWindow() {
+
+}
+
 
 /*************** actions ****************/
 // Display admin user
