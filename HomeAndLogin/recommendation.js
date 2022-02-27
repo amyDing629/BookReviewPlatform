@@ -25,8 +25,14 @@ function BooksCallBack() {
     /// Get recommendaed books from server
     // code below requires server call
     // books in recommendedBooks list should be added by admin user
-    recommendedBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg'), '../BookDetail/BookDetail-Solaris.html');
-    recommendedBooks.push(new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', '../BookDetail/BookDetail-Solaris.html'));
+    recommendedBooks.push(
+        new Book(0, 'Solaris', 'Stanisław Herman Lem', 
+        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+        '../BookDetail/BookDetail-Solaris.html'));
+    recommendedBooks.push(
+        new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
+        'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+        '../BookDetail/BookDetail-Solaris.html'));
  }
 
 const bookul = document.querySelector('#recommendation ul');
