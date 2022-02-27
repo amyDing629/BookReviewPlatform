@@ -61,6 +61,10 @@ function displayRecommendations(){
         a.className = 'linkColor'
         a.setAttribute('href', bookLink)
         a.innerText = bookName
+        a.onclick = function open(e){
+            e.preventDefault();
+            window.location.replace(a.href)
+        }
         h2.appendChild(a)
 
         let p = document.createElement('p')
