@@ -96,6 +96,10 @@ function displayPosts(){
             a1.className = 'linkColor'
             a1.setAttribute('href', plink)
             a1.innerText = userName
+            a1.onclick = function open(e){
+                e.preventDefault();
+                window.location.replace(a1.href)
+            }
             let spanid1 = document.createElement('span')
             spanid1.className = 'postId'
             spanid1.innerText = 'postID: '
@@ -115,6 +119,10 @@ function displayPosts(){
             a2.className = 'linkColor'
             a2.setAttribute('href', blink)
             a2.innerText = title
+            a2.onclick = function open(e){
+                e.preventDefault();
+                window.location.replace(a2.href)
+            }
             span1.appendChild(a2)
             let span2 = document.createElement('span')
             span2.className = 'postTime'
