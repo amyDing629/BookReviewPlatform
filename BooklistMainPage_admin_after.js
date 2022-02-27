@@ -47,8 +47,8 @@ BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'A01',[Boo
 
 
 const booklistTable = document.querySelector('#booklistTable')
-booklistTable.addEventListener('click', alertLike);
-booklistTable.addEventListener('click', alertCollect);
+booklistTable.addEventListener('click', increaseLike)
+booklistTable.addEventListener('click', increaseCollect)
 
 // Display all availble booklists:
 function displayAllBooklists(BooklistsList) {
@@ -64,6 +64,17 @@ function displayAllBooklists(BooklistsList) {
         const IDcontent = document.createElement('span')
         IDcontent.appendChild(document.createTextNode(BooklistsList[i].booklistID))
         id.appendChild(IDcontent)
+
+        // admin only: delete booklist
+        const button3 = document.createElement('button')
+        button3.className = "deleteButton" 
+        const deleteImg = document.createElement('img')
+        deleteImg.className = "deleteIcon"
+        deleteImg.src = "https://icon-library.com/images/icon-delete/icon-delete-4.jpg"
+        button3.appendChild(deleteImg)
+        button3.appendChild(document.createTextNode("Delete this list"))
+        id.appendChild(button3)
+
         div.appendChild(id)
 
         // infoWrap
@@ -158,7 +169,7 @@ function displayAllBooklists(BooklistsList) {
             tr1.appendChild(newImg)
             const newBookLink = document.createElement('th')
             const bookLink = document.createElement('a')
-            bookLink.className = "book"
+            bookLink.className = "booklink"
             bookLink.href = ""
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
@@ -209,24 +220,36 @@ function displayAllBooklists(BooklistsList) {
         
         ul2.appendChild(liLike)
         ul2.appendChild(liCollect)
-
         div.appendChild(ul2)
+        
         booklistTable.appendChild(div)
     }
 }
 
-function alertLike(e){
+function increaseCollect(e){
     e.preventDefault();
     if (e.target.className == 'collectIcon') {
-        alert("Please login to complete the collect action.")
+        const index = parseInt(e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
+        for (let i = 0; i < BooklistsNum; i++){
+            if (BooklistsList[i].booklistID == index){
+                BooklistsList[i].collect++
+                booklistTable.children[i+3].children[4].children[1].children[1].innerText = "Collected: " + BooklistsList[i].collect
+            }
+        }
     }
     
 }
 
-function alertCollect(e){
+function increaseLike(e){
     e.preventDefault();
     if (e.target.className == 'likeIcon') {
-        alert("Please login to complete the like action.")
+        const index = parseInt(e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
+        for (let i = 0; i < BooklistsNum; i++){
+            if (BooklistsList[i].booklistID == index){
+                BooklistsList[i].likes++
+                booklistTable.children[i+3].children[4].children[0].children[1].innerText = "Liked: " + BooklistsList[i].likes
+            }
+        }
     }
     
 }
@@ -269,6 +292,26 @@ function sortByAtoZ(){
     return displayAllBooklists(sortedBooklistsList)
 }
 
+
+// admin only: delete list
+booklistTable.addEventListener('click', deleteBooklist)
+
+function deleteBooklist(e){
+    e.preventDefault();
+    if (e.target.className == 'deleteButton'){
+        const listElement = e.target.parentElement.parentElement
+        const booktable = listElement.parentElement
+        booktable.removeChild(listElement)
+        const ID = parseInt(listElement.children[0].children[0].innerText)
+        for (let i=0; i<BooklistsNum; i++){
+            if (BooklistsList[i].booklistID == ID){
+                console.log(ID)
+                BooklistsList.splice(i, 1)
+                BooklistsNum--
+            }
+        }
+    }
+}
 
 // load main list
 window.addEventListener("load", displayAllBooklists(BooklistsList))
