@@ -2,6 +2,7 @@
 
 /********** global variables **********/
 let numberOfUsers = 0;
+let numberOfPosts = 0;
 const users = [];
 
 /********************** Object ***********************/
@@ -48,23 +49,25 @@ class Post {
 function menuButtonsOnClick(e) {
     // Change button color
     changeButtonColor(e.target);
-    
-    let userID = parseInt(document.getElementById('id').innterHTML)
+    let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
     // Find user
     let user = null;
     for (user of users) {
+        console.log(user.userID);
+        console.log(userID);
         if (user.userID == userID) {
+            console.log('match');
             // Display contents depending on which button is clicked  
-            if (e.target.innerHTML.contains('Posts')) {
+            if (e.target.innerHTML.indexOf('Posts') !== -1) {
                 displayUserPosts(user);
             }
-            else if (e.target.innerHTML.contains('Lists')) {
+            else if (e.target.innerHTML.indexOf('Lists') !== -1) {
                 displayUserBooklists(user);
             }
-            else if (e.target.innerHTML.contains('Collections')) {
+            else if (e.target.innerHTML.indexOf('Collections') !== -1) {
                 displayUserCollections(user);
             }
-            else if (e.target.innerHTML.contains('Manage')) {
+            else if (e.target.innerHTML.indexOf('Manage') !== -1) {
                 displayManageWindow();
             }
             else {
@@ -97,16 +100,17 @@ function displayUserInfo(user) {
         let manageButtonLi = document.createElement("li");
         let manageButton = document.createElement("button");
         manageButton.innerHTML = 'Manage';
-        manageButton.classList.add('menuButton');
+        manageButton.className = 'menuButton';
         manageButtonLi.appendChild(manageButton);
         buttons.appendChild(manageButtonLi);
         let editBookButtonLi = document.createElement("li");
         let editBookButton = document.createElement("button");
-        editBookButton.classList.add('menuButton');
+        editBookButton.className = 'menuButton';
         editBookButton.innerHTML = 'Edit Books';
         editBookButtonLi.appendChild(editBookButton);
         buttons.appendChild(editBookButtonLi);
     }
+    displayUserPosts(user);
 }
 
 function changeButtonColor(target) {
@@ -118,22 +122,90 @@ function changeButtonColor(target) {
 }
 
 function displayUserPosts(user) {
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
+    let ul = document.createElement('ul');
+    let post;
+    // TODO: flip page
+    for (post of user.postList) {
+        console.log(post);
+        let li = document.createElement('li');
+        let postDiv = document.createElement('div');
+        postDiv.className = 'userPost';
 
+        let contentName = document.createElement('div');
+        contentName.className = 'contentName';
+
+        let a = document.createElement('a')
+        a.className = 'linkColor'
+        a.setAttribute('href', post.booklink);
+        a.innerText = post.booktitle;
+
+        contentName.innerHTML = 'Book Name: '
+        contentName.appendChild(a);
+        postDiv.appendChild(contentName);
+
+        let contentTime = document.createElement('div');
+        contentTime.className = 'contentTime';
+        contentTime.innerHTML = post.time;
+        postDiv.appendChild(contentTime);
+
+        let contentID = document.createElement('div');
+        contentID.className = 'contentID';
+        contentID.innerHTML = '#' + post.postID;
+        postDiv.appendChild(contentID);
+
+        let contentContext = document.createElement('div');
+        contentContext.className = 'contentContext';
+        contentContext.innerHTML = post.content;
+        postDiv.appendChild(contentContext);
+        
+        if (post.pic != null){
+            let contentPic = document.createElement('img');
+            contentPic.className = 'contentPic';
+            contentPic.setAttribute('src', post.pic);
+            postDiv.appendChild(contentPic);
+        }
+        
+        let h3 = document.createElement('h3');
+        let iHeart = document.createElement('i');
+        iHeart.className = 'fa fa-heart';
+        iHeart.innerHTML = ' ' + post.likes;
+        h3.appendChild(iHeart);
+        postDiv.appendChild(h3);
+
+        let likeButton = document.createElement('button');
+        likeButton.className = 'likeButton';
+        likeButton.innerHTML = 'Like';
+        postDiv.appendChild(likeButton);
+
+        li.appendChild(postDiv);
+        ul.appendChild(li);
+        content.appendChild(ul);
+    }
 }
 
 function displayUserBooklists(user) {
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
 
 }
 
 function displayUserCollections(user){
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
 
 }
 
 function displayManageWindow() {
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
 
 }
 
 function displayEditBooksWindow() {
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
 
 }
 
@@ -144,22 +216,29 @@ let adminUser = new AdminUser('admin', 'admin');
 let regularUser = new User('user', 'user');
 users.push(adminUser);
 users.push(regularUser);
-displayUserInfo(adminUser);
+regularUser.postList.push(new Post('Solaris', null, 'user', null,
+    'https://avatars.githubusercontent.com/u/71192401?v=4', 
+    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+    'I really like this book! I really like this book! I really like this book! I really like this book!',
+    '2022-03-01 18:05', 1));
+
+adminUser.postList.push(new Post('Solaris', null, 'admin', null,
+    'https://avatars.githubusercontent.com/u/71192401?v=4', 
+    null,
+    'It was stunning. An ocean with life, a planet covered by an ocean.',
+    '2022-02-20 3:02', 0));
+
+displayUserInfo(regularUser);
 
 // Setup onclick
 const menuButtons = document.getElementsByClassName('menuButton');
 const profileButtons = document.querySelector('#profileButton');
 const menuButtonSelected = document.querySelector('.menuButtonSelected');
-
 let menuButton;
 for (menuButton of menuButtons) {
+    console.log(menuButton);
     menuButton.addEventListener('click', menuButtonsOnClick);
 }
 menuButtonSelected.addEventListener('click', menuButtonsOnClick);
 profileButtons.addEventListener('click', profileButtonsOnClick);
-
-
-
-
-
 
