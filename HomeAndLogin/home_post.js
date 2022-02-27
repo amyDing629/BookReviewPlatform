@@ -4,11 +4,10 @@ let numberOfPosts = 0;
 const posts = [];
 
 class Post {
-	constructor(booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
+	constructor(booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
 		this.booktitle = booktitle;
         this.booklink = booklink;
 		this.poster = poster;
-        this.posterlink = posterlink // if the current user does not login, cannot visit poster link (unsolved)
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
@@ -25,13 +24,13 @@ function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post('Solaris', null, 'user', null,
+    posts.push(new Post('Solaris', null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post('Solaris', null, 'admin', null,
+    posts.push(new Post('Solaris', null, 'admin',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
@@ -78,7 +77,6 @@ function displayPosts(){
             let time = posts[i].time
             let likes = posts[i].likes
             let blink = posts[i].bookLink
-            let plink = posts[i].posterlink
             let pid = posts[i].postID
 
             let img1 = document.createElement('img')
@@ -88,17 +86,15 @@ function displayPosts(){
             userDiv.appendChild(img1)
 
             let userh3 = document.createElement('h3')
-            let a1 = document.createElement('a')
-            a1.className = 'linkColor'
-            a1.setAttribute('href', plink)
-            a1.innerText = userName
+            let spanposter = document.createElement('span')
+            spanposter.innerText = userName
             let spanid1 = document.createElement('span')
             spanid1.className = 'postId'
             spanid1.innerText = 'postID: '
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
             spanid2.innerText = pid
-            userh3.appendChild(a1)
+            userh3.appendChild(spanposter)
             userh3.appendChild(spanid2) // Post id is here
             userh3.appendChild(spanid1) // float right means pid should floatting first, then 'postid', which becomes 'postid:pid'
 
