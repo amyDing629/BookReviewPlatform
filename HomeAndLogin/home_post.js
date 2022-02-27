@@ -1,4 +1,3 @@
-
 /********** Posts display **********/
 const posts = [];
 
@@ -21,13 +20,13 @@ function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris', '../BookDetail/BookDetail-Solaris.html', 'user',
+    posts.push(new Post(0, 0, 'Solaris','../BookDetail/BookDetail-Solaris.html', 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post(1, 0, 'Solaris', '../BookDetail/BookDetail-Solaris.html', 'admin',
+    posts.push(new Post(1, 0, 'Solaris','../BookDetail/BookDetail-Solaris.html', 'admin',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
@@ -73,7 +72,7 @@ function displayPosts(){
             let content = posts[i].content
             let time = posts[i].time
             let likes = posts[i].likes
-            let blink = posts[i].bookLink
+            let blink = posts[i].booklink
             let pid = posts[i].postID
             let bid = posts[i].bookID
 

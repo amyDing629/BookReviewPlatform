@@ -80,7 +80,7 @@ function displayPosts(){
             let content = posts[i].content
             let time = posts[i].time
             let likes = posts[i].likes
-            let blink = posts[i].bookLink
+            let blink = posts[i].booklink
             let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
