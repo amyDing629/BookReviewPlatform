@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+       <title>Admin: Book Main</title>
+       <link rel="stylesheet" type="text/css" href="BookMainPage.css">
+    </head>
+    <body>
+
+    <!-- The Top Menu -->
+ 	<div id="topMenu">
+        <ul>
+            <li>
+                <div class="logoContainer">
+                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
+                </div>
+            </li>
+            <li><a class="active" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
+            <li><a href="./BookMainPage_admin_after.html">Books</a></li>
+            <li><a href="../BooklistMainPage/BooklistMainPage_admin_after.html">Booklists</a></li>
+            <li>
+                <form>
+                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
+                <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </li>
+            <li class="right">
+                <a href="">Hello, Admin</a>
+            </li>
+          </ul>
+ 	</div>
+
+     <!-- All books -->
+    <div id="bookTable">
+        <h2 class="pageTitle"> All Books:</h2>
+        <div id="adminActionsWrap">
+            <form id="addBook" class="addBook">
+                <span>Admin action - add new book</span>
+                <input id="bookNameInput" type="text" placeholder="Book Name" required>
+                <input id="bookAuthorInput" type="text" placeholder="Author" required>
+                <input id="publishYearInput" type="number" min="0000" max="2022" placeholder="Pub." required>
+                <input id="descriptionInput" type="text" placeholder="Description..."required>
+                <input id="coverInput" type="url" placeholder="Cover URL (opt)">
+                <input class="addSubmit" type = "submit" value="Add">
+            </form>
+        </div>
+        <br>
+    </div>
+    <script type="text/javascript" src="BookMainPage_admin_after.js"></script>
+    </body>
+</html>

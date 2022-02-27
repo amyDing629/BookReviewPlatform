@@ -6,7 +6,6 @@ body {
 }
 
 #bookTable {
-    position: absolute;
     top: 60px;
     width: 100%;
     background: rgb(147, 190, 149);
@@ -52,4 +51,19 @@ table, td, th{
     font-size:xx-large;
     font-style: oblique;
     text-decoration-line: underline;
+}
+
+.deleteButton{
+    text-align: center;
+    font-size: 17px;
+    float:right;
+    margin-left: 100px;
+    margin-top: 5px;
+    margin-right: 5px;   
+}
+
+.deleteIcon{
+    width: 15px;
+    right: 5px;
+    margin-top: 5px;
 }

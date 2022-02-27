@@ -170,7 +170,8 @@ function displayAllBooklists(BooklistsList) {
             const newBookLink = document.createElement('th')
             const bookLink = document.createElement('a')
             bookLink.className = "booklink"
-            bookLink.href = ""
+            bookLink.href = "../BookDetail/" + BooklistsList[i].books[j].name + "_admin_after.html"
+            bookLink.onclick = function open(e){e.preventDefault(); window.location.replace(bookLink.href)}
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
             tr2.appendChild(newBookLink)
@@ -305,7 +306,6 @@ function deleteBooklist(e){
         const ID = parseInt(listElement.children[0].children[0].innerText)
         for (let i=0; i<BooklistsNum; i++){
             if (BooklistsList[i].booklistID == ID){
-                console.log(ID)
                 BooklistsList.splice(i, 1)
                 BooklistsNum--
             }

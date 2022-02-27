@@ -27,12 +27,22 @@ BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971
 'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
 
 // Display all books in the book main page
-window.onload = function displayAllBooks() {
+function displayAllBooks(BooksList) {
     const bookTable = document.querySelector('#bookTable')
 	for(let i = 0; i < BooksNum; i++) {
 		const div = document.createElement('div')
         div.className = 'book'
         
+        // admin only: admin delete button
+        const button = document.createElement('button')
+        button.className = "deleteButton" 
+        const deleteImg = document.createElement('img')
+        deleteImg.className = "deleteIcon"
+        deleteImg.src = "https://icon-library.com/images/icon-delete/icon-delete-4.jpg"
+        button.appendChild(deleteImg)
+        button.appendChild(document.createTextNode("Delete this book"))
+        div.appendChild(button)
+
         // book name 
         const p1 = document.createElement('p')
         const strong1 = document.createElement('strong')
@@ -44,7 +54,8 @@ window.onload = function displayAllBooks() {
         span1.className="bookTitle"
         const a = document.createElement('a')
         a.className = "linkColor"
-        a.href = "../BookDetail/BookDetail-" + BooksList[i].name + ".html"
+        a.href = "../BookDetail/" + BooksList[i].name + "_admin_after.html"
+        a.onclick = function open(e){e.preventDefault(); window.location.replace(a.href)}
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
         span1.appendChild(a)
@@ -105,3 +116,47 @@ window.onload = function displayAllBooks() {
         bookTable.appendChild(div)
 	}
 }
+
+// admin only action: add new book to booklist
+bookTable.addEventListener('click', addNewBook)
+function addNewBook(e){
+    e.preventDefault();
+    if (e.target.className == 'addSubmit'){
+        console.log("here")
+        const bookname = document.getElementById('bookNameInput').value
+        const author = document.getElementById('bookAuthorInput').value
+        const year = parseInt(document.getElementById('publishYearInput').value)
+        const description = document.getElementById('descriptionInput').value
+        // cover is not required
+        const cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
+        if (document.getElementById('coverInput').value.length > 0){
+            cover = document.getElementById('coverInput').value.length
+        }
+        BooksList.push(new Book(bookname,author,year,cover,description))
+        const nowBooks = document.querySelectorAll('.book')
+        for (each of nowBooks){
+            bookTable.removeChild(each)
+        }
+        displayAllBooks(BooksList)
+    }
+        
+}
+
+// admin only action: remove book
+bookTable.addEventListener('click', deleteBook)
+
+function deleteBook(e){
+    e.preventDefault();
+    if (e.target.className == 'deleteButton'){
+        const bookElement = e.target.parentElement
+        bookTable.removeChild(bookElement)
+        const ID = parseInt(bookElement.children[4].children[0].children[1].children[0].innerText)
+        for (let i=0; i<BooksNum; i++){
+            if (BooksList[i].bookID == ID){
+                BooksList.splice(i, 1)
+                BooksNum--
+            }
+        }
+    }
+}
+window.addEventListener("load", displayAllBooks(BooksList))
