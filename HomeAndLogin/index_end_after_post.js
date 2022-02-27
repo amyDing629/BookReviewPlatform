@@ -1,6 +1,8 @@
 
 /** After log in, end user can like others' posts **/
 const log = console.log;
+
+
 /********** Posts display **********/
 const posts = [];
 const collectedPosts = []; // collection of posts made by current user
