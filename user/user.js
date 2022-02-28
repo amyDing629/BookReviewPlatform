@@ -86,7 +86,16 @@ function profileButtonsOnClick(e) {
 
 
 /********************** DOM Functions ************************/
-function displayUserInfo(user) {
+function displayUserInfo() {
+    let currentUserID = window.location.href.split('?')[1].split('=')[1];
+    let user;
+    let loopUser;
+    for (loopUser of users){
+        if (loopUser.userID == parseInt(currentUserID)){
+            user = loopUser;
+            break;
+        }
+    }
     document.getElementById('userName').innerHTML = user.userName;
     document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
     if (user.signature != null) {
@@ -212,8 +221,8 @@ function displayEditBooksWindow() {
 
 /*************** actions ****************/
 // Display admin user
-let adminUser = new AdminUser('admin', 'admin');
 let regularUser = new User('user', 'user');
+let adminUser = new AdminUser('admin', 'admin');
 users.push(adminUser);
 users.push(regularUser);
 regularUser.postList.push(new Post('Solaris', null, 'user', null,
@@ -228,7 +237,7 @@ adminUser.postList.push(new Post('Solaris', null, 'admin', null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
     '2022-02-20 3:02', 0));
 
-displayUserInfo(adminUser);
+displayUserInfo();
 
 // Setup onclick
 const menuButtons = document.getElementsByClassName('menuButton');
