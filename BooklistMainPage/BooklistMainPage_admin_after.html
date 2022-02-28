@@ -15,9 +15,9 @@
                     <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
                 </div>
             </li>
-            <li><a class="active" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
-            <li><a href="../BookMainPage/BookMainPage_admin_after.html">Books</a></li>
-            <li><a href="./BooklistMainPage_admin_after.html">Booklists</a></li>
+            <li><a class="active addUserIdToLink" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
+            <li><a class="addUserIdToLink" href="../BookMainPage/BookMainPage_admin_after.html">Books</a></li>
+            <li><a class="addUserIdToLink" href="./BooklistMainPage_admin_after.html">Booklists</a></li>
             <li>
                 <form>
                 <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
@@ -25,7 +25,7 @@
                 </form>
             </li>
             <li class="right">
-                <a href="">Hello, Admin</a>
+                <a id="userLoginInfo" class="addUserIdToLink" href="../user/user.html">Hello, User</a>
             </li>
           </ul>
  	</div>
@@ -40,5 +40,6 @@
         <br>
     </div>
     <script type="text/javascript" src="BooklistMainPage_admin_after.js"></script>
+    <script type="text/javascript" src="../HomeAndLogin/topmenu.js"></script>
     </body>
 </html>

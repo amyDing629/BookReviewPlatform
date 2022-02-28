@@ -32,7 +32,7 @@ function UserCallBack() {
     users.push(new AdminUser('admin', 'admin'));
  }
 
-if (window.location.href.endsWith("login.html")) {
+if (window.location.href.indexOf('login.html') !== -1) {
     UserCallBack();
     const signin = document.querySelector('#signin');
     signin.addEventListener('click', change_page);
