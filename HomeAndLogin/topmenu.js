@@ -36,7 +36,7 @@ function search(e){
 function analyze(content){
 
 }
-console.log('hello');
+
 if (window.location.href.indexOf('userID') !== -1){
      let userInfo = document.getElementById('userLoginInfo');
      let userID = window.location.href.split('?')[1].split('=')[1];
