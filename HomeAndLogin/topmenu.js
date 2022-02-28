@@ -26,3 +26,9 @@ function search(e){
 function analyze(content){
 
 }
+
+if (window.location.href.indexOf('userID') !== -1){
+     let userInfo = document.getElementById('userLoginInfo');
+     let userID = window.location.href.split('?')[1].split('=')[1];
+     userInfo.innerHTML = 'Hello, User ' + userID;
+}

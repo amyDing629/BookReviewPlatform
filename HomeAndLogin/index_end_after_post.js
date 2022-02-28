@@ -212,7 +212,7 @@ function like(e){
 }
 
 const collectfield = document.querySelector('#posts')
-collectfield.addEventListener('click', collect)
+collectfield.addEventListener('click', collect);
 
 function collect(e){
     e.preventDefault(); // prevent default action
@@ -238,7 +238,5 @@ function collect(e){
         } 
 	}
 }
-
-
 
  

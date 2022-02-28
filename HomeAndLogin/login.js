@@ -1,75 +1,60 @@
 
 /****** User signin ******/
-let numberOfenduser = 0;
-const endusers = [];
-let numberOfadmin = 0;
-const admins = [];
+let numberOfUsers = 0;
+const users = [];
 
-let currentUser // I wish to bring this variable to index_end_after.js & index_admin_after.js
-
-class EndUser {
-	constructor(username, password) {
-		this.username = username;
+class User {
+	constructor(userName, password) {
+		this.userName = userName;
         this.password = password;
-
-		// set user id
-		this.userID = numberOfenduser;
-		numberOfenduser += 1;
+        this.signature = null;
+        this.profilePhoto = null;
+        this.postList = [];
+        this.booklistList = [];
+        this.collectionList = [];
+        this.userID = numberOfUsers;
+        this.isAdmin = false;
+		numberOfUsers++;
     }
 }
 
-class Admin {
-	constructor(username, password) {
-		this.username = username;
-        this.password = password;
-
-		// set admin
-		this.adminID = numberOfadmin;
-		numberOfadmin += 1;
+class AdminUser extends User {
+    constructor(userName, password) {
+        super(userName, password);
+        this.isAdmin = true;
     }
 }
 
-function EndUserCallBack() {
-    /// Get endusers from server
+function UserCallBack() {
+    /// Get users from server
     // code below requires server call
-    endusers.push(new EndUser('user', 'user'))
+    users.push(new User('user', 'user'));
+    users.push(new AdminUser('admin', 'admin'));
  }
 
-function AdimnCallBack() {
-    /// Get endusers from server
-    // code below requires server call
-    admins.push(new Admin('admin', 'admin'))
- }
-
-EndUserCallBack()
-AdimnCallBack()
-
-const signin = document.querySelector('#signin')
-signin.addEventListener('click', change_page, {once:true})
-
+if (window.location.href.endsWith("login.html")) {
+    UserCallBack();
+    const signin = document.querySelector('#signin');
+    signin.addEventListener('click', change_page);
+}
 
 function change_page(){
-    const username = document.querySelector('#username').value
-    const password = document.querySelector('#password').value
-
-    for (let i=0; i<endusers.length; i++){
-        const user = endusers[i].username;
-        const pass = endusers[i].password;
+    const username = document.querySelector('#username').value;
+    const password = document.querySelector('#password').value;
+    for (let i=0; i<users.length; i++){
+        let user = users[i].userName;
+        let pass = users[i].password;
+        console.log(user, pass);
         if (user == username && password == pass){
-            currentUser = user;
-            window.location.href = "index_end_after.html";
+            if (users[i].isAdmin == true) {
+                window.location.href = "index_admin_after.html?userID=" + users[i].userID;
+            }
+            else{
+                window.location.href = "index_end_after.html?userID=" + users[i].userID;
+            } 
             return;
         }
     }
-    for (let j=0; j<admins.length;j++){
-        const admin = admins[j].username;
-        const adminpass = admins[j].password;
-        if (admin == username && adminpass == password){
-            currentUser = admin;
-            window.location.href = "index_admin_after.html";
-            return;
-        }
-    }
-  } 
-  
+  }
+
   
