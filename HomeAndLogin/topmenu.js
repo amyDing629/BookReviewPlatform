@@ -6,18 +6,24 @@ menu.addEventListener('submit', search);
 const addUserIdToLinkElements = document.getElementsByClassName('addUserIdToLink');
 let element;
 
-for (element of addUserIdToLinkElements){
-     element.addEventListener('click', addUserIdToLink);
-}
+// for phase 2
+// if (window.location.href.indexOf('userID') !== -1){
+//      let userInfo = document.getElementById('userLoginInfo');
+//      let userID = window.location.href.split('?')[1].split('=')[1];
+//      userInfo.innerHTML = 'Hello, User ' + userID;
+// }
 
-function addUserIdToLink(e){
-     for (element of addUserIdToLinkElements){
-          if (element.href.indexOf('userID') == -1){
-               element.href = element.href + ('?' + window.location.href.split('?')[1]);
-          }
-          
-     }
-}
+// for (element of addUserIdToLinkElements){
+//      element.addEventListener('click', addUserIdToLink);
+// }
+
+// function addUserIdToLink(e){
+//      for (element of addUserIdToLinkElements){
+//           if (element.href.indexOf('userID') == -1){
+//                element.href = element.href + ('?' + window.location.href.split('?')[1]);
+//           } 
+//      }
+// }
 
 function search(e){
     e.preventDefault(); // prevent default form action
@@ -35,10 +41,4 @@ function search(e){
 
 function analyze(content){
 
-}
-
-if (window.location.href.indexOf('userID') !== -1){
-     let userInfo = document.getElementById('userLoginInfo');
-     let userID = window.location.href.split('?')[1].split('=')[1];
-     userInfo.innerHTML = 'Hello, User ' + userID;
 }
