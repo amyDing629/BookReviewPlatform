@@ -42,8 +42,8 @@ class Booklist {
 }
 
 // Load default booklist data
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'A01',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'A01',[BooksList[1]]))
+BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
+BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
 
 
 const booklistTable = document.querySelector('#booklistTable')
@@ -79,7 +79,8 @@ function displayAllBooklists(BooklistsList) {
         const span1 = document.createElement('span')
         const a1 = document.createElement('a')
         a1.className = "linkColor"
-        a1.href = ""
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + BooklistsList[i].booklistID + ".html"
+        a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
         const nameContent = document.createTextNode(BooklistsList[i].listName)
         a1.appendChild(nameContent)
         span1.appendChild(a1)
@@ -111,12 +112,9 @@ function displayAllBooklists(BooklistsList) {
         const time = document.createTextNode("Created when: ")
         strong3.appendChild(time)
         const span3 = document.createElement('span')
-        const a3 = document.createElement('a')
-        a3.className = "timeContent"
-        a3.href = ""
+        span3.className = "timeContent"
         const timeContent = document.createTextNode(BooklistsList[i].createTime)
-        a3.appendChild(timeContent)
-        span3.appendChild(a3)
+        span3.appendChild(timeContent)
         li3.appendChild(strong3)
         li3.appendChild(span3)
         ul1.appendChild(li3)
@@ -143,10 +141,10 @@ function displayAllBooklists(BooklistsList) {
         const tr1 = document.createElement('tr')
         const tr2 = document.createElement('tr')
 
-        if (BooklistsList[i].books.length <= 4){
+        if (BooklistsList[i].books.length <= 3){
             bookNum = BooklistsList[i].books.length
         } else {
-            bookNum = 4
+            bookNum = 3
         }
 
         for (let j = 0; j < bookNum; j++){
@@ -160,7 +158,7 @@ function displayAllBooklists(BooklistsList) {
             const bookLink = document.createElement('a')
             bookLink.className = "book"
             bookLink.href = "../BookDetail/BookDetail-" + BooklistsList[i].books[j].name + ".html"
-            bookLink.onclick = function open(e){e.preventDefault(); window.location.replace(bookLink.href)}
+            bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
             tr2.appendChild(newBookLink)
@@ -216,10 +214,13 @@ function displayAllBooklists(BooklistsList) {
     }
 }
 
+
 function alertLike(e){
     e.preventDefault();
     if (e.target.className == 'collectIcon') {
-        alert("Please login to complete the collect action.")
+        if (confirm("Please login to complete the collect action.") == true) {
+            window.location.href = "../HomeAndLogin/login.html"
+        } 
     }
     
 }
@@ -227,7 +228,9 @@ function alertLike(e){
 function alertCollect(e){
     e.preventDefault();
     if (e.target.className == 'likeIcon') {
-        alert("Please login to complete the like action.")
+        if (confirm("Please login to complete the like action.") == true) {
+            window.location.href = "../HomeAndLogin/login.html"
+        } 
     }
     
 }

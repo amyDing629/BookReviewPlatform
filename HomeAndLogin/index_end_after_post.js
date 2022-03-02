@@ -1,8 +1,9 @@
 
-/** After log in, end user can like others' posts **/
 const log = console.log;
 
+/****************************** END USER index-posts js ******************************/
 
+/** After log in, end user can like others' posts **/
 /********** Posts display **********/
 const posts = [];
 const collectedPosts = []; // collection of posts made by current user
@@ -15,12 +16,12 @@ class Post {
         this.booktitle = booktitle;
         this.booklink = booklink;
 		this.poster = poster;
-        this.posterlink = posterlink // if the current user does not login, cannot visit poster link (unsolved)
+        this.posterlink = posterlink;
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
-        this.likes = likes; // only logined user can like? (unsolved)
+        this.likes = likes; 
 
     }
 }
@@ -52,7 +53,7 @@ displayPosts()
 // clean all before display
 function cleanPosts(){
     const lis = postul.children;
-    for (let i=0; i<10; i++){
+    for (let i=0; i<3; i++){
         if (lis[i] != null){
             lis[i].remove();
         }
@@ -60,9 +61,9 @@ function cleanPosts(){
 }
 
 function displayPosts(){
-    // cleanPosts();
+    cleanPosts();
 
-    for (let i=0; i<10; i++){
+    for (let i=0; i<3; i++){
         if (posts[i] != null){
             let li = document.createElement('li')
 
@@ -98,22 +99,18 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a1.href)
+                window.location.replace("login.html")
             }
-            let spanid1 = document.createElement('span')
-            spanid1.className = 'postId'
-            spanid1.innerText = 'postID: '
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
             spanid2.innerText = pid
             userh3.appendChild(a1)
             userh3.appendChild(spanid2) // Post id is here
-            userh3.appendChild(spanid1) // float right means pid should floatting first, then 'postid', which becomes 'postid:pid'
 
             contentDiv.appendChild(userh3)
 
-            let h4 = document.createElement('h4')
-            h4.innerText = 'Book Name: '
+            let pbook = document.createElement('p')
+            pbook.innerText = 'Book Name: '
             let span1 = document.createElement('span')
             let a2 = document.createElement('a')
             a2.className = 'linkColor'
@@ -124,7 +121,6 @@ function displayPosts(){
                 window.location.replace(a2.href)
             }
             span1.appendChild(a2)
-            
             let span2 = document.createElement('span')
             span2.className = 'postTime'
             span2.innerText = time
@@ -136,11 +132,11 @@ function displayPosts(){
             spanid4.className = 'bookId'
             spanid4.innerText = bid
 
-            h4.appendChild(span1)
-            h4.appendChild(span2)
-            h4.appendChild(spanid3) 
-            h4.appendChild(spanid4) // Book id is here
-            contentDiv.appendChild(h4)
+            pbook.appendChild(span1)
+            pbook.appendChild(span2)
+            pbook.appendChild(spanid3) 
+            pbook.appendChild(spanid4) // Book id is here
+            contentDiv.appendChild(pbook)
 
             let p = document.createElement('p')
             p.innerText = content
@@ -157,7 +153,7 @@ function displayPosts(){
             let br = document.createElement('br')
             contentDiv.appendChild(br)
 
-            let likeh3 = document.createElement('h3')
+            let likeh5 = document.createElement('h5')
             let icon = document.createElement('i')
             icon.className = 'fa fa-heart'
             icon.innerText = ' '+likes
@@ -168,10 +164,10 @@ function displayPosts(){
             button2.className = 'collect'
             button2.innerText = 'Collect this post'
 
-            likeh3.appendChild(icon)
-            likeh3.appendChild(button2)
-            likeh3.appendChild(button)
-            contentDiv.appendChild(likeh3)
+            likeh5.appendChild(icon)
+            likeh5.appendChild(button2)
+            likeh5.appendChild(button)
+            contentDiv.appendChild(likeh5)
 
 
             postDiv.appendChild(userDiv)
@@ -183,13 +179,11 @@ function displayPosts(){
     }
 }
 
-
 const likefield = document.querySelector('#posts')
 likefield.addEventListener('click', like)
 
 function like(e){
     e.preventDefault(); // prevent default action
-    // log('likes')
 
     if (e.target.classList.contains('like')) {
 	
@@ -216,7 +210,6 @@ collectfield.addEventListener('click', collect);
 
 function collect(e){
     e.preventDefault(); // prevent default action
-    log('collect')
 
     if (e.target.classList.contains('collect')) {
 	

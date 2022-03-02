@@ -42,13 +42,12 @@ class Booklist {
 }
 
 // Load default booklist data
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'A01',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'A01',[BooksList[1]]))
+BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
+BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
 
 
 const booklistTable = document.querySelector('#booklistTable')
-booklistTable.addEventListener('click', increaseLike)
-booklistTable.addEventListener('click', increaseCollect)
+booklistTable.addEventListener('click', increaseLikeOrCollect)
 
 // Display all availble booklists:
 function displayAllBooklists(BooklistsList) {
@@ -90,7 +89,8 @@ function displayAllBooklists(BooklistsList) {
         const span1 = document.createElement('span')
         const a1 = document.createElement('a')
         a1.className = "linkColor"
-        a1.href = ""
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + BooklistsList[i].booklistID + ".html"
+        a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
         const nameContent = document.createTextNode(BooklistsList[i].listName)
         a1.appendChild(nameContent)
         span1.appendChild(a1)
@@ -122,12 +122,9 @@ function displayAllBooklists(BooklistsList) {
         const time = document.createTextNode("Created when: ")
         strong3.appendChild(time)
         const span3 = document.createElement('span')
-        const a3 = document.createElement('a')
-        a3.className = "timeContent"
-        a3.href = ""
+        span3.className = "timeContent"
         const timeContent = document.createTextNode(BooklistsList[i].createTime)
-        a3.appendChild(timeContent)
-        span3.appendChild(a3)
+        span3.appendChild(timeContent)
         li3.appendChild(strong3)
         li3.appendChild(span3)
         ul1.appendChild(li3)
@@ -171,7 +168,7 @@ function displayAllBooklists(BooklistsList) {
             const bookLink = document.createElement('a')
             bookLink.className = "booklink"
             bookLink.href = "../BookDetail/" + BooklistsList[i].books[j].name + "_admin_after.html"
-            bookLink.onclick = function open(e){e.preventDefault(); window.location.replace(bookLink.href)}
+            bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
             tr2.appendChild(newBookLink)
@@ -227,28 +224,23 @@ function displayAllBooklists(BooklistsList) {
     }
 }
 
-function increaseCollect(e){
-    e.preventDefault();
-    if (e.target.className == 'collectIcon') {
-        const index = parseInt(e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
-        for (let i = 0; i < BooklistsNum; i++){
-            if (BooklistsList[i].booklistID == index){
-                BooklistsList[i].collect++
-                booklistTable.children[i+3].children[4].children[1].children[1].innerText = "Collected: " + BooklistsList[i].collect
-            }
-        }
-    }
-    
-}
 
-function increaseLike(e){
+// increase like or collect 
+function increaseLikeOrCollect(e){
     e.preventDefault();
-    if (e.target.className == 'likeIcon') {
+    const iconName = e.target.className
+    if (iconName == 'collectIcon' || iconName == 'likeIcon') {
         const index = parseInt(e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
-        for (let i = 0; i < BooklistsNum; i++){
-            if (BooklistsList[i].booklistID == index){
-                BooklistsList[i].likes++
-                booklistTable.children[i+3].children[4].children[0].children[1].innerText = "Liked: " + BooklistsList[i].likes
+        const selectedBookList = BooklistsList.filter((booklist) => booklist.booklistID === index)
+        const allBooklists = document.querySelectorAll('.booklist')
+        for (let i = 0; i < allBooklists.length; i++){
+            const pageIndex = parseInt(allBooklists[i].children[0].children[0].innerHTML)
+            if (pageIndex === index && iconName == 'collectIcon'){
+                selectedBookList[0].collect++
+                allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
+            } else if (pageIndex === index && iconName == 'likeIcon'){
+                selectedBookList[0].likes++
+                allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
             }
         }
     }

@@ -1,7 +1,7 @@
 /*** CSS for home page ***/
 /* imports for fonts */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Yanone+Kaffeesatz:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Noto+Serif+Display:ital@1&display=swap');
 
 /*** Removes default style from links ***/
 a {
@@ -9,20 +9,17 @@ a {
     color: black;
 }
 
-body {
-	background-color: white;
-	margin: 0;
-}
-
-.textDecoration{
-    text-decoration: underline;
-    font-family: 'Lobster', cursive;
-}
 
 /** Some color classes  **/
 
 .linkColor {
 	color: #5088e9;
+}
+
+
+.transparent{
+    /* Can use to hide ids */
+    color: transparent;
 }
 
 /** Some text classes  **/
@@ -32,11 +29,24 @@ body {
 }
 
 .fancychar2 {
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-family: 'Noto Serif Display', serif;
 }
 
-.fancychar3 {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
+.textDecoration{
+    text-decoration: underline;
+    font-family: 'Lobster', cursive;
+    text-align:center;
+}
+
+.textDecoration2{
+    text-decoration: underline;
+    font-family: 'Noto Serif Display', serif;
+    text-align:center;
+}
+
+.justify{
+    /* for paragraphs*/
+    text-align: justify;
 }
 
 
@@ -59,7 +69,7 @@ body {
 }
 
 #topMenu {
-    padding-bottom: 60px;
+    padding-bottom: 10px;
 	background-color: white;
     overflow:hidden; /*new added*/
 }
@@ -70,7 +80,7 @@ body {
     padding: 0;
     overflow: hidden;
     background-color: rgb(221, 218, 218);
-    position:fixed;
+    /*position:fixed;*/
     width: 100%;
 }
 
@@ -89,16 +99,16 @@ body {
 
 #topMenu li:last-child {
     float:right;
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
 }
 
 
 #topMenu li a:hover {
-    background-color: rgb(147, 190, 149);
+    background-color: white;
   }
 
 .active {
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
   }
 
 
@@ -111,19 +121,24 @@ body {
     background-color: white;
     padding: 12px 20px 12px 40px;
     background-image: url(https://cdn.pixabay.com/photo/2017/11/10/05/24/magnifying-glass-2935435__340.png);
-    background-position: 5px 5px;
+    background-position: 5px 8px;
     background-size: 6.5%;
     background-repeat: no-repeat;
   }  
 
-  
-  
+
+/********** welcome **********/
+.welcome{
+    margin-left: 50px;
+    margin-top:10px;
+    margin-bottom: 10px;
+}
+
 
 /********** recommendation **********/
 #recommendation {
 	padding: 5px;
 	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
 }
 
 .TopBookcontainer{
@@ -146,26 +161,25 @@ body {
     border:2px solid white;
 }
 
-
-#recommendation ul li{
-    margin-right: 20px;
-	font-weight: bold;
-	list-style: none; /* Gets rid of list bullet points */
-	text-align: center;
-	display: inline-block;
+.RecommendationbookCover{
+    height: 200px;
+    width: 150px;
+    margin-bottom: 2px;
+    margin-left:5px;
+    border:2px solid black;
 }
 
-#time{
-    margin-left:8px;
-    font-family: 'Lobster', cursive;
+#adminActionsWrap{
+    margin-top:20px;
+    margin-left:20px;
+    margin-bottom:20px;
 }
 
+
+/* Rest are trash */
 .bookTitle {
 	padding: 3px;
 	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 .bookId{
@@ -173,7 +187,6 @@ body {
 }
 
 .bookAuthor{
-    font-family: 'Yanone Kaffeesatz', sans-serif;
     font-size:large;
 }
 
@@ -185,52 +198,46 @@ body {
     height: 70%;
 }
 
-.bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-  }
+/* trash */
 
-  @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
-  }
-
-/*** Posts ***/
+/********** Posts **********/
 #posts{
     margin-top: 20px;
     padding: 5px;
 	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
+}
+
+#posts .textDecoration2{
+    text-align: center;
+    text-decoration: underline;
+    font-family: 'Noto Serif Display', serif;
+    border-bottom: 2px solid rgb(199, 196, 196);
 }
 
 #posts ul li{
     list-style-type: none;
 	display: block;
-    margin-left: 50px;
+    margin-left: 145px;
 }
 
 .post {
-	min-height: 100px;
+	min-height: 200px;
 	overflow: auto;
 	padding-bottom: 5px;
     background-color: white;
     margin-top:10px;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid grey;
     border-radius: 20px;
     width: 600px;
 }
 
 .postId{
+    color:transparent; /* hide id */
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 #posts .bookId{
-    font-family: 'Lobster', cursive;
+    color:transparent; /* hide id */
 }
 
 .userProfileContainer {
@@ -249,7 +256,6 @@ body {
 }
 
 .postTime{
-    font-family: 'Lobster', cursive;
     float:right;
 }
 
@@ -257,11 +263,9 @@ body {
 	margin-top: 20px;
 	width: 400px;
 	float: left;
+    margin-bottom: 5px;
 }
 
-.postContent h4{
-    font-family: 'Lobster', cursive;
-}
 
 .postContentPicture {
 	max-width: 400px;
@@ -270,17 +274,17 @@ body {
 .like{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(85, 124, 87);
+    margin-right:5px;
+    background-color: grey;
     color: white;
-    font-size: large;
+    font-size:medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10%;
 }
 
 .like:hover {
-    background-color: rgb(147, 190, 149);
+    background-color: black;
   }
 
 #posts .delete{
@@ -288,11 +292,10 @@ body {
     margin-bottom: 3px;
     background-color: red;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10%;
 }
 
 #posts .delete:hover {
@@ -302,31 +305,36 @@ body {
 .collect{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10%;
 }
+
+#posts .collect:hover {
+    background-color: black;
+  }
 
 .aftercollect{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(147, 190, 149);
+    background-color: black;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10%;
 }
 
 
+#posts h5{
+    padding-top: 10px;
+}
 
 .fa-heart {
-    color:rgb(85, 124, 87);
+    color:black;
 } 
 
 

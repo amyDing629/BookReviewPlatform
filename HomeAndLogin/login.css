@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Noto+Serif+Display:ital@1&display=swap');
+.fancychar2 {
+    font-family: 'Noto Serif Display', serif;
+    float:left;
+    margin-top: 20px;
+    margin-left:20px;
+    color:#5088e9;
+    font-size:large;
+}
 
 .logo{
     display: block;
@@ -28,9 +37,9 @@
     text-align: center;
     color:white;
     margin:20px;
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
-    font-size: x-large;
-    background:rgb(85, 124, 87);
+    font-family: 'Noto Serif Display', serif;
+    font-size: xx-large;
+    background:grey;
 }
 .Login .form .form-element{  
     margin:5px 15px;
@@ -43,13 +52,13 @@
 }
 
 .Login .form .form-element button{  
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-family: 'Noto Serif Display', serif;
     font-size: larger;
     width:50%;
     height: 40px;
     margin-top: 20px;
     color: white;
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
     border: none;
     outline: none;
     border-radius: 4px;
@@ -57,12 +66,24 @@
 }
 
 .Login .form .form-element button:hover {
-    background-color: rgb(147, 190, 149);
+    background-color: black;
   }
-
 
 .Login .form .form-element a{ 
     display: block;
     text-align: right;
     font-weight: 600;
  }
+
+ /*
+    * Footer
+ */
+ .blog-footer {
+    padding-top:50px;
+    padding-bottom:10px;
+    color: white;
+    text-align: center;
+    background-color: #ccc;
+    border-bottom: 2px solid #e5e5e5;   
+  }
+ 
