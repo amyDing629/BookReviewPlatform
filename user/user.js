@@ -221,7 +221,6 @@ function displayEditBooksWindow() {
 
 
 /*************** actions ****************/
-// Display regular user
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
 users.push(adminUser);
