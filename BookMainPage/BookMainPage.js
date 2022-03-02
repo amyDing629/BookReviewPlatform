@@ -43,7 +43,7 @@ window.onload = function displayAllBooks() {
         const span1 = document.createElement('span')
         span1.className="bookTitle"
         const a = document.createElement('a')
-        a.className = "linkColor"
+        a.className = "linkColor addUserIdToLink"
         a.href = "../BookDetail/BookDetail-" + BooksList[i].name + ".html"
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
