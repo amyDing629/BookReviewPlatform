@@ -160,7 +160,7 @@ function displayAllBooklists(BooklistsList) {
             const bookLink = document.createElement('a')
             bookLink.className = "book"
             bookLink.href = "../BookDetail/BookDetail-" + BooklistsList[i].books[j].name + ".html"
-            bookLink.onclick = function open(e){e.preventDefault(); window.location.replace(bookLink.href)}
+            bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
             tr2.appendChild(newBookLink)
@@ -216,10 +216,13 @@ function displayAllBooklists(BooklistsList) {
     }
 }
 
+
 function alertLike(e){
     e.preventDefault();
     if (e.target.className == 'collectIcon') {
-        alert("Please login to complete the collect action.")
+        if (confirm("Please login to complete the collect action.") == true) {
+            window.location.href = "../HomeAndLogin/login.html"
+        } 
     }
     
 }
@@ -227,7 +230,9 @@ function alertLike(e){
 function alertCollect(e){
     e.preventDefault();
     if (e.target.className == 'likeIcon') {
-        alert("Please login to complete the like action.")
+        if (confirm("Please login to complete the like action.") == true) {
+            window.location.href = "../HomeAndLogin/login.html"
+        } 
     }
     
 }
