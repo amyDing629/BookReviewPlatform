@@ -1,7 +1,7 @@
 /*** CSS for home page ***/
 /* imports for fonts */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Yanone+Kaffeesatz:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Noto+Serif+Display:ital@1&display=swap');
 
 /*** Removes default style from links ***/
 a {
@@ -29,11 +29,7 @@ a {
 }
 
 .fancychar2 {
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
-}
-
-.fancychar3 {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-family: 'Noto Serif Display', serif;
 }
 
 .textDecoration{
@@ -42,11 +38,16 @@ a {
     text-align:center;
 }
 
+.textDecoration2{
+    text-decoration: underline;
+    font-family: 'Noto Serif Display', serif;
+    text-align:center;
+}
+
 .justify{
     /* for paragraphs*/
     text-align: justify;
 }
-
 
 
 /************** top Menu ***************/
@@ -126,6 +127,14 @@ a {
   }  
 
 
+/********** welcome **********/
+.welcome{
+    margin-left: 50px;
+    margin-top:10px;
+    margin-bottom: 10px;
+}
+
+
 /********** recommendation **********/
 #recommendation {
 	padding: 5px;
@@ -160,12 +169,14 @@ a {
     border:2px solid black;
 }
 
-
+#adminActionsWrap{
+    margin-top:20px;
+    margin-left:20px;
+    margin-bottom:20px;
+}
 
 
 /* Rest are trash */
-
-
 .bookTitle {
 	padding: 3px;
 	background-color: white;
@@ -187,6 +198,7 @@ a {
     height: 70%;
 }
 
+/* trash */
 
 /********** Posts **********/
 #posts{
@@ -195,10 +207,10 @@ a {
 	background-color: white;
 }
 
-#posts .textDecoration{
+#posts .textDecoration2{
     text-align: center;
     text-decoration: underline;
-    font-family: 'Lobster', cursive;
+    font-family: 'Noto Serif Display', serif;
     border-bottom: 2px solid rgb(199, 196, 196);
 }
 
@@ -262,17 +274,17 @@ a {
 .like{
     margin-top:2px;
     margin-bottom: 3px;
+    margin-right:5px;
     background-color: grey;
     color: white;
-    font-size: large;
+    font-size:medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
     border: 2px solid #ccc;
-    border-radius: 20px;
+    border-radius: 10%;
 }
 
 .like:hover {
-    background-color: white;
+    background-color: black;
   }
 
 #posts .delete{
@@ -280,11 +292,10 @@ a {
     margin-bottom: 3px;
     background-color: red;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid grey;
-    border-radius: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10%;
 }
 
 #posts .delete:hover {
@@ -296,23 +307,25 @@ a {
     margin-bottom: 3px;
     background-color: grey;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
     border: 2px solid #ccc;
-    border-radius: 20px;
+    border-radius: 10%;
 }
+
+#posts .collect:hover {
+    background-color: black;
+  }
 
 .aftercollect{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: grey;
+    background-color: black;
     color: white;
-    font-size: large;
+    font-size: medium;
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
     border: 2px solid #ccc;
-    border-radius: 20px;
+    border-radius: 10%;
 }
 
 

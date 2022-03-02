@@ -1,4 +1,5 @@
 const log = console.log;
+/****************************** Default index js ******************************/
 
 /********** Recommendation book display **********/
 const recommendedBooks = [];
@@ -20,11 +21,10 @@ class Book {
 
 
 function blinkHandler(bid){
-    // handler for book Detail page
-    const result = ''
+    // handler for book Detail page link
         for (let i =0; i<recommendedBooks.length; i++){
             if (recommendedBooks[i].bookId == bid){
-                result = '../BookDetail/BookDetail-'+recommendedBooks[i].title+'.html'
+                let result = '../BookDetail/BookDetail-'+recommendedBooks[i].title+'.html'
                 return result;
             }
         } 
@@ -65,9 +65,9 @@ function BooksCallBack() {
             const bookAuthor = recommendedBooks[0].author;
             const bookCover = recommendedBooks[0].cover;
             const description = recommendedBooks[0].description;
-            const booklink = recommendedBooks[0].link;
             const bid = recommendedBooks[0].bookId;
 
+            const booklink = blinkHandler(0);
 
             let img = document.createElement('img')
             img.className = 'TopbookCover'
@@ -83,7 +83,7 @@ function BooksCallBack() {
             h1.appendChild(span)
 
             let h4 = document.createElement('h4')
-            h4.className = 'fancychar1'
+            h4.className = 'fancychar2'
             h4.innerText = bookAuthor
 
             let p1 = document.createElement('p')
@@ -122,8 +122,9 @@ function displayRecommendations(){
         const bookAuthor = recommendedBooks[i].author;
         const bookCover = recommendedBooks[i].cover;
         const description = recommendedBooks[i].description;
-        const booklink = recommendedBooks[i].link;
         const bid = recommendedBooks[i].bookId;
+
+        const booklink = blinkHandler(i);
 
         let outerdiv = document.createElement('div')
         outerdiv.className = 'col-md-6'
@@ -133,7 +134,7 @@ function displayRecommendations(){
         innerdiv2.className = 'col p-4 d-flex flex-column position-static'
         
         let h3 = document.createElement('h3')
-        h3.className = 'fancychar1'
+        h3.className = 'fancychar2'
         h3.innerText = bookName
         let span = document.createElement('span')
         span.className = 'transparent'
@@ -327,14 +328,6 @@ function displayPosts(){
 
             let br = document.createElement('br')
             contentDiv.appendChild(br)
-
-            let likeh5 = document.createElement('h5')
-            let icon = document.createElement('i')
-            icon.className = 'fa fa-heart'
-            icon.innerText = ' '+likes
-            likeh5.appendChild(icon)
-            contentDiv.appendChild(likeh5)
-
 
             postDiv.appendChild(userDiv)
             postDiv.appendChild(contentDiv)

@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Noto+Serif+Display:ital@1&display=swap');
+.fancychar2 {
+    font-family: 'Noto Serif Display', serif;
+    float:left;
+    margin-top: 20px;
+    margin-left:20px;
+    color:#5088e9;
+    font-size:large;
+}
 
 .logo{
     display: block;
@@ -28,9 +37,9 @@
     text-align: center;
     color:white;
     margin:20px;
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
-    font-size: x-large;
-    background:grey
+    font-family: 'Noto Serif Display', serif;
+    font-size: xx-large;
+    background:grey;
 }
 .Login .form .form-element{  
     margin:5px 15px;
@@ -43,7 +52,7 @@
 }
 
 .Login .form .form-element button{  
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-family: 'Noto Serif Display', serif;
     font-size: larger;
     width:50%;
     height: 40px;
@@ -59,7 +68,6 @@
 .Login .form .form-element button:hover {
     background-color: black;
   }
-
 
 .Login .form .form-element a{ 
     display: block;
