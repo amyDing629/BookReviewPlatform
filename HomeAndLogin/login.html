@@ -3,7 +3,7 @@
  
  <head>
  	<meta charset="utf-8">
-    <title>Login</title>
+    <title>login</title>
     <link rel="stylesheet" type="text/css" href="login.css">
  </head>
 
@@ -15,11 +15,13 @@
         <h2>Log in</h2>
         <div class="form-element">
             <label for="username">username</label>
-            <input type="text" id="username" placeholder="username">
+            <!--Max length of username is 10 -->
+            <input type="text" id="username" maxlength = '10' placeholder="username"> 
         </div>
         <div class="form-element">
             <label for="password">password</label>
-            <input type="text" id="password" placeholder="password">
+            <!--Max length of password is 10 -->
+            <input type="text" id="password" maxlength = '10' placeholder="password">
         </div>
         <div class="form-element">
             <button id="signin">Sign in</button>

@@ -11,7 +11,7 @@ The overall objective of the project is to build a website for readers to share 
 * customize multiple book lists regarding different demands, as well as a collection of their favorite posts.
 
 ### Admin User
-* all rgular users' features
+* all regular users' features
 * manage the account status of regular users, including disabling and reactivating accounts.
 * add or remove books from the database and update book descriptions.
 * manage posts (specifically, delete the post).
