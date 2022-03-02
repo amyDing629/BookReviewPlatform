@@ -58,41 +58,34 @@ function displayBooklistDetail(booklist) {
     
 
     // fill list info
-    const booklistIntro = document.querySelector('#booklistIntro')
-    const listId = booklistIntro.children[0]
-    const creator = booklistIntro.children[1]
-    const createTime = booklistIntro.children[2]
-    const idContent = document.createElement('span');
+    const listId = document.querySelector('.listId')
+    const idContent = document.createTextNode(booklist.booklistID)
     idContent.id = 'idContent';
-    idContent.appendChild(document.createTextNode(booklist.booklistID))
     listId.appendChild(idContent)
 
-    const creatorContent = document.createElement('span');
-    creatorContent.id = 'creatorContent';
-    creatorContent.appendChild(document.createTextNode(booklist.creator))
+    const creator = document.querySelector('.creator')
+    const creatorContent = document.createTextNode(booklist.creator)
+    creatorContent.id = 'creatorContent'
     creator.appendChild(creatorContent)
 
-    const timeContent = document.createElement('span');
-    timeContent.id = 'timeContent';
-    timeContent.appendChild(document.createTextNode(booklist.createTime))
+    const createTime = document.querySelector('.createTime')
+    const timeContent = document.createTextNode(booklist.createTime)
+    timeContent.id = 'timeContent'
     createTime.appendChild(timeContent)
 
     // fill like and collect number
-    const likesAndCollects = document.querySelector('#likesAndCollects')
-    const likes = likesAndCollects.children[0]
-    const collects = likesAndCollects.children[1]
-    const likeContent = document.createElement('span');
-    likeContent.id = 'likeContent';
-    likeContent.appendChild(document.createTextNode(booklist.likes))
+    const likes = document.querySelector('.likes')
+    const collects = document.querySelector('.collects')
+    const likeContent = document.createTextNode(booklist.likes)
+    likeContent.id = 'likeContent'
     likes.appendChild(likeContent)
-    const collectContent = document.createElement('span');
-    collectContent.id = 'collectContent';
-    collectContent.appendChild(document.createTextNode(booklist.collect))
+    const collectContent = document.createTextNode(booklist.collect)
+    collectContent.id = 'collectContent'
     collects.appendChild(collectContent)
 
     // fill description
     const description = document.querySelector('#description')
-    const desc = document.createTextNode(booklist.description)
+    const desc = document.createTextNode(booklist.listDescription)
     description.appendChild(desc)
 
     // fill books in the list
