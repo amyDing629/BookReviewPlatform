@@ -42,8 +42,8 @@ class Booklist {
 }
 
 // Load default booklist data
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'A01',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'A01',[BooksList[1]]))
+BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
+BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
 
 
 const booklistTable = document.querySelector('#booklistTable')
@@ -79,7 +79,8 @@ function displayAllBooklists(BooklistsList) {
         const span1 = document.createElement('span')
         const a1 = document.createElement('a')
         a1.className = "linkColor"
-        a1.href = ""
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + BooklistsList[i].booklistID + ".html"
+        a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
         const nameContent = document.createTextNode(BooklistsList[i].listName)
         a1.appendChild(nameContent)
         span1.appendChild(a1)

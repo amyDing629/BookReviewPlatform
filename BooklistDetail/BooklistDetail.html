@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+ <head>
+ 	<meta charset="UTF-8">
+    <title> BookLand: booklist</title>
+    <link rel="stylesheet" type="text/css" href="BooklistDetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
+    <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> <!-- For bootstrap -->
+ </head>
+
+<body>
+    <!-- The Top Menu -->
+ 	<div id="topMenu">
+        <ul>
+            <li>
+                <div class="logoContainer">
+                    <img class="logo" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                </div>
+            </li>
+            <li><a class="active" href="../HomeAndLogin/index.html">Home</a></li>
+            <li><a href="../BookMainPage/BookMainPage.html">Books</a></li>
+            <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a></li>
+            <li>
+                <form>
+                <input type="text" name="search" placeholder="Search for books, booklists, and users..">
+                <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </li>
+            <li class="right">
+                <a href="../HomeAndLogin/login.html">Login/Register</a>
+            </li>
+          </ul>
+ 	</div>
+
+     <div id="booklistInfo">
+        <h1 class = textDecoration> Booklist: <!-- <span id="titleContent">All spanish</span> --></h1>
+        <br>
+        <p id="booklistIntro">
+            <span class="listId">BooklistID: <!-- 0 --> </span><br>
+            <span class="creator">Creator: <!-- Stanisław Lem --></span><br>
+            <span class="createTime">Created When: <!-- 1961 --></span>
+        </p>
+        <br>
+        <p id="likesAndCollects">
+            <span class="likes">Liked: <!-- 0 --> </span><br>
+            <span class="collects">Collected: <!-- 0 --> </span><br>
+        </p>
+     </div>
+
+     <div id="description">
+        <strong class="des">Description:</strong> <!-- Solaris is a 1961 science fiction novel by Polish writer Stanisław Lem. 
+        It follows a crew of scientists on a research station as they attempt to understand 
+        an extraterrestrial intelligence, which takes the form of a vast ocean on the titular 
+        alien planet. The novel is among Lem's best-known works.The book has been adapted numerous times for film,
+        radio, and theater. Prominent film adaptations include Andrei Tarkovsky's 1972 version and Steven Soderbergh's 
+        2002 version, although Lem later remarked that none of these films reflected the book's thematic
+        emphasis on the limitations of human rationality. -->
+        
+     </div>
+
+     
+
+    <!-- Post section -->
+    <div id="books">
+        <h3 class="textDecoration">Books in the list: </h3>
+        <br>
+        <ul>
+            <!-- <li class="bookli"><a class='book' href="">Solaris</a></li><br><br>
+            <li class="bookli"><a class='book' href="">Tres Tristes Tigres</a></li><br><br> -->
+        </ul>
+    </div> 
+
+    <!-- NEW ADDED -->
+    <footer class="blog-footer">
+        <p><i>Book website BookLand built by team10</i></p>
+        <p>
+        <a href="" class="linkColor"><b>Back to top</a>
+        </p>
+    </footer>
+
+    <script type="text/javascript" src="BooklistDetail.js"></script>
+ </body>
+</html>
