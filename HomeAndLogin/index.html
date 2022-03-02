@@ -3,16 +3,17 @@
  
  <head>
  	<meta charset="utf-8">
-    <title>Main page</title>
+    <title>BookLand</title>
     <meta name="author" content="Team10">
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="home.css"> 
 
-    <!-- Recommendation section -->
+    <!-- For reference -->
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/blog/">
 
     <!-- For bootstrap -->
     <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
+    
     <!-- For icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
  </head>
@@ -35,7 +36,7 @@
                 <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </li>
-            <li class="right">
+            <li>
                 <a href="login.html">Login/Register</a>
             </li>
           </ul>
@@ -45,41 +46,68 @@
 	<!-- Recommendation books section -->
  	<div id="recommendation"> 
 		<h1 class="textDecoration">  Recommended books </h1>
-        <h2 id="time"></h2>
         <!-- NEW ADDED -->
+        <!-- Max 3 books (1 top + 2) -->
+        <!--Top -->
         <div class="TopBookcontainer">
             <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
                 <img class="TopbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
                 <h1 class="display-4 fst-italic, fancychar1">Solaris</h1>
                 <h4 class="fancychar1">Stanisław Herman Lem</h4>
                 <p class="lead my-3">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
+                <p class="lead mb-0"><a href="../BookDetail/BookDetail-Solaris.html" class="text-white fw-bold">Continue reading...</a></p>
             </div> 
-        </div>       
-     
-        <ul>
-            <!-- Max 3 books (1 top + 2 li here) -->
-        </ul>
+        </div>    
+        <!-- 2 -->
+        <div class="row mb-2">
+            <div class="col-md-6">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <!-- <strong class="d-inline-block mb-2 text-primary">Fancy</strong> -->
+                                                                    <!-- BID -->
+                  <h3 class="fancychar1">Solaris<span class="transparent">0</span></h3>
+                  <div class="mb-1 text-muted">Stanisław Herman Lem</div>
+                  <img class="RecommendationbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg'>
+                  <br>
+                  <p class="card-text mb-auto">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
+                  <a href="../BookDetail/BookDetail-Solaris.html" class="stretched-link">Continue reading</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                  <div class="col p-4 d-flex flex-column position-static">
+                    <!-- <strong class="d-inline-block mb-2 text-primary">Fancy</strong> -->
+                                                                     <!-- BID -->
+                    <h3 class="fancychar1">Tres Tristes Tigres<span class="transparent">1</span></h3>
+                    <div class="mb-1 text-muted">Guillermo Cabrera Infante</div>
+                    <img class="RecommendationbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
+                    <br>
+                    <p class="card-text mb-auto">It is a highly experimental, Joycean novel, playful and rich in literary allusions.</p>
+                    <a href="../BookDetail/BookDetail-Solaris.html" class="stretched-link">Continue reading</a>
+                  </div>
+                </div>
+              </div>
  	</div>
 
     <!-- Post section -->
     <div id="posts">
-        <h1 class="textDecoration">  They are sharing now: </h1>
+        <h1 class="textDecoration">  People in BookLand </h1>
         <ul>
-            <!-- Max 10 posts -->
+            <!-- Max 3 posts -->
 
         </ul>
     </div> 
 
     
 
- 	<script type="text/javascript" src="recommendation.js"></script>
-     <script type="text/javascript" src="home_post.js"></script>	
+ 	<script type="text/javascript" src="home.js"></script>
     <script type="text/javascript" src="topmenu.js"></script>	
  </body>
 
 <!-- NEW ADDED -->
  <footer class="blog-footer">
-    <p><i>Book website[need to be changed to app name] built by team10</i></p>
+    <p><i>&copy; BookLand built by team10</i></p>
     <p>
       <a href="" class="linkColor"><b>Back to top</a>
     </p>
