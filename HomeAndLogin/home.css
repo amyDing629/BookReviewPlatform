@@ -101,7 +101,8 @@ body {
 /*** recommendation ***/
 #recommendation {
 	padding: 5px;
-	background-color: rgb(147, 190, 149);
+	background-color: white;
+    border: 2px solid rgb(85, 124, 87);
 }
 
 #recommendation ul li{
@@ -147,7 +148,8 @@ body {
 #posts{
     margin-top: 20px;
     padding: 5px;
-	background-color: rgb(147, 190, 149);
+	background-color: white;
+    border: 2px solid rgb(85, 124, 87);
 }
 
 #posts ul li{
