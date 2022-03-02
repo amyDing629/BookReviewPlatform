@@ -4,8 +4,17 @@
  <head>
  	<meta charset="utf-8">
     <title>Main page</title>
-    <link rel="stylesheet" type="text/css" href="home.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
+    <meta name="author" content="Team10">
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="home.css"> 
+
+    <!-- Recommendation section -->
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/blog/">
+
+    <!-- For bootstrap -->
+    <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
  </head>
 
  <body>
@@ -37,8 +46,18 @@
  	<div id="recommendation"> 
 		<h1 class="textDecoration">  Recommended books </h1>
         <h2 id="time"></h2>
+        <!-- NEW ADDED -->
+        <div class="TopBookcontainer">
+            <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+                <img class="TopbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
+                <h1 class="display-4 fst-italic, fancychar1">Solaris</h1>
+                <h4 class="fancychar1">Stanisław Herman Lem</h4>
+                <p class="lead my-3">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
+            </div> 
+        </div>       
+     
         <ul>
-            <!-- Max 4 books -->
+            <!-- Max 3 books (1 top + 2 li here) -->
         </ul>
  	</div>
 
@@ -51,8 +70,20 @@
         </ul>
     </div> 
 
+    
+
  	<script type="text/javascript" src="recommendation.js"></script>
      <script type="text/javascript" src="home_post.js"></script>	
     <script type="text/javascript" src="topmenu.js"></script>	
  </body>
+
+<!-- NEW ADDED -->
+ <footer class="blog-footer">
+    <p><i>Book website[need to be changed to app name] built by team10</i></p>
+    <p>
+      <a href="" class="linkColor"><b>Back to top</a>
+    </p>
+</footer>
+
+
 </html>

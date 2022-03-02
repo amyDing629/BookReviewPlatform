@@ -19,7 +19,28 @@ body {
     font-family: 'Lobster', cursive;
 }
 
-/*** top Menu ***/
+/** Some color classes  **/
+
+.linkColor {
+	color: #5088e9;
+}
+
+/** Some text classes  **/
+
+.fancychar1 {
+    font-family: 'Lobster', cursive;
+}
+
+.fancychar2 {
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.fancychar3 {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+
+/************** top Menu ***************/
 
 .logoContainer {
 	position: relative;
@@ -98,12 +119,33 @@ body {
   
   
 
-/*** recommendation ***/
+/********** recommendation **********/
 #recommendation {
 	padding: 5px;
 	background-color: white;
     border: 2px solid rgb(85, 124, 87);
 }
+
+.TopBookcontainer{
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.Topbook{
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.TopbookCover{
+    height: 200px;
+    float:right;
+    margin-bottom: 2px;
+    margin-left:5px;
+    border:2px solid white;
+}
+
 
 #recommendation ul li{
     margin-right: 20px;
@@ -143,6 +185,19 @@ body {
     height: 70%;
 }
 
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
 
 /*** Posts ***/
 #posts{
@@ -274,8 +329,20 @@ body {
     color:rgb(85, 124, 87);
 } 
 
-/** Some font color classes for you to use. **/
 
-.linkColor {
-	color: #5088e9;
-}
+
+/**** NEW ADDED ****/
+/*
+    * Footer
+ */
+ .blog-footer {
+    padding: 2.5rem 0;
+    color: #727272;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: .05rem solid #e5e5e5;   
+  }
+  .blog-footer p:last-child {
+    margin-bottom: 0;
+    
+  }
