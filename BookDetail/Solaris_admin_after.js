@@ -46,10 +46,6 @@ window.onload = function displayAllBooks() {
     publish.className = "publish" ;
     publish.innerText = "publish: " + BooksList[0].year;
 
-    let button = document.createElement('button')
-    button.innerText = 'delete'
-    button.className = 'delete'
-
     bookIntro.appendChild(bookAuthor);
     bookIntro.appendChild(document.createElement('br'));
     bookIntro.appendChild(document.createElement('br'));
@@ -58,7 +54,6 @@ window.onload = function displayAllBooks() {
     bookIntro.appendChild(document.createElement('br'));
     bookIntro.appendChild(publish);
     bookIntro.appendChild(document.createElement('br'));
-    bookIntro.appendChild(button)
     bookInfo.appendChild(bookIntro);
 
     const bookDescription = document.querySelector('#bookDescription');
