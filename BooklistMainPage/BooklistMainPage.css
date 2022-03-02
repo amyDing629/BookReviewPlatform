@@ -3,26 +3,36 @@
 #booklistTable {
     top: 60px;
     width: 100%;
-    background: rgb(147, 190, 149);
+    background: white;
     padding-left: 20px;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
+    border: 2px solid rgb(85, 124, 87);
+    padding: 5px;
 }
 
-.pageTitle {
-    font-family: 'Lobster', cursive;
-    font-size:xx-large;
-    font-style: oblique;
-    text-decoration-line: underline;
-}
 
 .booklist{
-    margin-left: 10px;
-    padding-left: 20px;
-    margin-bottom: 10px;
-    border: 7px rgb(108, 150, 110) outset;
-    background-color: rgb(197, 209, 198);
+    left: 0%;
+    top: 0px;
+    margin-left: 25%;
+    margin-bottom: 1.5rem!important;
+    flex: 0 0 auto;
     width: 800px;
     min-height: 300px;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    margin-top: var(--bs-gutter-y);
+    box-sizing: border-box;
+    display: block;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    background-color: gainsboro;
+    background-image: linear-gradient(180deg,#d7ddd1, #fcfcf7);
+    font-family: 'Lobster', cursive;
+    border: rgba(255, 255, 255, 0) 1px solid;
+    border-radius: 20px;
+    box-shadow: 0 0.50rem 0.50rem rgba(0,0,0,.075)!important;
 }
 
 .infoWrap{
@@ -39,15 +49,13 @@
 }
 
 .iconWrap{
-    min-width: 240px;
+    width: 260px;
     list-style:none;
     position: relative;
     float: right;
-    right: 10px;
     bottom: 60px;
     display: flex;
     margin-right: 20px;
-    margin-bottom: 20px;
 }
 .infoElement{
     width: 150px;
@@ -60,10 +68,14 @@
 }
 
 .likeNum, .collectNum{
-    width: 150px;
+    width: 80px;
     font-size: small;
     float: bottom;
     margin-left: 5px;
+}
+
+tbody{
+    text-align:center;
 }
 
 .bookshelf{
@@ -72,14 +84,13 @@
     background-repeat: no-repeat;
     background-size: 400px;
     width: 400px;
-    height: auto;
     margin-left: 50px;
 }
 .bookimg{
     width: 50px;
-    height: auto;
     display: inline-block;
     margin: 5px;
+    text-align:center;
 }
 
 .booklink{
@@ -98,19 +109,20 @@
     min-height: 50px;
     padding-left: 50px;
     font-size: medium;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
 .listID {
     list-style: none;
-    float: left;
     left:5px;
+    float: left;
+    width: 700px;
 }
 
 .deleteButton{
     text-align: center;
     font-size: 17px;
-    float:right;
-    margin-left: 100px;
+    float: right;
 }
 
 .deleteIcon{
@@ -118,4 +130,17 @@
     left:5px;
     padding-left: 5px;
     padding-top: 1px;
+}
+
+#sort_a_z, #sort_default{
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: small;
+}
+
+.divideLine{
+    height: 1px;
+    margin: 1rem 0;
 }

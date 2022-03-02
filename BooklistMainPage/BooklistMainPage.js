@@ -111,12 +111,9 @@ function displayAllBooklists(BooklistsList) {
         const time = document.createTextNode("Created when: ")
         strong3.appendChild(time)
         const span3 = document.createElement('span')
-        const a3 = document.createElement('a')
-        a3.className = "timeContent"
-        a3.href = ""
+        span3.className = "timeContent"
         const timeContent = document.createTextNode(BooklistsList[i].createTime)
-        a3.appendChild(timeContent)
-        span3.appendChild(a3)
+        span3.appendChild(timeContent)
         li3.appendChild(strong3)
         li3.appendChild(span3)
         ul1.appendChild(li3)
@@ -143,10 +140,10 @@ function displayAllBooklists(BooklistsList) {
         const tr1 = document.createElement('tr')
         const tr2 = document.createElement('tr')
 
-        if (BooklistsList[i].books.length <= 4){
+        if (BooklistsList[i].books.length <= 3){
             bookNum = BooklistsList[i].books.length
         } else {
-            bookNum = 4
+            bookNum = 3
         }
 
         for (let j = 0; j < bookNum; j++){

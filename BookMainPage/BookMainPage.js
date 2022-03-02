@@ -79,10 +79,13 @@ window.onload = function displayAllBooks() {
         const tr1 = document.createElement('tr')
 	    const ID = document.createElement('th')
         ID.innerText = 'Book ID'
+        ID.className = 'th'
         const author = document.createElement('th')
 	    author.innerText = 'Author'
+        author.className = 'th'
         const year = document.createElement('th')
 	    year.innerText = 'Publish year'
+        year.className = 'th'
         tr1.appendChild(ID)
         tr1.appendChild(author)
         tr1.appendChild(year)
@@ -91,10 +94,13 @@ window.onload = function displayAllBooks() {
         const tr2 = document.createElement('tr')
         const IDcontent = document.createElement('td')
         IDcontent.innerText = BooksList[i].bookID
+        IDcontent.className = 'td'
         const authorContent = document.createElement('td')
         authorContent.innerText = BooksList[i].author
+        authorContent.className = 'td'
         const yearContent = document.createElement('td')
 	    yearContent.innerText = BooksList[i].year
+        yearContent.className = 'td'
         tr2.appendChild(IDcontent)
         tr2.appendChild(authorContent)
         tr2.appendChild(yearContent)
