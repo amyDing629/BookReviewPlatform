@@ -4,17 +4,18 @@ const log = console.log;
 const recommendedBooks = [];
 
 class Book {
-	constructor(bid, title, author, cover, link) {
+	constructor(bid, title, author, cover, description, link) {
         this.bookId = bid; // get it from book detail page
 		this.title = title;
 		this.author = author;
         this.cover = cover;
+        this.description = description;
         this.link = link; // link to book detail page
     }
 }
 
-const bookul = document.querySelector('#recommendation ul');
  BooksCallBack()
+ displayTop()
  displayRecommendations()
 
 
@@ -38,41 +39,146 @@ function BooksCallBack() {
     recommendedBooks.push(
         new Book(0, 'Solaris', 'Stanisław Herman Lem', 
         'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
         )); // currently link is empty
     recommendedBooks.push(
         new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
         'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+        'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
         )); // need to change to Tres Tristes Tigres
  }
 
+ function displayTop(){
+     /*
+     <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+                <img class="TopbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
+                <h1 class="display-4 fst-italic, fancychar1">Solaris<span class='transparent>0</span></h1>
+                <h4 class="fancychar1">Stanisław Herman Lem</h4>
+                <p class="lead my-3">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
+                <p class="lead mb-0"><a href="../BookDetail/BookDetail-Solaris.html" class="text-white fw-bold">Continue reading...</a></p>
+            </div> 
+      */
+        const div = document.getElementsByClassName('p-4 p-md-5 mb-4 text-white rounded bg-dark')
+        log(div)
+        if (recommendedBooks[0] !=null){
+            const bookName = recommendedBooks[0].title;
+            const bookAuthor = recommendedBooks[0].author;
+            const bookCover = recommendedBooks[0].cover;
+            const description = recommendedBooks[0].description;
+            const booklink = recommendedBooks[0].link;
+            const bid = recommendedBooks[0].bookId;
 
-// clean all before display
-function cleanRecommendation(){
-    const lis = bookul.children;
-    for (let i=0; i<3; i++){
-        if (lis[i] != null){
-            lis[i].remove();
+
+            let img = document.createElement('img')
+            img.className = 'TopbookCover'
+            img.setAttribute('src', bookCover)
+
+            let h1 = document.createElement('h1')
+            h1.className = 'display-4 fst-italic'
+            h1.classList.add('fancychar1')
+            h1.innerText = bookName
+            let span = document.createElement('span')
+            span.className = 'transparent'
+            span.innerText = bid
+            h1.appendChild(span)
+
+            let h4 = document.createElement('h4')
+            h4.className = 'fancychar1'
+            h4.innerText = bookAuthor
+
+            let p1 = document.createElement('p')
+            p1.className = 'lead my-3'
+            p1.innerText = description
+
+            let p2 = document.createElement('p')
+            p2.className = 'lead mb-0'
+            let a = document.createElement('a')
+            a.className = 'text-white fw-bold'
+            a.setAttribute('href', booklink)
+            a.onclick = function open(e){
+                e.preventDefault();
+                window.location.replace(a.href)
+            }
+            a.innerText = 'Continue reading...'
+            p2.appendChild(a)
+
+            div[0].appendChild(img)
+            div[0].appendChild(h1)
+            div[0].appendChild(h4)
+            div[0].appendChild(p1)
+            div[0].appendChild(p2)
         }
-    }
-}
+ }
+
 
 function displayRecommendations(){
-    cleanRecommendation();
 
-    for (let i=0; i<3; i++){
+    for (let i=1; i<3; i++){
         if (recommendedBooks[i] != null){
-        
-        let bookName = recommendedBooks[i].title;
-        let bookAuthor = recommendedBooks[i].author;
-        let bookCover = recommendedBooks[i].cover;
-        let bookLink = recommendedBooks[i].link;
-        let bid = recommendedBooks[i].bookId;
+        const area = document.getElementsByClassName('row mb-2')
+        log(area)
 
+        const bookName = recommendedBooks[i].title;
+        const bookAuthor = recommendedBooks[i].author;
+        const bookCover = recommendedBooks[i].cover;
+        const description = recommendedBooks[i].description;
+        const booklink = recommendedBooks[i].link;
+        const bid = recommendedBooks[i].bookId;
+
+        let outerdiv = document.createElement('div')
+        outerdiv.className = 'col-md-6'
+        let innerdiv1 = document.createElement('div')
+        innerdiv1.className = 'row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative'
+        let innerdiv2 = document.createElement('div')
+        innerdiv2.className = 'col p-4 d-flex flex-column position-static'
         
+        let h3 = document.createElement('h3')
+        h3.className = 'fancychar1'
+        h3.innerText = bookName
+        let span = document.createElement('span')
+        span.className = 'transparent'
+        span.innerText = bid
+        h3.appendChild(span)
+
+        let div1 = document.createElement('div')
+        div1.className = 'mb-1 text-muted'
+        div1.innerText = bookAuthor
+
+        let img = document.createElement('img')
+        img.className = 'RecommendationbookCover'
+        img.setAttribute('src', bookCover)
+
+        let br = document.createElement('br')
+
+        let p = document.createElement('p')
+        p.className = 'card-text mb-auto'
+        p.classList.add('justify')
+        p.innerText = description
+        
+        let a = document.createElement('a')
+        a.setAttribute('href', booklink)
+        a.className = 'stretched-link'
+        a.innerText = 'Continue reading'
+        a.onclick = function open(e){
+            e.preventDefault();
+            window.location.replace(a.href)
+        }
+
+        innerdiv2.appendChild(h3)
+        innerdiv2.appendChild(div1)
+        innerdiv2.appendChild(img)
+        innerdiv2.appendChild(br)
+        innerdiv2.appendChild(p)
+        innerdiv2.appendChild(a)
+
+        innerdiv1.appendChild(innerdiv2)
+        outerdiv.appendChild(innerdiv1)
+
+        area[0].appendChild(outerdiv)
+
         }
     }
 }
-
 
 
 /********** Posts display **********/
@@ -130,11 +236,18 @@ function cleanPosts(){
 
 
 function displayPosts(){
-    // cleanPosts();
+    cleanPosts();
 
     for (let i=0; i<3; i++){
         if (posts[i] != null){
-            
+            let li = document.createElement('li')
+
+            let postDiv = document.createElement('div')
+            postDiv.className = 'post'
+            let userDiv = document.createElement('div')
+            userDiv.className = 'userProfileContainer'
+            let contentDiv = document.createElement('div')
+            contentDiv.className ='postContent'
 
             let title = posts[i].booktitle
             let userName = posts[i].poster
@@ -144,13 +257,94 @@ function displayPosts(){
             let time = posts[i].time
             let likes = posts[i].likes
             let blink = posts[i].booklink
+            let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
 
-        
+            let img1 = document.createElement('img')
+            img1.className='userProfile'
+            img1.setAttribute('src', userProfile)
+            img1.setAttribute('alt', 'profile')
+            userDiv.appendChild(img1)
+
+            let userh3 = document.createElement('h3')
+            let a1 = document.createElement('a')
+            a1.className = 'linkColor'
+            a1.setAttribute('href', plink)
+            a1.innerText = userName
+            a1.onclick = function open(e){
+                e.preventDefault();
+                window.location.replace("login.html")
+            }
+            let spanid2 = document.createElement('span')
+            spanid2.className = 'postId'
+            spanid2.innerText = pid
+            userh3.appendChild(a1)
+            userh3.appendChild(spanid2) // Post id is here
+
+            contentDiv.appendChild(userh3)
+
+            let pbook = document.createElement('p')
+            pbook.innerText = 'Book Name: '
+            let span1 = document.createElement('span')
+            let a2 = document.createElement('a')
+            a2.className = 'linkColor'
+            a2.setAttribute('href', blink)
+            a2.innerText = title
+            a2.onclick = function open(e){
+                e.preventDefault();
+                window.location.replace(a2.href)
+            }
+            span1.appendChild(a2)
+            let span2 = document.createElement('span')
+            span2.className = 'postTime'
+            span2.innerText = time
+
+            let spanid3 = document.createElement('span')
+            spanid3.className = 'bookId'
+            spanid3.innerText = ' bookID: '
+            let spanid4 = document.createElement('span')
+            spanid4.className = 'bookId'
+            spanid4.innerText = bid
+
+            pbook.appendChild(span1)
+            pbook.appendChild(span2)
+            pbook.appendChild(spanid3) 
+            pbook.appendChild(spanid4) // Book id is here
+            contentDiv.appendChild(pbook)
+
+            let p = document.createElement('p')
+            p.innerText = content
+            contentDiv.appendChild(p)
+
+            if (pic != null){
+                let img2 = document.createElement('img')
+                img2.className='postContentPicture'
+                img2.setAttribute('src', pic)
+                img2.setAttribute('alt', 'pic')
+                contentDiv.appendChild(img2)
+            }
+
+            let br = document.createElement('br')
+            contentDiv.appendChild(br)
+
+            let likeh5 = document.createElement('h5')
+            let icon = document.createElement('i')
+            icon.className = 'fa fa-heart'
+            icon.innerText = ' '+likes
+            likeh5.appendChild(icon)
+            contentDiv.appendChild(likeh5)
+
+
+            postDiv.appendChild(userDiv)
+            postDiv.appendChild(contentDiv)
+
+            li.appendChild(postDiv)
+            postul.appendChild(li)
         }
     }
 }
+
 
 
 

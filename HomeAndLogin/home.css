@@ -39,7 +39,14 @@ a {
 .textDecoration{
     text-decoration: underline;
     font-family: 'Lobster', cursive;
+    text-align:center;
 }
+
+.justify{
+    /* for paragraphs*/
+    text-align: justify;
+}
+
 
 
 /************** top Menu ***************/
@@ -118,8 +125,6 @@ a {
     background-repeat: no-repeat;
   }  
 
-  
-  
 
 /********** recommendation **********/
 #recommendation {
@@ -164,9 +169,6 @@ a {
 .bookTitle {
 	padding: 3px;
 	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
-    border-radius: 20px;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 .bookId{
@@ -174,7 +176,6 @@ a {
 }
 
 .bookAuthor{
-    font-family: 'Yanone Kaffeesatz', sans-serif;
     font-size:large;
 }
 
@@ -187,38 +188,44 @@ a {
 }
 
 
-/*** Posts ***/
+/********** Posts **********/
 #posts{
     margin-top: 20px;
     padding: 5px;
 	background-color: white;
-    border: 2px solid rgb(85, 124, 87);
+}
+
+#posts .textDecoration{
+    text-align: center;
+    text-decoration: underline;
+    font-family: 'Lobster', cursive;
+    border-bottom: 2px solid rgb(199, 196, 196);
 }
 
 #posts ul li{
     list-style-type: none;
 	display: block;
-    margin-left: 50px;
+    margin-left: 145px;
 }
 
 .post {
-	min-height: 100px;
+	min-height: 200px;
 	overflow: auto;
 	padding-bottom: 5px;
     background-color: white;
     margin-top:10px;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid grey;
     border-radius: 20px;
     width: 600px;
 }
 
 .postId{
+    color:transparent; /* hide id */
     float:right;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 #posts .bookId{
-    font-family: 'Lobster', cursive;
+    color:transparent; /* hide id */
 }
 
 .userProfileContainer {
@@ -237,7 +244,6 @@ a {
 }
 
 .postTime{
-    font-family: 'Lobster', cursive;
     float:right;
 }
 
@@ -245,11 +251,9 @@ a {
 	margin-top: 20px;
 	width: 400px;
 	float: left;
+    margin-bottom: 5px;
 }
 
-.postContent h4{
-    font-family: 'Lobster', cursive;
-}
 
 .postContentPicture {
 	max-width: 400px;
@@ -258,17 +262,17 @@ a {
 .like{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
     color: white;
     font-size: large;
     float:right;
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid #ccc;
     border-radius: 20px;
 }
 
 .like:hover {
-    background-color: rgb(147, 190, 149);
+    background-color: white;
   }
 
 #posts .delete{
@@ -279,7 +283,7 @@ a {
     font-size: large;
     float:right;
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid grey;
     border-radius: 20px;
 }
 
@@ -290,31 +294,34 @@ a {
 .collect{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(85, 124, 87);
+    background-color: grey;
     color: white;
     font-size: large;
     float:right;
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid #ccc;
     border-radius: 20px;
 }
 
 .aftercollect{
     margin-top:2px;
     margin-bottom: 3px;
-    background-color: rgb(147, 190, 149);
+    background-color: grey;
     color: white;
     font-size: large;
     float:right;
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid #ccc;
     border-radius: 20px;
 }
 
 
+#posts h5{
+    padding-top: 10px;
+}
 
 .fa-heart {
-    color:rgb(85, 124, 87);
+    color:black;
 } 
 
 
