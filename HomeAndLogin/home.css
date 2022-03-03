@@ -79,7 +79,8 @@ a {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: rgb(221, 218, 218);
+    background-color: white;
+    border-bottom: 2px solid black;
     /*position:fixed;*/
     width: 100%;
 }
@@ -102,15 +103,19 @@ a {
     background-color: grey;
 }
 
+#topMenu li.quit{
+    float:right;
+}
+
+
 
 #topMenu li a:hover {
-    background-color: white;
+    background-color: #ccc;
   }
 
 .active {
     background-color: grey;
-  }
-
+}
 
 #topMenu input[type=text] {
     width: 500px;
@@ -352,5 +357,4 @@ a {
   }
   .blog-footer p:last-child {
     margin-bottom: 0;
-    
   }

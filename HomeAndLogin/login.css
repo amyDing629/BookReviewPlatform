@@ -4,7 +4,7 @@
     float:left;
     margin-top: 20px;
     margin-left:20px;
-    color:#5088e9;
+    color:black;
     font-size:large;
 }
 
@@ -75,6 +75,9 @@
     font-weight: 600;
  }
 
+.Login p{
+    color:red;
+} 
  /*
     * Footer
  */

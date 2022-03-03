@@ -1,4 +1,4 @@
-
+const log = console.log;
 /****** User signin ******/
 let numberOfUsers = 0;
 const users = [];
@@ -55,6 +55,22 @@ function change_page(){
             return;
         }
     }
-  }
+    // register
+    const sameName = users.filter(User => User.userName != username);
+    log(sameName)
+
+    if (sameName.length == users.length){
+        users.push(new User(username, password))
+        window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
+    }
+    else{
+        const p = document.querySelector('p')
+        p.innerText = 'username already been used, please try again'
+
+    }
+
+}
+    
+
 
   
