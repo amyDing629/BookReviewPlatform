@@ -44,7 +44,6 @@ function change_page(){
     for (let i=0; i<users.length; i++){
         let user = users[i].userName;
         let pass = users[i].password;
-        console.log(user, pass);
         if (user == username && password == pass){
             if (users[i].isAdmin == true) {
                 window.location.href = "index_admin_after.html?userID=" + users[i].userID;

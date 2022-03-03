@@ -227,7 +227,6 @@ function displayUserPosts(user) {
 }
 
 function _createUserBooklists(booklist) {
-    console.log(booklist);
     const div = document.createElement('div')
     div.className = 'booklist'
 
@@ -435,7 +434,6 @@ function displayUserCollections(user){
     // TODO: flip page
     for (collection of user.collectionList) {
         let li = document.createElement('li');
-        console.log(collection.constructor.name);
         if (collection.constructor.name == 'Post') {
             li.appendChild(_createPostDiv(collection));
         }else {
@@ -443,20 +441,22 @@ function displayUserCollections(user){
         }
         ul.appendChild(li);
     }
-    content.appendChild(ul);
-
-    
+    content.appendChild(ul); 
 }
 
 function displayManageWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-
+    if (window.location.href.endsWith('user.html')){
+        window.location.href = "../BookMainPage/BookMainPage_end_after.html";
+    }
+    else if (window.location.href.endsWith('admin.html')){
+        window.location.href = "../BookMainPage/BookMainPage_admin_after.html";
+    }
 }
 
 function displayEditBooksWindow() {
-    let content = document.getElementById('contents');
-    content.innerHTML = ''; // Clean up contents
+    
 
 }
 
