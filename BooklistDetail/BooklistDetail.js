@@ -10,8 +10,8 @@ class Book {
 		this.name = name;
 		this.author = author;
 		this.year = year;
-		this.coverURL = coverURL; 
-        this.description = description;
+		this.coverURL = coverURL;
+        this.description = description       
         this.postCollection = [] // collection of post ids associated with the book
 		this.bookID = BooksNum;
 		BooksNum++;
@@ -24,12 +24,28 @@ BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970,
 BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
 'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
+
+BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014,
+'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg',
+'The fourth of Elena Ferrante\'s celebrated Neapolitan novels, has a lot to deliver on.'))
+
+BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
+'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg',
+'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.'))
+
+BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
+'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
+'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
 // temp [end]
 
 class Booklist {
 	constructor(listName, listDescription, creator, bookCollection) {
 		this.listName = listName;
-		this.listDescription = listDescription;
+        if (listDescription.length === 0){
+            this.listDescription = '__The creator hasn\'t add description yet...__'
+        } else {
+            this.listDescription = listDescription
+        }
 		this.creator = creator; // user id?
         this.books = bookCollection; // list of bids
 		this.booklistID = BooklistsNum;
@@ -44,6 +60,7 @@ class Booklist {
 // Load default booklist data
 BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
 BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
+BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
 
 
 // Display the booklist detail page:
@@ -99,7 +116,7 @@ function displayBooklistDetail(booklist) {
         // <a> content
         const a = document.createElement('a')
         a.className = "book"
-        a.href = '../BookDetail/BookDetail-'+ booklist.books[i].name + '.html'
+        a.href = '../BookDetail/BookDetail-'+ booklist.books[i].bookID + '.html'
         a.appendChild(document.createTextNode(booklist.books[i].name))
         li.appendChild(a)
         bookUnorderedList.appendChild(li)
