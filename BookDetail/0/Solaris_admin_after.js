@@ -1,6 +1,6 @@
 let BooksNum = 0; 
 const BooksList = [] 
-const log = console.log;
+// const log = console.log;
 class Book {
 	constructor(name, author, year, coverURL, description) {
 		this.name = name;
