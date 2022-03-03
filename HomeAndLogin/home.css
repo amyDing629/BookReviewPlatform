@@ -276,22 +276,13 @@ a {
 	max-width: 400px;
 }
 
-.like{
-    margin-top:2px;
-    margin-bottom: 3px;
-    margin-right:5px;
-    background-color: grey;
-    color: white;
-    font-size:medium;
+.like{   
     float:right;
-    border: 2px solid #ccc;
-    border-radius: 10%;
+    margin-right: 5px;
 }
 
-.like:hover {
-    background-color: black;
-  }
 
+/* Trash */
 #posts .delete{
     margin-top:2px;
     margin-bottom: 3px;
@@ -306,31 +297,12 @@ a {
 #posts .delete:hover {
     background-color: black;
   }
+/*   */
+
 
 .collect{
-    margin-top:2px;
-    margin-bottom: 3px;
-    background-color: grey;
-    color: white;
-    font-size: medium;
     float:right;
-    border: 2px solid #ccc;
-    border-radius: 10%;
-}
-
-#posts .collect:hover {
-    background-color: black;
-  }
-
-.aftercollect{
-    margin-top:2px;
-    margin-bottom: 3px;
-    background-color: black;
-    color: white;
-    font-size: medium;
-    float:right;
-    border: 2px solid #ccc;
-    border-radius: 10%;
+    margin-right: 5px;
 }
 
 

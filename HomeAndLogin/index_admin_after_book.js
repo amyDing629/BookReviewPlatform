@@ -33,7 +33,7 @@ function blinkHandler(bid){
     // handler for book Detail page
         for (let i =0; i<recommendedBooks.length; i++){
             if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/BookDetail-'+recommendedBooks[i].title+'.html'
+                let result = '../BookDetail/'+recommendedBooks[i].bookId+'_admin_after.html'
                 return result;
             }
         } 
@@ -54,7 +54,12 @@ function BooksCallBack() {
         new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
         'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
         'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-        )); // need to change to Tres Tristes Tigres
+        ));
+    recommendedBooks.push(
+        new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
+        'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+        'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.',
+        ));    
  }
 
  function displayTop(){
@@ -107,7 +112,7 @@ function BooksCallBack() {
                 e.preventDefault();
                 window.location.replace(a.href)
             }
-            a.innerText = 'Continue reading...'
+            a.innerText = 'Learn more about it...'
             p2.appendChild(a)
 
             div[0].appendChild(img)
@@ -165,7 +170,7 @@ function displayRecommendations(){
         let a = document.createElement('a')
         a.setAttribute('href', booklink)
         a.className = 'stretched-link'
-        a.innerText = 'Continue reading'
+        a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
             window.location.replace(a.href)
@@ -186,6 +191,8 @@ function displayRecommendations(){
         }
     }
 }
+
+/*Have not been implemented */
 
 // admin only action
 const topArea = document.querySelector('.top')

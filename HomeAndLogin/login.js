@@ -1,4 +1,16 @@
 const log = console.log;
+/****** Back ******/
+const backTohome = document.querySelector('.back')
+backTohome.addEventListener('click', back)
+function back(e){
+    e.preventDefault();
+    if (e.target.className == 'btn btn-dark'){
+        log('hi')
+        window.location.replace('index.html')
+    }  
+}
+
+
 /****** User signin ******/
 let numberOfUsers = 0;
 const users = [];
