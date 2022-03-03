@@ -1,4 +1,4 @@
-# Booklover Friendly Web Application [...]
+# BookLand
 
 ## Overall Purpose
 The overall objective of the project is to build a website for readers to share their thoughts on readings with others. Through this platform, readers can view various kinds of book lists made by other readers, create their own book lists, and make friends that have similar reading tastes.
@@ -16,4 +16,7 @@ The overall objective of the project is to build a website for readers to share 
 * add or remove books from the database and update book descriptions.
 * manage posts (specifically, delete the post).
 
-## Running Instructions
+## Structure
+
+## Visiting Path Suggestion
+
