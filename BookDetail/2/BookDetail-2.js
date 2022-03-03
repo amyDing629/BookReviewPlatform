@@ -18,8 +18,8 @@ const bookInfo = document.querySelector('#bookInfo');
 const bookDescription = document.querySelector('#bookDescription');
 
 BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014, 
-'../../static/Book-2.jpg', 
-'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
+'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.'))
 
 window.onload = function displayAllBooks() {
     const bookInfo = document.querySelector('#bookInfo');
