@@ -23,7 +23,7 @@ class AdminUser extends User {
     }
 }
 
-/*************************** Functions ***************************/
+/*************************** DOM Functions ***************************/
 function _getRegularUserList() {
     let user;
     let regularUserList = [];
@@ -44,21 +44,24 @@ function displayUserList() {
         let li = document.createElement('li');
 
         let userInfoDiv = document.createElement('div');
-        userInfoDiv.class = 'userInfo';
+        userInfoDiv.className = 'userInfo';
         let h3 = document.createElement('h3');
         let a = document.createElement('a');
         a.class = 'userLink';
         a.href = user.userName + '.html';
         a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
-        let span = document.createElement('span');
-        span.class = 'green';
-        span.innerHTML = '&nbsp;&nbsp;&nbsp; activate';
+        let span1 = document.createElement('span');
+        span1.innerHTML = '&nbsp;&nbsp;&nbsp; Status:'
+        let span2 = document.createElement('span');
+        span2.className = 'green';
+        span2.innerHTML = '&nbsp; activate';
         h3.appendChild(a);
-        h3.appendChild(span);
+        h3.appendChild(span1);
+        h3.appendChild(span2);
         userInfoDiv.appendChild(h3);
 
         let inActivateButton = document.createElement('button');
-        inActivateButton.class = 'inActivateButton';
+        inActivateButton.className = 'manageButton';
         inActivateButton.innerHTML = 'inactivate';
 
         li.appendChild(userInfoDiv);
@@ -68,8 +71,32 @@ function displayUserList() {
     userList.appendChild(ul);
 }
 
+/*************************** Functions ************************/
+
+function manageButtonOnClick(e) {
+    if (e.target.innerHTML == 'inactivate'){
+        e.target.className = 'activate';
+        e.target.innerHTML = 'activate';
+        e.target.parentElement.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
+        e.target.parentElement.parentElement.getElementsByClassName('green')[0].className = 'red';
+    }else{
+        e.target.className = 'inactivate';
+        e.target.innerHTML = 'inactivate';
+
+        e.target.parentElement.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
+        e.target.parentElement.parentElement.getElementsByClassName('red')[0].className = 'green';
+    }
+    
+}   
+
+/**************************  Actions  *************************/
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
 users.push(adminUser);
 users.push(regularUser);
 displayUserList();
+let manageButtons = document.getElementsByClassName('manageButton');
+let manageButton;
+for (manageButton of manageButtons) {
+    manageButton.addEventListener('click', manageButtonOnClick);
+}
