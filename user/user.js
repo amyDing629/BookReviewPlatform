@@ -447,16 +447,13 @@ function displayUserCollections(user){
 function displayManageWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    if (window.location.href.endsWith('user.html')){
-        window.location.href = "../BookMainPage/BookMainPage_end_after.html";
-    }
-    else if (window.location.href.endsWith('admin.html')){
-        window.location.href = "../BookMainPage/BookMainPage_admin_after.html";
-    }
+    window.location.href = "user_manage.html";
 }
 
 function displayEditBooksWindow() {
-    
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
+    window.location.href = "../BookMainPage/BookMainPage_admin_after.html";
 
 }
 
