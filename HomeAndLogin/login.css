@@ -75,6 +75,12 @@
 .Login p{
     color:red;
 } 
+
+.Login h5{
+    text-align: center;
+    margin-top:10px;
+} 
+
  /*
     * Footer
  */

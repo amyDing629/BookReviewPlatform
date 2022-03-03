@@ -6,22 +6,11 @@ function back(e){
     e.preventDefault();
     if (e.target.className == 'btn btn-dark'){
         log('hi')
-        window.location.replace('index.html')
+        window.location.replace('login.html')
     }  
 }
 
-/****** Register ******/
-const register = document.querySelector('.register')
-register.addEventListener('click', benewacc)
-function benewacc(e){
-    e.preventDefault();
-    if (e.target.className == 'btn btn-dark'){
-        log('hi')
-        window.location.replace('register.html')
-    }  
-}
-
-/****** User signin ******/
+/****** User signUP ******/
 let numberOfUsers = 0;
 const users = [];
 
@@ -54,33 +43,26 @@ function UserCallBack() {
     users.push(new AdminUser('admin', 'admin'));
  }
 
-if (window.location.href.indexOf('login.html') !== -1) {
+if (window.location.href.indexOf('register.html') !== -1) {
     UserCallBack();
-    const signin = document.querySelector('#signin');
-    signin.addEventListener('click', change_page);
+    const signup = document.querySelector('#signup');
+    signup.addEventListener('click', change_page);
 }
 
 function change_page(){
     const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;
-    for (let i=0; i<users.length; i++){
-        let user = users[i].userName;
-        let pass = users[i].password;
-        console.log(user, pass);
-        if (user == username && password == pass){
-            if (users[i].isAdmin == true) {
-                window.location.href = "index_admin_after.html?userID=" + users[i].userID;
-            }
-            else{
-                window.location.href = "index_end_after.html?userID=" + users[i].userID;
-            } 
-            return;
+    const sameName = users.filter(User => User.userName != username);
+    log(sameName)
+
+    if (sameName.length == users.length){
+        users.push(new User(username, password))
+        window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
         }
-    }
-    const p = document.querySelector('p')
-    p.innerText = 'username or password not correct, please try again'
+    else{
+        const p = document.querySelector('p')
+        p.innerText = 'username already been used, please try again'
+}
     
 }
     
-
-  
