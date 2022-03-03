@@ -34,7 +34,7 @@ function blinkHandlerinPost(bid){
                 return result;
             }
         } 
-        log('error') // OR other actions...     
+         // OR other actions...     
     }
 
 function postCallBack() {
@@ -131,7 +131,7 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a1.href))
+                window.location.replace(a1.href)
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
