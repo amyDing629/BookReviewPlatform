@@ -33,7 +33,7 @@ function blinkHandler(bid){
     // handler for book Detail page
         for (let i =0; i<recommendedBooks.length; i++){
             if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/'+recommendedBooks[i].bookId+'_admin_after.html'
+                let result = '../BookDetail/'+recommendedBooks[i].bookId+'/'+recommendedBooks[i].bookId+'_admin_after.html'
                 return result;
             }
         } 
