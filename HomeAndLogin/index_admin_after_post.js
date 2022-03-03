@@ -25,21 +25,44 @@ class Post {
     }
 }
 
+function blinkHandlerinPost(bid){
+    // handler for book Detail page link
+        for (let i =0; i<posts.length; i++){
+            if (posts[i].bookID == bid){
+                let result = '../BookDetail/BookDetail-'+posts[i].bookID+'.html'
+                return result;
+            }
+        } 
+        log('error') // OR other actions...     
+    }
+
 function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris', '../BookDetail/Solaris_end_after.html', 'user', null,
+    posts.push(new Post(0, 0, 'Solaris',null, 'admin',null,
+    "https://avatars.githubusercontent.com/u/73209681?v=4", 
+    null,
+    'It was stunning. An ocean with life, a planet covered by an ocean.',
+    '2022-02-20 3:02', 0));
+
+    posts.push(new Post(1, 0, 'Solaris',null, 'user',null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post(1, 0, 'Solaris', '../BookDetail/Solaris_end_after.html', 'admin', null,
+    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',null,
+    'https://avatars.githubusercontent.com/u/71192401?v=4', 
+    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
+    'I have to read it every day otherwise I cannot sleep',
+    '2022-03-05 00:05', 5));
+
+    posts.push(new Post(3, 3, 'War and Peace',null, 'user',null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
-    'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0));
+    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
+    '2022-03-05 16:00', 0));
   }
 
 
@@ -52,7 +75,7 @@ displayPosts()
 // clean all before display
 function cleanPosts(){
     const lis = postul.children;
-    for (let i=0; i<3; i++){
+    for (let i=0; i<5; i++){
         if (lis[i] != null){
             lis[i].remove();
         }
@@ -62,7 +85,7 @@ function cleanPosts(){
 function displayPosts(){
     cleanPosts();
 
-    for (let i=0; i<3; i++){
+    for (let i=0; i<5; i++){
         if (posts[i] != null){
             let li = document.createElement('li')
 
@@ -80,10 +103,11 @@ function displayPosts(){
             let content = posts[i].content
             let time = posts[i].time
             let likes = posts[i].likes
-            let blink = posts[i].booklink
             let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
+
+            let blink = blinkHandlerinPost(bid)
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -157,10 +181,12 @@ function displayPosts(){
             icon.className = 'fa fa-heart'
             icon.innerText = ' '+likes
             let button = document.createElement('button')
-            button.className = 'like'
+            button.className = 'btn btn-outline-primary'
+            button.classList.add('like')
             button.innerText = 'Like this post'
             let button2 = document.createElement('button')
-            button2.className = 'collect'
+            button2.className = 'btn btn-outline-success'
+            button2.classList.add('collect')
             button2.innerText = 'Collect this post'
 
             likeh5.appendChild(icon)
@@ -218,19 +244,12 @@ function collect(e){
         for (let i=0; i<posts.length; i++){
             if(parseInt(posts[i].postID) == pid){
                 collectedPosts.push(posts[i])
-                log(contentDiv)
-                const length = contentDiv.children.length -1
-                log(length)
-                const target = contentDiv.children[length]
-                log(target)
-                const button = target.children[1]
-                button.className = 'aftercollect'
-
             }
         } 
 	}
 }
 
+/*Have not been implemented */
 const postsManage = document.querySelector('.postsManage')
 postsManage.addEventListener('click', addPost)
 function addbooks(e){

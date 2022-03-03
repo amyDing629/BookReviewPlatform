@@ -24,7 +24,7 @@ function blinkHandler(bid){
     // handler for book Detail page
         for (let i =0; i<recommendedBooks.length; i++){
             if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/BookDetail-'+recommendedBooks[i].title+'.html'
+                let result = '../BookDetail/'+recommendedBooks[i].bookId+'_end_after.html'
                 return result;
             }
         } 
@@ -45,7 +45,12 @@ function BooksCallBack() {
         new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
         'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
         'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-        )); // need to change to Tres Tristes Tigres
+        ));
+    recommendedBooks.push(
+        new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
+        'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+        'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.',
+        ));     
  }
 
  function displayTop(){
@@ -98,7 +103,7 @@ function BooksCallBack() {
                 e.preventDefault();
                 window.location.replace(a.href)
             }
-            a.innerText = 'Continue reading...'
+            a.innerText = 'Learn more about it...'
             p2.appendChild(a)
 
             div[0].appendChild(img)
@@ -111,6 +116,23 @@ function BooksCallBack() {
 
 
 function displayRecommendations(){
+
+    /*
+    <div class="col-md-6">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <!-- <strong class="d-inline-block mb-2 text-primary">BOOK TYPE</strong> -->
+                                                                    <!-- BID -->
+                  <h3 class="fancychar2">Solaris<span class="transparent">0</span></h3>
+                  <div class="mb-1 text-muted">Stanisław Herman Lem</div>
+                  <img class="RecommendationbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg'>
+                  <br>
+                  <p class="card-text mb-auto ,justify">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
+                  <a href="../BookDetail/BookDetail-Solaris.html" class="stretched-link">Continue reading</a>
+                </div>
+              </div>
+            </div>
+     */
 
     for (let i=1; i<3; i++){
         if (recommendedBooks[i] != null){
@@ -156,7 +178,7 @@ function displayRecommendations(){
         let a = document.createElement('a')
         a.setAttribute('href', booklink)
         a.className = 'stretched-link'
-        a.innerText = 'Continue reading'
+        a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
             window.location.replace(a.href)
