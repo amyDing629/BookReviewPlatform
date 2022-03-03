@@ -4,6 +4,16 @@
 /********** Recommendation book display **********/
 const recommendedBooks = [];
 
+function topMenuLink(){
+    const quit = document.querySelector('#topMenu .quit')
+    const a = quit.children[0]
+    a.onclick = function open(e){
+        e.preventDefault();
+        window.location.replace(a.href)
+    }
+}
+
+
 class Book {
 	constructor(bid, title, author, cover, description, link) {
         this.bookId = bid; // get it from book detail page
@@ -14,7 +24,7 @@ class Book {
         this.link = link; // link to book detail page
     }
 }
-
+ topMenuLink()
  BooksCallBack()
  displayTop()
  displayRecommendations()

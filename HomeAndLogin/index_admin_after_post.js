@@ -8,7 +8,6 @@ const log = console.log;
 const posts = [];
 const collectedPosts = []; // collection of posts made by current user
 
-
 class Post {
 	constructor(pid, bid, booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
 		this.postID = pid;
