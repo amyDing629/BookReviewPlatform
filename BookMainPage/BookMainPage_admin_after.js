@@ -47,14 +47,13 @@ function displayAllBooks(BooksList) {
         div.className = 'book'
         
         // admin only: admin delete button
+        const div1 = document.createElement('div')
+        div1.className = 'delete'
         const button = document.createElement('button')
-        button.className = "deleteButton" 
-        const deleteImg = document.createElement('img')
-        deleteImg.className = "deleteIcon"
-        deleteImg.src = "https://icon-library.com/images/icon-delete/icon-delete-4.jpg"
-        button.appendChild(deleteImg)
-        button.appendChild(document.createTextNode("Delete this book"))
-        div.appendChild(button)
+        button.className = "deleteButton, btn btn-danger" 
+        button.appendChild(document.createTextNode("Delete the book"))
+        div1.appendChild(button)
+        div.appendChild(div1)
 
         // book name 
         const p1 = document.createElement('p')
@@ -205,18 +204,26 @@ function renewBooklist(){
 bookTable.addEventListener('click', addNewBook)
 function addNewBook(e){
     e.preventDefault();
-    if (e.target.className == 'addSubmit'){
+    if (e.target.className == 'addSubmit, btn btn-primary'){
         const bookname = document.getElementById('bookNameInput').value
         const author = document.getElementById('bookAuthorInput').value
         const year = parseInt(document.getElementById('publishYearInput').value)
         const description = document.getElementById('descriptionInput').value
-        // cover is not required
-        const cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
-        if (document.getElementById('coverInput').value.length > 0){
-            cover = document.getElementById('coverInput').value.length
+
+        //check validation
+        const all = Array(bookname, author, year, description)
+        const required = all.filter((each) => each.length === 0)
+        if (required.length > 0 ){
+            alert('Missing required input, please re-enter information.')
+        } else {
+            // cover is not required
+            const cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
+            if (document.getElementById('coverInput').value.length > 0){
+                cover = document.getElementById('coverInput').value.length
+            }
+            BooksList.push(new Book(bookname,author,year,cover,description))
+            renewBooklist()
         }
-        BooksList.push(new Book(bookname,author,year,cover,description))
-        renewBooklist()
     }
         
 }
@@ -225,8 +232,8 @@ function addNewBook(e){
 bookTable.addEventListener('click', deleteBook)
 function deleteBook(e){
     e.preventDefault();
-    if (e.target.className == 'deleteButton'){
-        const bookElement = e.target.parentElement.parentElement
+    if (e.target.className == 'deleteButton, btn btn-danger'){
+        const bookElement = e.target.parentElement.parentElement.parentElement
         const ID = parseInt(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
         for (let i=0; i<BooksNum; i++){
             if (BooksList[i].bookID == ID){
@@ -237,7 +244,6 @@ function deleteBook(e){
         renewBooklist()
     }
 }
-
 
 
 

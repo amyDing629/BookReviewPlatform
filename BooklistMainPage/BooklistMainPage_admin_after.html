@@ -35,16 +35,16 @@
     <div id="booklistTable">
         <h2 class="textDecoration"> All Booklists:</h2>
         <div id="sortWrap">
-            <button id="sort_default" onclick="sortDefault()">Sort by ID number</button>
-            <button id="sort_a_z" onclick="sortByAtoZ()">Sort from A to Z</button>
+            <button id="sort_default" class="btn btn-light" onclick="sortDefault()">Sort by ID number</button>
+            <button id="sort_a_z" class="btn btn-light" onclick="sortByAtoZ()">Sort from A to Z</button>
         </div>
         <br>
         <br><div id="endUserActionsWrap">
             <form id="addBooklist" class="addBooklist">
                 <span>Add new booklist</span>
-                <input id="booklistNameInput" type="text" placeholder="List Name" required>
+                <input id="booklistNameInput" type="text" placeholder="List Name*" required>
                 <input id="description" type="text" placeholder="Description... (OPT)">
-                <input class="addSubmit" type = "submit" value="Create and select books">
+                <input class="addSubmit, btn btn-primary" type = "submit" value="Create and select books">
             </form>
         </div>
         <br>
@@ -58,9 +58,9 @@
 
     <!-- footer-->
     <footer class="blog-footer">
-        <p><i>Book website[need to be changed to app name] built by team10</i></p>
+        <p><i>&copy; BookLand built by team10</i></p>
         <p>
-          <a href="" class="linkColor"><b>Back to top</a>
+          <a href="" class="linkColor">Back to top</a>
         </p>
     </footer>
     <script type="text/javascript" src="BooklistMainPage_admin_after.js"></script>

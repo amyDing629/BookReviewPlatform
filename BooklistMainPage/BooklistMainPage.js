@@ -114,8 +114,8 @@ function displayAllBooklists(BooklistsList) {
         const span2 = document.createElement('span')
         const a2 = document.createElement('a')
         a2.className = "linkColor"
-        a2.href = "../user/user.html" //// need fix
-        if (BooklistsList[i].creator === 'User'){// need more dynamically fix on phase 2
+        a2.href = "../user/user.html" //// need fix later 
+        if (BooklistsList[i].creator === 'User'){
             a2.href+="?visit=1"
         } 
         a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
@@ -197,7 +197,7 @@ function displayAllBooklists(BooklistsList) {
         const liLike = document.createElement('li')
         liLike.className = "infoElement"
         const button1 = document.createElement('button')
-        button1.className = "likeButton"
+        button1.className = "likeButton, btn btn-light"
         const iconImgLike = document.createElement('img')
         iconImgLike.className = "likeIcon"
         iconImgLike.src = "../static/like_icon.png"
@@ -214,7 +214,7 @@ function displayAllBooklists(BooklistsList) {
         const liCollect = document.createElement('li')
         liCollect.className = "infoElement"
         const button2 = document.createElement('button')
-        button2.className = "collectButton" 
+        button2.className = "collectButton, btn btn-light" 
         const iconImgCollect = document.createElement('img')
         iconImgCollect.className = "collectIcon"
         iconImgCollect.src = "../static/click-&-collect.png"
