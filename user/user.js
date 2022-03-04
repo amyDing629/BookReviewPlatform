@@ -110,12 +110,37 @@ function menuButtonsOnClick(e) {
 /* If 'Edit' is clicked, display edition page.
    If 'Submit' is clicked, display confirmed information */
 function profileButtonsOnClick(e) {
-    // TODO
+    let userInfo = e.target.parentElement;
+    let profileButton = document.getElementById('profileButton');
+    if (e.target.innerHTML == 'Edit Signature') {
+        userInfo.removeChild(document.getElementById('signature'));
+        let sigForm = document.createElement('input');
+        sigForm.type = 'text';
+        sigForm.id = 'sigForm';
+        userInfo.insertBefore(sigForm, profileButton);
+        profileButton.innerHTML = 'Submit';
+    }
+    else if (e.target.innerHTML == 'Submit') {
+        let signature = document.getElementById('sigForm').value;
+        let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
+        let user;
+        for (user in users) {
+            if (user.userID == userID) {
+                user.signature = signature;
+            }
+        }
+        userInfo.removeChild(document.getElementById('sigForm'));
+        let newSignature = document.createElement('div');
+        newSignature.id = 'signature';
+        newSignature.innerHTML = signature;
+        userInfo.insertBefore(newSignature, profileButton);
+        profileButton.innerHTML = 'Edit Signature';
+    }
 }
 
 
 /********************** DOM Functions ************************/
-function displayUserInfo(user) {
+function displayUserInfo(user, isVisit) {
     // for phase 2
     // let currentUserID = window.location.href.split('?')[1].split('=')[1];
     // let user;
@@ -126,6 +151,9 @@ function displayUserInfo(user) {
     //         break;
     //     }
     // }
+    if (isVisit == true) {
+        document.getElementById('userInfo').removeChild(document.getElementById('profileButton'));
+    }
     document.getElementById('userName').innerHTML = user.userName;
     document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
     if (user.signature != null) {
@@ -134,7 +162,7 @@ function displayUserInfo(user) {
     if (user.profilePhoto != null) {
         userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
     }
-    if (user.isAdmin == true) {
+    if (user.isAdmin == true && isVisit == false) {
         let buttons = document.getElementById('menubar').children[0];
         let manageButtonLi = document.createElement("li");
         let manageButton = document.createElement("button");
@@ -349,43 +377,43 @@ function _createUserBooklists(booklist) {
     ul2.className = "iconWrap"
 
     // li1: like
-    // const liLike = document.createElement('li')
-    // liLike.className = "infoElement"
-    // const button1 = document.createElement('button')
-    // button1.className = "likeButton"
-    // const iconImgLike = document.createElement('img')
-    // iconImgLike.className = "likeIcon"
-    // iconImgLike.src = "../static/like_icon.png"
-    // button1.appendChild(iconImgLike)
-    // liLike.appendChild(button1)
+    const liLike = document.createElement('li')
+    liLike.className = "infoElement"
+    const button1 = document.createElement('button')
+    button1.className = "likeButton"
+    const iconImgLike = document.createElement('img')
+    iconImgLike.className = "likeIcon"
+    iconImgLike.src = "../static/like_icon.png"
+    button1.appendChild(iconImgLike)
+    liLike.appendChild(button1)
 
-    // const spanLike = document.createElement('span')
-    // spanLike.className = "likeNum"
-    // const likeNum = document.createTextNode("Liked: "+booklist.likes)
-    // spanLike.appendChild(likeNum)
-    // liLike.appendChild(spanLike)
+    const spanLike = document.createElement('span')
+    spanLike.className = "likeNum"
+    const likeNum = document.createTextNode("Liked: "+booklist.likes)
+    spanLike.appendChild(likeNum)
+    liLike.appendChild(spanLike)
 
-    // // li2: collect
-    // const liCollect = document.createElement('li')
-    // liCollect.className = "infoElement"
-    // const button2 = document.createElement('button')
-    // button2.className = "collectButton" 
-    // const iconImgCollect = document.createElement('img')
-    // iconImgCollect.className = "collectIcon"
-    // iconImgCollect.src = "../static/click-&-collect.png"
-    // button2.appendChild(iconImgCollect)
-    // liCollect.appendChild(button2)
+    // li2: collect
+    const liCollect = document.createElement('li')
+    liCollect.className = "infoElement"
+    const button2 = document.createElement('button')
+    button2.className = "collectButton" 
+    const iconImgCollect = document.createElement('img')
+    iconImgCollect.className = "collectIcon"
+    iconImgCollect.src = "../static/click-&-collect.png"
+    button2.appendChild(iconImgCollect)
+    liCollect.appendChild(button2)
 
-    // const spanCollect = document.createElement('span')
-    // spanCollect.className = "collectNum"
-    // const collectNum = document.createTextNode("Collected: " + booklist.collect)
-    // spanCollect.appendChild(collectNum)
-    // liCollect.appendChild(spanCollect)
+    const spanCollect = document.createElement('span')
+    spanCollect.className = "collectNum"
+    const collectNum = document.createTextNode("Collected: " + booklist.collect)
+    spanCollect.appendChild(collectNum)
+    liCollect.appendChild(spanCollect)
     
-    // ul2.appendChild(liLike)
-    // ul2.appendChild(liCollect)
+    ul2.appendChild(liLike)
+    ul2.appendChild(liCollect)
 
-    // div.appendChild(ul2)
+    div.appendChild(ul2)
     
     return div;
     
@@ -444,11 +472,70 @@ function displayUserCollections(user){
     content.appendChild(ul); 
 }
 
+function _getRegularUserList() {
+    let user;
+    let regularUserList = [];
+    for (user of users) {
+        if (user.isAdmin == false) {
+            regularUserList.push(user);
+        }
+    }
+    return regularUserList;
+}
+
 function displayManageWindow() {
+    function manageButtonOnClick(e) {
+        if (e.target.innerHTML == 'inactivate'){
+            e.target.className = 'activate';
+            e.target.innerHTML = 'activate';
+            e.target.parentElement.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
+            e.target.parentElement.parentElement.getElementsByClassName('green')[0].className = 'red';
+        }else{
+            e.target.className = 'inactivate';
+            e.target.innerHTML = 'inactivate';
+
+            e.target.parentElement.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
+            e.target.parentElement.parentElement.getElementsByClassName('red')[0].className = 'green';
+        }
+        
+    }   
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    window.location.href = "user_manage.html";
+    let ul = document.createElement('ul');
+    let user;
+    for (user of _getRegularUserList()) {
+        let li = document.createElement('li');
+
+        let userInfoDiv = document.createElement('div');
+        userInfoDiv.className = 'userInfo';
+        let h3 = document.createElement('h3');
+        let a = document.createElement('a');
+        a.class = 'userLink';
+        a.href = 'admin.html?visit=' + user.userID;
+        a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
+        let span1 = document.createElement('span');
+        span1.innerHTML = '&nbsp;&nbsp;&nbsp; Status:'
+        let span2 = document.createElement('span');
+        span2.className = 'green';
+        span2.innerHTML = '&nbsp; activate';
+        h3.appendChild(a);
+        h3.appendChild(span1);
+        h3.appendChild(span2);
+        userInfoDiv.appendChild(h3);
+
+        let inActivateButton = document.createElement('button');
+        inActivateButton.className = 'manageButton';
+        inActivateButton.innerHTML = 'inactivate';
+        inActivateButton.addEventListener('click', manageButtonOnClick);
+
+        li.appendChild(userInfoDiv);
+        li.appendChild(inActivateButton);
+        ul.appendChild(li);
+    }
+    content.appendChild(ul);
 }
+
+
 
 function displayEditBooksWindow() {
     let content = document.getElementById('contents');
@@ -495,11 +582,22 @@ adminUser.collectionList.push(novelBooklist);
 users.push(adminUser);
 users.push(regularUser);
 
-if (window.location.href.endsWith('user.html')){
-    displayUserInfo(regularUser);
+if (window.location.href.indexOf('visit') == '-1'){
+    if (window.location.href.endsWith('user.html')){
+        displayUserInfo(regularUser, false);
+    }
+    else if (window.location.href.endsWith('admin.html')){
+        displayUserInfo(adminUser, false)
+    }
 }
-else if (window.location.href.endsWith('admin.html')){
-    displayUserInfo(adminUser)
+else {
+    let user;
+    let visitUserId = window.location.href.split('?')[1].split('=')[1];
+    for (user of users) {
+        if (user.userID == parseInt(visitUserId)){
+            displayUserInfo(user, true);
+        }
+    }
 }
 
 
@@ -512,5 +610,8 @@ for (menuButton of menuButtons) {
     menuButton.addEventListener('click', menuButtonsOnClick);
 }
 menuButtonSelected.addEventListener('click', menuButtonsOnClick);
-profileButtons.addEventListener('click', profileButtonsOnClick);
+if (profileButtons != null) {
+    profileButtons.addEventListener('click', profileButtonsOnClick);
+}
+
 
