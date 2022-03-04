@@ -1,6 +1,4 @@
-// const log = console.log;
-
-let BooksNum = 0; 
+let BooksNum = 5; 
 const BooksList = [] 
 
 class Book {
@@ -19,9 +17,9 @@ class Book {
 const bookInfo = document.querySelector('#bookInfo');
 const bookDescription = document.querySelector('#bookDescription');
 
-BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
+BooksList.push(new Book('Added Book', 'Siwei Tang', 2022, 
+'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png', 
+'New added book just for show'))
 
 window.onload = function displayAllBooks() {
     const bookInfo = document.querySelector('#bookInfo');
