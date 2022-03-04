@@ -8,6 +8,18 @@
     float:right;
     background-color: white;
 }
+
+#DesButton{
+    margin-left: 50px;
+}
+
+#sigForm{
+    margin-left: 50px;
+}
+
+.title{
+    margin-left: 50px;
+}
 /* ################################### */
 .bookInfo{
     padding: 5px;

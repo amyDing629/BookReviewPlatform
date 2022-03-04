@@ -59,10 +59,10 @@ window.onload = function displayAllBooks() {
 
     const bookDescription = document.querySelector('#bookDescription');
 
-    const des = document.createElement('strong');
-    des.className = 'des';
-    des.innerText = 'Description: ';
-    bookDescription.appendChild(des);
+    // const des = document.createElement('strong');
+    // des.className = 'des';
+    // des.innerText = 'Description: ';
+    // bookDescription.appendChild(des);
 
     const descriContent = document.createTextNode(BooksList[0].description)
     bookDescription.appendChild(descriContent)
