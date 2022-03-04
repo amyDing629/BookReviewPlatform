@@ -83,14 +83,13 @@ function displayAllBooklists(BooklistsList) {
         id.appendChild(IDcontent)
 
         // admin only: delete booklist
+        const div1 = document.createElement('div')
+        div1.className = 'delete'
         const button3 = document.createElement('button')
-        button3.className = "deleteButton" 
-        const deleteImg = document.createElement('img')
-        deleteImg.className = "deleteIcon"
-        deleteImg.src = "https://icon-library.com/images/icon-delete/icon-delete-4.jpg"
-        button3.appendChild(deleteImg)
+        button3.className = "deleteButton, btn btn-danger" 
         button3.appendChild(document.createTextNode("Delete this list"))
-        id.appendChild(button3)
+        div1.appendChild(button3)
+        id.appendChild(div1)
 
         div.appendChild(id)
 
@@ -128,7 +127,9 @@ function displayAllBooklists(BooklistsList) {
         a2.href = "../user/user.html" // need modify
         if (BooklistsList[i].creator === 'Admin'){// need more dynamically fix on phase 2
             a2.href = "../user/admin.html"
-        } 
+        } else { // user
+            a2.href += "?visit=0"
+        }
         a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
         const creatorContent = document.createTextNode(BooklistsList[i].creator)
         a2.appendChild(creatorContent)
@@ -170,6 +171,7 @@ function displayAllBooklists(BooklistsList) {
         const table = document.createElement('table')
         table.className = "bookshelf"
         const tbody = document.createElement('tbody')
+        tbody.className = 'bookshelf tbody'
         const tr1 = document.createElement('tr')
         const tr2 = document.createElement('tr')
 
@@ -213,7 +215,7 @@ function displayAllBooklists(BooklistsList) {
         const liLike = document.createElement('li')
         liLike.className = "infoElement"
         const button1 = document.createElement('button')
-        button1.className = "likeButton"
+        button1.className = "likeButton, btn btn-light"
         const iconImgLike = document.createElement('img')
         iconImgLike.className = "likeIcon"
         iconImgLike.src = "../static/like_icon.png"
@@ -230,7 +232,7 @@ function displayAllBooklists(BooklistsList) {
         const liCollect = document.createElement('li')
         liCollect.className = "infoElement"
         const button2 = document.createElement('button')
-        button2.className = "collectButton" 
+        button2.className = "collectButton, btn btn-light" 
         const iconImgCollect = document.createElement('img')
         iconImgCollect.className = "collectIcon"
         iconImgCollect.src = "../static/click-&-collect.png"
@@ -379,7 +381,7 @@ const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
 endUserActionsWrap.addEventListener('click', addNewBooklist)
 function addNewBooklist(e){
     e.preventDefault();
-    if (e.target.className == 'addSubmit'){
+    if (e.target.className == 'addSubmit, btn btn-primary'){
         const listName = document.getElementById('booklistNameInput').value
         const description = document.getElementById('description').value
         let listString = "Books: \n"
@@ -413,8 +415,8 @@ booklistTable.addEventListener('click', deleteBooklist)
 
 function deleteBooklist(e){
     e.preventDefault();
-    if (e.target.className == 'deleteButton'){
-        const listElement = e.target.parentElement.parentElement.parentElement
+    if (e.target.className == 'deleteButton, btn btn-danger'){
+        const listElement = e.target.parentElement.parentElement.parentElement.parentElement
         const tableResultTBODY = document.querySelector('#tableResultTBODY')
         tableResultTBODY.removeChild(listElement)
         const ID = parseInt(listElement.children[0].children[0].children[0].innerText)

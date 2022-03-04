@@ -58,7 +58,7 @@ function displayAllBooks() {
         span1.className="bookTitle"
         const a = document.createElement('a')
         a.className = "linkColor"
-        a.href = "../BookDetail/BookDetail-" + BooksList[i].bookID + ".html"
+        a.href = "../BookDetail/"+BooksList[i].bookID +"/" + BooksList[i].bookID + "_end_after.html"
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
         span1.appendChild(a)
