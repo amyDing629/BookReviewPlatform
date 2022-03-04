@@ -304,24 +304,22 @@ function filpPage(pageNo, pageLimit) {
     // single page is enough
     if (totalPage <= 1){
         strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
-    } else {
+    } else { //multipages
         if (curr > 1) {
-            strHolder += setupStr + (curr-1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr + j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a>"
             }
-        } else { // multipages
-            strHolder += previousStr
-            for (let m = 1; m <= totalPage; m++) {
-                strHolder += setupStr + m + "," + pageLimit + ")\">" + m + spaceStr + "</a>"
+        } else {
+            strHolder += previousStr;
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
             }
-            strHolder += setupStr + totalPage + "," + pageLimit + ")\">" + nextStr +"</a>"
         }
         if (curr < totalPage) {
-            strHolder += setupStr + (curr+1) + "," + pageLimit + ")\"" + nextStr+ "</a>"
-        } else {
-            strHolder += nextStr
-        }
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a>"
+            
+        } else { strHolder += nextStr }
     }
 
     //separate different display style for different tr element
