@@ -535,15 +535,12 @@ function displayManageWindow() {
     content.appendChild(ul);
 }
 
-
-
 function displayEditBooksWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
     window.location.href = "../BookMainPage/BookMainPage_admin_after.html";
 
 }
-
 
 /*************** actions ****************/
 let regularUser = new User('user', 'user');
