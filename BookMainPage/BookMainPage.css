@@ -29,7 +29,7 @@ body {
 .book {
     left: 0%;
     top: 0px;
-    margin-left: 25%;
+    margin-left: 40%;
     margin-bottom: 1.5rem!important;
     flex: 0 0 auto;
     width: 800px;
@@ -97,7 +97,19 @@ body {
     margin-bottom: 8px;
 }
 
-.bookTitle{
+.bookTitle, .pagelink{
     color: #5088e9;
     background: none;
+}
+
+#pageFliper{
+    text-align: center;
+}
+
+.normalTR{
+    display: block;
+}
+
+.endTR{
+    display: none;
 }

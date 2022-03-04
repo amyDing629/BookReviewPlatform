@@ -25,6 +25,17 @@
     text-align: bottom;
 }
 
+.editButton{
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    text-align: center;
+    background-color: rgb(160, 160, 160);
+    border-radius: 20px;
+    width: 60px;
+    height: fit-content;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    margin-left: 25px;
+}
 
 .publish{
     font-family: 'Yanone Kaffeesatz', sans-serif;

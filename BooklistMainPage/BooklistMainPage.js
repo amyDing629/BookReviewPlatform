@@ -68,8 +68,9 @@ booklistTable.addEventListener('click', alertCollect);
 
 // Display all availble booklists:
 function displayAllBooklists(BooklistsList) {
-    const booklistTable = document.querySelector('#booklistTable')
+    const tableResultTBODY = document.querySelector('#tableResultTBODY')
 	for(let i = 0; i < BooklistsNum; i++) {
+        const tr = document.createElement('tr')
         const div = document.createElement('div')
         div.className = 'booklist'
 
@@ -224,9 +225,10 @@ function displayAllBooklists(BooklistsList) {
         
         ul2.appendChild(liLike)
         ul2.appendChild(liCollect)
-
         div.appendChild(ul2)
-        booklistTable.appendChild(div)
+
+        tr.appendChild(div)
+        tableResultTBODY.appendChild(tr)
     }
 }
 
@@ -251,6 +253,64 @@ function alertCollect(e){
     
 }
 
+function filpPage(pageNo, pageLimit) {
+    const allBooks = document.getElementById("tableResultTBODY")
+    const totalSize = allBooks.rows.length
+    let totalPage = 0
+    const pageSize = pageLimit
+    
+    // calculate the page num and set up every page:
+    if (totalSize / pageSize > parseInt(totalSize / pageSize)) {
+        totalPage = parseInt(totalSize / pageSize) + 1;
+    } else {
+        totalPage = parseInt(totalSize / pageSize);
+    }
+
+    // build every page label and assign onclick function
+    const curr = pageNo
+    const startRow = (curr - 1) * pageSize + 1
+    let endRow = curr * pageSize
+    endRow = (endRow > totalSize) ? totalSize : endRow;
+    let strHolder = ""
+    let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
+    let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
+    let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
+    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    // single page is enough
+    if (totalPage <= 1){
+        strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
+    } else {
+        if (curr > 1) {
+            strHolder += setupStr + (curr-1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr + j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+            }
+        } else { // multipages
+            strHolder += previousStr
+            for (let m = 1; m <= totalPage; m++) {
+                strHolder += setupStr + m + "," + pageLimit + ")\">" + m + spaceStr + "</a>"
+            }
+            strHolder += setupStr + totalPage + "," + pageLimit + ")\">" + nextStr +"</a>"
+        }
+        if (curr < totalPage) {
+            strHolder += setupStr + (curr+1) + "," + pageLimit + ")\"" + nextStr+ "</a>"
+        } else {
+            strHolder += nextStr
+        }
+    }
+
+    //separate different display style for different tr element
+    for (let i = 1; i < (totalSize + 1); i++) {
+        const each = allBooks.rows[i - 1];
+        if (i >= startRow && i <= endRow) {
+            each.className="normalTR"
+        } else {
+            each.className="endTR"
+        }
+    }
+    document.getElementById("pageFliper").innerHTML = strHolder;
+}
+
 // select the list sorting way
 const sort_default = document.querySelector('#sort_default')
 const sort_a_z = document.querySelector('#sort_a_z')
@@ -259,12 +319,13 @@ sort_a_z.addEventListener("click", sortByAtoZ)
 
 
 function sortDefault() {
+    const nowBooks = document.querySelector('#tableResultTBODY')
     const allBooklists = document.querySelectorAll('.booklist')
-    const length = allBooklists.length
-    for (let i = 0; i<length; i++){
-        booklistTable.removeChild(allBooklists[i])
+    for (each of allBooklists){
+        nowBooks.removeChild(each.parentElement)
     }
-    return displayAllBooklists(BooklistsList)
+    displayAllBooklists(BooklistsList)
+    filpPage(1,3)
   }
 
 function sortByAtoZ(){
@@ -281,14 +342,16 @@ function sortByAtoZ(){
             }
         }
     }
+    const nowBooks = document.querySelector('#tableResultTBODY')
     const allBooklists = document.querySelectorAll('.booklist')
-    const length = allBooklists.length
-    for (let i = 0; i<length; i++){
-        booklistTable.removeChild(allBooklists[i])
+    for (each of allBooklists){
+        nowBooks.removeChild(each.parentElement)
     }
-    return displayAllBooklists(sortedBooklistsList)
+    displayAllBooklists(sortedBooklistsList)
+    filpPage(1,3)
 }
 
 
 // load main list
-window.addEventListener("load", displayAllBooklists(BooklistsList))
+displayAllBooklists(BooklistsList)
+filpPage(1,3)

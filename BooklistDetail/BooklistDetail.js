@@ -64,7 +64,7 @@ BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksLi
 
 
 // Display the booklist detail page:
-function displayBooklistDetail(booklist) {
+function displayBooklistDetail(booklist, user) {
     // fill list name
     const booklistInfo = document.querySelector('#booklistInfo')
     const title = booklistInfo.children[0]
@@ -125,9 +125,56 @@ function displayBooklistDetail(booklist) {
 }
 
 function selectBooklistToPlay(){
-    const currentListID = parseInt(window.location.href.split('?')[1].split('=')[1])
+    if (window.location.href.split('?')[1] == null){
+        return;
+    } 
+    const currentListID = parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+    const currentUser = parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
     const list = BooklistsList.filter((list) => list.booklistID === currentListID)
-    displayBooklistDetail(list[0])
+    if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
+        window.location.assign("./UnderConstruction.html")
+    } else {
+        if (currentUser === 0){ //end user, need more dynamiclly fix on phase 2
+            displayBooklistDetail(list[0], 'User')
+            selectNarviBarUser('User')
+            editBooklist('User')
+        } else if (currentUser === 1) {// admin
+            displayBooklistDetail(list[0], 'Admin')
+            selectNarviBarUser('Admin')
+            editBooklist('Admin')
+        }
+    }
 }
 
-window.onload = selectBooklistToPlay()
+function selectNarviBarUser(user){
+    const userColumn = document.querySelector('.right')
+    const old = userColumn.children[0]
+    const newLI = document.createElement('a')
+    newLI.id="userLoginInfo" 
+        newLI.class="addUserIdToLink"
+    if (user === 'User'){//end user, need more dynamiclly fix on phase 2
+        newLI.href="../user/user.html"
+        newLI.appendChild(document.createTextNode('Hello, User'))
+        userColumn.removeChild(old)
+        userColumn.appendChild(newLI)
+    } else if (user === 'Admin'){ // admin
+        newLI.href="../user/admin.html"
+        newLI.appendChild(document.createTextNode('Hello, Admin'))
+        userColumn.removeChild(old)
+        userColumn.appendChild(newLI)
+    } //else guest
+}
+
+// edit booklist
+function editBooklist(user){
+    const creator = document.querySelector('.creator').innerHTML.split(': ')[1]
+    const booklistIntro = document.querySelector('.title')
+    const button = document.createElement('button')
+    button.className = 'editButton'
+    button.appendChild(document.createTextNode('Edit'))
+    if (creator === user || user === 'Admin'){ // creator or admin 
+        booklistIntro.after(button)
+    } 
+}
+
+selectBooklistToPlay()
