@@ -54,7 +54,7 @@ function displayAllBooks(BooksList) {
         span1.className="bookTitle"
         const a = document.createElement('a')
         a.className = "linkColor"
-        a.href = "../BookDetail/" + BooksList[i].name + "_admin_after.html"
+        a.href = "../BookDetail/" + BooksList[i].bookID +"/"+BooksList[i].bookID+ "_admin_after.html"
         a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
@@ -122,7 +122,6 @@ bookTable.addEventListener('click', addNewBook)
 function addNewBook(e){
     e.preventDefault();
     if (e.target.className == 'addSubmit'){
-        console.log("here")
         const bookname = document.getElementById('bookNameInput').value
         const author = document.getElementById('bookAuthorInput').value
         const year = parseInt(document.getElementById('publishYearInput').value)

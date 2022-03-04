@@ -22,7 +22,7 @@
             <li>
                 <form>
                 <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
                 </form>
             </li>
             <li class="right">
@@ -37,6 +37,15 @@
         <div id="sortWrap">
             <button id="sort_default" onclick="sortDefault()">Sort by ID number</button>
             <button id="sort_a_z" onclick="sortByAtoZ()">Sort from A to Z</button>
+        </div>
+        <br>
+        <br><div id="endUserActionsWrap">
+            <form id="addBooklist" class="addBooklist">
+                <span>Add new booklist</span>
+                <input id="booklistNameInput" type="text" placeholder="List Name" required>
+                <input id="description" type="text" placeholder="Description... (OPT)">
+                <input class="addSubmit" type = "submit" value="Create and select books">
+            </form>
         </div>
         <br>
         <div class="divideLine"></div>

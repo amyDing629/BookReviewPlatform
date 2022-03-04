@@ -15,7 +15,7 @@
     display: flex;
     margin-left: 20px;
     width: 60%;
-    border-bottom: 1px solid rgb(85, 124, 87);
+    border-bottom: 1px solid rgb(116, 116, 116);
 }
 
 .listId, .creator, .createTime, .likes, .collects{
@@ -51,13 +51,13 @@
 #books{
     margin-left: 25px;
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 80%;
-    background-color: rgba(228, 236, 227, 0.452);
+    background-color: rgba(238, 238, 238, 0.452);
     font-family: 'Lobster', cursive;
     border: rgba(255, 253, 253, 0.288) 1px solid;
     border-radius: 20px;
     box-shadow: 0 0.50rem 0.50rem rgba(0,0,0,.075)!important;
-    
 }
 
 .bookli{

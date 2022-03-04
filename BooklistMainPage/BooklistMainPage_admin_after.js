@@ -10,8 +10,8 @@ class Book {
 		this.name = name;
 		this.author = author;
 		this.year = year;
-		this.coverURL = coverURL; 
-        this.description = description;
+		this.coverURL = coverURL;
+        this.description = description       
         this.postCollection = [] // collection of post ids associated with the book
 		this.bookID = BooksNum;
 		BooksNum++;
@@ -24,12 +24,28 @@ BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970,
 BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
 'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
+
+BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014,
+'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg',
+'The fourth of Elena Ferrante\'s celebrated Neapolitan novels, has a lot to deliver on.'))
+
+BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
+'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg',
+'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.'))
+
+BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
+'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
+'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
 // temp [end]
 
 class Booklist {
 	constructor(listName, listDescription, creator, bookCollection) {
 		this.listName = listName;
-		this.listDescription = listDescription;
+        if (listDescription.length === 0){
+            this.listDescription = '__The creator hasn\'t add description yet...__'
+        } else {
+            this.listDescription = listDescription
+        }
 		this.creator = creator; // user id?
         this.books = bookCollection; // list of bids
 		this.booklistID = BooklistsNum;
@@ -44,6 +60,7 @@ class Booklist {
 // Load default booklist data
 BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
 BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
+BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
 
 
 const booklistTable = document.querySelector('#booklistTable')
@@ -90,7 +107,7 @@ function displayAllBooklists(BooklistsList) {
         const a1 = document.createElement('a')
         a1.className = "linkColor"
         a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + BooklistsList[i].booklistID + ".html"
-        a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
+        a1.onclick = function open(e){e.preventDefault(); window.location.assign(a1.href)}
         const nameContent = document.createTextNode(BooklistsList[i].listName)
         a1.appendChild(nameContent)
         span1.appendChild(a1)
@@ -107,7 +124,8 @@ function displayAllBooklists(BooklistsList) {
         const span2 = document.createElement('span')
         const a2 = document.createElement('a')
         a2.className = "linkColor"
-        a2.href = ""
+        a2.href = "../user/user.html" // need modify
+        a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
         const creatorContent = document.createTextNode(BooklistsList[i].creator)
         a2.appendChild(creatorContent)
         span2.appendChild(a2)
@@ -151,10 +169,10 @@ function displayAllBooklists(BooklistsList) {
         const tr1 = document.createElement('tr')
         const tr2 = document.createElement('tr')
 
-        if (BooklistsList[i].books.length <= 4){
+        if (BooklistsList[i].books.length <= 3){
             bookNum = BooklistsList[i].books.length
         } else {
-            bookNum = 4
+            bookNum = 3
         }
 
         for (let j = 0; j < bookNum; j++){
@@ -167,11 +185,16 @@ function displayAllBooklists(BooklistsList) {
             const newBookLink = document.createElement('th')
             const bookLink = document.createElement('a')
             bookLink.className = "booklink"
-            bookLink.href = "../BookDetail/" + BooklistsList[i].books[j].name + "_admin_after.html"
+            bookLink.href = "../BookDetail/" + BooklistsList[i].books[j].bookID +"/"+ BooklistsList[i].books[j].bookID+"_admin_after.html"
             bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
             bookLink.appendChild(document.createTextNode(BooklistsList[i].books[j].name))
             newBookLink.appendChild(bookLink)
             tr2.appendChild(newBookLink)
+        }
+        if (BooklistsList[i].books.length > 3){
+            const more = document.createElement('th')
+            more.appendChild(document.createTextNode('......'))
+            tr2.appendChild(more)
         }
         tbody.appendChild(tr1)
         tbody.appendChild(tr2)
@@ -285,6 +308,44 @@ function sortByAtoZ(){
     return displayAllBooklists(sortedBooklistsList)
 }
 
+
+// all user action: create new booklist
+const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
+endUserActionsWrap.addEventListener('click', addNewBooklist)
+function addNewBooklist(e){
+    e.preventDefault();
+    if (e.target.className == 'addSubmit'){
+        const listName = document.getElementById('booklistNameInput').value
+        const description = document.getElementById('description').value
+        let listString = "Books: \n"
+        let names = BooksList.map((book) =>  '[ID: '+ book.bookID + ']--' + book.name + '\n')
+        let ids = BooksList.map((book) =>  book.bookID)
+        for (each of names){ listString = listString + each }
+        let result = prompt(listString + "\n\n Please enter book ID list and using ; to seperate", "0;1;4")
+        const books = result.split(";")
+        // check id validation
+        let validInputs = []
+        for (item of books) {
+            const valid = ids.filter((each) => parseInt(item.trim()) === each)
+            if (valid.length === 1) {
+                validInputs.push(valid[0])
+            }
+        }
+        if (validInputs.length === books.length){
+            // avoid duplicates
+            const uniqueInput = Array.from(new Set(validInputs))
+            const addedBooks = uniqueInput.map((book)=> BooksList[book])
+            BooklistsList.push(new Booklist(listName, description, 'User', addedBooks)) // phase 2 need implement user
+            const nowBooklists = document.querySelectorAll('.booklist')
+            for (each of nowBooklists){
+                booklistTable.removeChild(each)
+            }
+            displayAllBooklists(BooklistsList)
+        } else {
+            alert("Invalid input! Please re-check all your book IDs.")
+        }
+    }
+}
 
 // admin only: delete list
 booklistTable.addEventListener('click', deleteBooklist)

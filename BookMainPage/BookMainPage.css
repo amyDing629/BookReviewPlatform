@@ -5,13 +5,19 @@ body {
 	margin: 0;
 }
 
+.textDecoration{
+    text-decoration: underline;
+    font-family: 'Lobster', cursive;
+    text-align:left;
+}
+
 #bookTable {
     top: 60px;
     width: 100%;
     background: white;
     padding-left: 20px;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
-    border: 2px solid rgb(85, 124, 87);
+    border: 2px solid rgb(116, 116, 116);
     padding: 5px;
 }
 .descriptionsBox {
@@ -37,7 +43,7 @@ body {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     background-color: gainsboro;
-    background-image: linear-gradient(180deg,#d7ddd1, #fcfcf7);
+    background-image: linear-gradient(180deg,#dadada, #fcfcf7);
     font-family: 'Lobster', cursive;
     border: rgba(255, 255, 255, 0) 1px solid;
     border-radius: 20px;
@@ -89,4 +95,9 @@ body {
     z-index: -1;
     border: .5px solid rgb(192, 192, 192);
     margin-bottom: 8px;
+}
+
+.bookTitle{
+    color: #5088e9;
+    background: none;
 }

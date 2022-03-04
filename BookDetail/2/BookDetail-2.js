@@ -1,6 +1,6 @@
-let BooksNum = 0; 
+let BooksNum = 2; 
 const BooksList = [] 
-const log = console.log;
+
 class Book {
 	constructor(name, author, year, coverURL, description) {
 		this.name = name;
@@ -17,9 +17,9 @@ class Book {
 const bookInfo = document.querySelector('#bookInfo');
 const bookDescription = document.querySelector('#bookDescription');
 
-BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1961, 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
+BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014, 
+'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.'))
 
 window.onload = function displayAllBooks() {
     const bookInfo = document.querySelector('#bookInfo');
@@ -48,12 +48,11 @@ window.onload = function displayAllBooks() {
 
     bookIntro.appendChild(bookAuthor);
     bookIntro.appendChild(document.createElement('br'));
-    bookIntro.appendChild(document.createElement('br'));
+    // bookIntro.appendChild(document.createElement('br'));
     bookIntro.appendChild(bookId);
     bookIntro.appendChild(document.createElement('br'));
-    bookIntro.appendChild(document.createElement('br'));
+    // bookIntro.appendChild(document.createElement('br'));
     bookIntro.appendChild(publish);
-    bookIntro.appendChild(document.createElement('br'));
     bookInfo.appendChild(bookIntro);
 
     const bookDescription = document.querySelector('#bookDescription');

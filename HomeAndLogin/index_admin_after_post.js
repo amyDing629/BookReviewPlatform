@@ -9,12 +9,13 @@ const posts = [];
 const collectedPosts = []; // collection of posts made by current user
 
 class Post {
-	constructor(pid, bid, booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
+	constructor(pid, bid, booktitle, booklink, postername, is_admin, posterlink, posterProfile, pic, content, time, likes) {
 		this.postID = pid;
         this.bookID = bid;
         this.booktitle = booktitle;
         this.booklink = booklink;
-		this.poster = poster;
+		this.poster = postername;
+        this.is_admin = is_admin;
         this.posterlink = posterlink;
         this.posterProfile = posterProfile;
         this.pic = pic;
@@ -29,36 +30,36 @@ function blinkHandlerinPost(bid){
     // handler for book Detail page link
         for (let i =0; i<posts.length; i++){
             if (posts[i].bookID == bid){
-                let result = '../BookDetail/BookDetail-'+posts[i].bookID+'.html'
+                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
                 return result;
             }
         } 
-        log('error') // OR other actions...     
+         // OR other actions...     
     }
 
 function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris',null, 'admin',null,
+    posts.push(new Post(0, 0, 'Solaris',null, 'admin',1, null,
     "https://avatars.githubusercontent.com/u/73209681?v=4", 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
     '2022-02-20 3:02', 0));
 
-    posts.push(new Post(1, 0, 'Solaris',null, 'user',null,
+    posts.push(new Post(1, 0, 'Solaris',null, 'user',0, null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',null,
+    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',0, null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
     'I have to read it every day otherwise I cannot sleep',
     '2022-03-05 00:05', 5));
 
-    posts.push(new Post(3, 3, 'War and Peace',null, 'user',null,
+    posts.push(new Post(3, 3, 'War and Peace',null, 'user',0, null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
@@ -118,11 +119,19 @@ function displayPosts(){
             let userh3 = document.createElement('h3')
             let a1 = document.createElement('a')
             a1.className = 'linkColor'
+
+            // need to handle user link
+            if (is_admin){
+                plink = '../user/admin.html'
+            }
+            else{
+                plink = '../user/user.html'
+            }
             a1.setAttribute('href', plink)
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace("login.html")
+                window.location.replace(a1.href)
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'

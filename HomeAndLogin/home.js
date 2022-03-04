@@ -24,7 +24,7 @@ function blinkHandler(bid){
     // handler for book Detail page link
         for (let i =0; i<recommendedBooks.length; i++){
             if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/BookDetail-'+recommendedBooks[i].bookId+'.html'
+                let result = '../BookDetail/'+recommendedBooks[i].bookId+'/BookDetail-'+recommendedBooks[i].bookId+'.html'
                 return result;
             }
         } 
@@ -210,7 +210,7 @@ function blinkHandlerinPost(bid){
     // handler for book Detail page link
         for (let i =0; i<posts.length; i++){
             if (posts[i].bookID == bid){
-                let result = '../BookDetail/BookDetail-'+posts[i].bookID+'.html'
+                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
                 return result;
             }
         } 
