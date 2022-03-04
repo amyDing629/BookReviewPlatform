@@ -472,11 +472,70 @@ function displayUserCollections(user){
     content.appendChild(ul); 
 }
 
+function _getRegularUserList() {
+    let user;
+    let regularUserList = [];
+    for (user of users) {
+        if (user.isAdmin == false) {
+            regularUserList.push(user);
+        }
+    }
+    return regularUserList;
+}
+
 function displayManageWindow() {
+    function manageButtonOnClick(e) {
+        if (e.target.innerHTML == 'inactivate'){
+            e.target.className = 'activate';
+            e.target.innerHTML = 'activate';
+            e.target.parentElement.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
+            e.target.parentElement.parentElement.getElementsByClassName('green')[0].className = 'red';
+        }else{
+            e.target.className = 'inactivate';
+            e.target.innerHTML = 'inactivate';
+
+            e.target.parentElement.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
+            e.target.parentElement.parentElement.getElementsByClassName('red')[0].className = 'green';
+        }
+        
+    }   
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    window.location.href = "user_manage.html";
+    let ul = document.createElement('ul');
+    let user;
+    for (user of _getRegularUserList()) {
+        let li = document.createElement('li');
+
+        let userInfoDiv = document.createElement('div');
+        userInfoDiv.className = 'userInfo';
+        let h3 = document.createElement('h3');
+        let a = document.createElement('a');
+        a.class = 'userLink';
+        a.href = 'admin.html?visit=' + user.userID;
+        a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
+        let span1 = document.createElement('span');
+        span1.innerHTML = '&nbsp;&nbsp;&nbsp; Status:'
+        let span2 = document.createElement('span');
+        span2.className = 'green';
+        span2.innerHTML = '&nbsp; activate';
+        h3.appendChild(a);
+        h3.appendChild(span1);
+        h3.appendChild(span2);
+        userInfoDiv.appendChild(h3);
+
+        let inActivateButton = document.createElement('button');
+        inActivateButton.className = 'manageButton';
+        inActivateButton.innerHTML = 'inactivate';
+        inActivateButton.addEventListener('click', manageButtonOnClick);
+
+        li.appendChild(userInfoDiv);
+        li.appendChild(inActivateButton);
+        ul.appendChild(li);
+    }
+    content.appendChild(ul);
 }
+
+
 
 function displayEditBooksWindow() {
     let content = document.getElementById('contents');
