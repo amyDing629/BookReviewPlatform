@@ -499,19 +499,34 @@ function displayManageWindow() {
         if (e.target.innerHTML == 'inactivate'){
             e.target.className = 'activate';
             e.target.innerHTML = 'activate';
-            e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
+            e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactive';
             e.target.parentElement.getElementsByClassName('green')[0].className = 'red';
         }else{
             e.target.className = 'inactivate';
             e.target.innerHTML = 'inactivate';
 
-            e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
+            e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; active';
             e.target.parentElement.getElementsByClassName('red')[0].className = 'green';
         }
         
     }   
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
+
+    let pageTitle = document.createElement('h2');
+    pageTitle.innerHTML = 'All Regular Users';
+    pageTitle.className = 'pageTitle';
+    let sortWrap = document.createElement('div');
+    sortWrap.id = 'sortWrap';
+    let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.innerHTML = 'Sort By ID number';
+    let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.innerHTML = 'Sort from A to Z';
+    sortWrap.appendChild(sortDefaultButton);
+    sortWrap.appendChild(sortByAtoZ);
+    pageTitle.appendChild(sortWrap);
+    content.appendChild(pageTitle);
+
     let ul = document.createElement('ul');
     let user;
     for (user of _getRegularUserList()) {
@@ -521,14 +536,14 @@ function displayManageWindow() {
         userInfoDiv.className = 'userInfo';
         let h3 = document.createElement('h3');
         let a = document.createElement('a');
-        a.class = 'userLink';
+        a.className = 'userLink linkColor';
         a.href = 'admin.html?visit=' + user.userID;
         a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
         let span1 = document.createElement('span');
-        span1.innerHTML = '&nbsp;&nbsp;&nbsp; Status:'
+        span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
         let span2 = document.createElement('span');
         span2.className = 'green';
-        span2.innerHTML = '&nbsp; activate';
+        span2.innerHTML = '&nbsp; active';
         h3.appendChild(a);
         h3.appendChild(span1);
         h3.appendChild(span2);
