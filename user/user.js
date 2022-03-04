@@ -247,6 +247,18 @@ function displayUserPosts(user) {
         content.innerHTML = "You don't have any post.";
         return
     }
+    let sortWrap = document.createElement('div');
+    sortWrap.id = 'sortWrap';
+    let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.innerHTML = 'Sort By ID number';
+    let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.innerHTML = 'Sort from A to Z';
+    sortWrap.appendChild(sortDefaultButton);
+    sortWrap.appendChild(sortByAtoZ);
+    content.appendChild(sortWrap);
+
     let ul = document.createElement('ul');
     let post;
     // TODO: flip page
@@ -430,22 +442,18 @@ function displayUserBooklists(user) {
         content.innerHTML = "You don't have any booklist.";
         return;
     }
-    let booklistDiv = document.createElement('div');
-    booklistDiv.id = 'booklistTable';
-    let pageTitle = document.createElement('h2');
-    pageTitle.innerHTML = 'All Booklists';
-    pageTitle.className = 'pageTitle';
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.className = 'sortButton';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.className = 'sortButton';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
-    pageTitle.appendChild(sortWrap);
-    booklistDiv.appendChild(pageTitle);
-    booklistDiv.appendChild(document.createElement('br'));
+    content.appendChild(sortWrap);
+    content.appendChild(document.createElement('br'));
     let ul = document.createElement('ul');
     let booklist;
     // TODO: flip page
@@ -455,9 +463,7 @@ function displayUserBooklists(user) {
         li.appendChild(_createUserBooklists(booklist));
         ul.appendChild(li);
     }
-
-    booklistDiv.appendChild(ul);
-    content.appendChild(booklistDiv);
+    content.appendChild(ul);
 
 }
 
@@ -468,6 +474,32 @@ function displayUserCollections(user){
         content.innerHTML = "You don't have any collection.";
         return;
     }
+
+    let sortWrap = document.createElement('div');
+    sortWrap.id = 'sortWrap';
+    let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.innerHTML = 'Sort By ID number';
+    let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.innerHTML = 'Sort from A to Z';
+    let filterPosts = document.createElement('button');
+    filterPosts.className = 'sortButton';
+    filterPosts.innerHTML = 'Filter collected posts';
+    let filterBooklists = document.createElement('button');
+    filterBooklists.className = 'sortButton';
+    filterBooklists.innerHTML = 'Filter collected booklists';
+    let mixed = document.createElement('button');
+    mixed.className = 'sortButton';
+    mixed.innerHTML = 'Mixed';
+    
+    sortWrap.appendChild(sortDefaultButton);
+    sortWrap.appendChild(sortByAtoZ);
+    sortWrap.appendChild(mixed);
+    sortWrap.appendChild(filterPosts);
+    sortWrap.appendChild(filterBooklists);
+    content.appendChild(sortWrap);
+
     let ul = document.createElement('ul');
     let collection;
     // TODO: flip page
@@ -513,19 +545,17 @@ function displayManageWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
 
-    let pageTitle = document.createElement('h2');
-    pageTitle.innerHTML = 'All Regular Users';
-    pageTitle.className = 'pageTitle';
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.className = 'sortButton';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.className = 'sortButton';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
-    pageTitle.appendChild(sortWrap);
-    content.appendChild(pageTitle);
+    content.appendChild(sortWrap);
 
     let ul = document.createElement('ul');
     let user;
@@ -571,7 +601,7 @@ function displayEditBooksWindow() {
 /*************** actions ****************/
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
-let regularUser2 = new User('user2', 'user2');
+let regularAmy = new User('amy', 'amy');
 let postSolarisWithImg = new Post('Solaris', null, 'user', null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
@@ -605,7 +635,7 @@ adminUser.collectionList.push(novelBooklist);
 
 users.push(adminUser);
 users.push(regularUser);
-users.push(regularUser2);
+users.push(regularAmy);
 
 if (window.location.href.indexOf('visit') == '-1'){
     if (window.location.href.endsWith('user.html')){
@@ -614,8 +644,8 @@ if (window.location.href.indexOf('visit') == '-1'){
     else if (window.location.href.endsWith('admin.html')){
         displayUserInfo(adminUser, false);
     }
-    else if (window.location.href.endsWith('user2.html')){
-        displayUserInfo(regularUser2, false);
+    else if (window.location.href.endsWith('amy.html')){
+        displayUserInfo(regularAmy, false);
     }
 }
 else {
