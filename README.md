@@ -7,7 +7,7 @@ The overall objective of the project is to build a website for readers to share 
 ### Regular User
 * a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait).
 * make posts to share their opinions about books or reply to others' posts. 
-* collect or like the posts.
+* collect or like the posts. 
 * customize multiple book lists regarding different demands, as well as a collection of their favorite posts.
 
 ### Admin User
@@ -16,7 +16,14 @@ The overall objective of the project is to build a website for readers to share 
 * add or remove books from the database and update book descriptions.
 * manage posts (specifically, delete the post).
 
+## Funtionality Explaination
+- **HomeAndLogin**
+  - index.html
+    - can use topMenu to visit other pages 
+    (home: index.html, books: BookMainPage, booklists: BookListMainPage, login/register: login page)
+    - can view recommendation books and search for its information by clicking (BookDetail page)
+    - can view posts posted by BookLand users, but cannot visit user profile, after clicking username will go to login page
+ 
+  
+   
 ## Structure
-
-## Visiting Path Suggestion
-
