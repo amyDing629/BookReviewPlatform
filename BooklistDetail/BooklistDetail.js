@@ -127,21 +127,27 @@ function displayBooklistDetail(booklist, user) {
 function selectBooklistToPlay(){
     if (window.location.href.split('?')[1] == null){
         return;
-    } 
-    const currentListID = parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
-    const currentUser = parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
-    const list = BooklistsList.filter((list) => list.booklistID === currentListID)
-    if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
-        window.location.assign("./UnderConstruction.html")
-    } else {
-        if (currentUser === 0){ //end user, need more dynamiclly fix on phase 2
-            displayBooklistDetail(list[0], 'User')
-            selectNarviBarUser('User')
-            editBooklist('User')
-        } else if (currentUser === 1) {// admin
-            displayBooklistDetail(list[0], 'Admin')
-            selectNarviBarUser('Admin')
-            editBooklist('Admin')
+    } else if (window.location.href.split('?')[1].split('&').length === 1){ // guest visit any booklist
+        const currentListID = parseInt(window.location.href.split('?')[1].split('booklistID=')[1].split('.')[0])
+        const list = BooklistsList.filter((list) => list.booklistID == currentListID)
+        displayBooklistDetail(list[0], 'User')
+        selectNarviBarUser('guest')
+    } else { // admin & user
+        const currentListID = parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+        const currentUser = parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        const list = BooklistsList.filter((list) => list.booklistID === currentListID)
+        if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
+            window.location.assign("./UnderConstruction.html")
+        } else {
+            if (currentUser === 0){ //end user, need more dynamiclly fix on phase 2
+                displayBooklistDetail(list[0], 'User')
+                selectNarviBarUser('User')
+                editBooklist('User')
+            } else if (currentUser === 1) {// admin
+                displayBooklistDetail(list[0], 'Admin')
+                selectNarviBarUser('Admin')
+                editBooklist('Admin')
+            }
         }
     }
 }
