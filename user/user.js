@@ -110,7 +110,32 @@ function menuButtonsOnClick(e) {
 /* If 'Edit' is clicked, display edition page.
    If 'Submit' is clicked, display confirmed information */
 function profileButtonsOnClick(e) {
-    // TODO
+    let userInfo = e.target.parentElement;
+    let profileButton = document.getElementById('profileButton');
+    if (e.target.innerHTML == 'Edit') {
+        userInfo.removeChild(document.getElementById('signature'));
+        let sigForm = document.createElement('input');
+        sigForm.type = 'text';
+        sigForm.id = 'sigForm';
+        userInfo.insertBefore(sigForm, profileButton);
+        profileButton.innerHTML = 'Submit';
+    }
+    else if (e.target.innerHTML == 'Submit') {
+        let signature = document.getElementById('sigForm').value;
+        let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
+        let user;
+        for (user in users) {
+            if (user.userID == userID) {
+                user.signature = signature;
+            }
+        }
+        userInfo.removeChild(document.getElementById('sigForm'));
+        let newSignature = document.createElement('div');
+        newSignature.id = 'signature';
+        newSignature.innerHTML = signature;
+        userInfo.insertBefore(newSignature, profileButton);
+        profileButton.innerHTML = 'Edit';
+    }
 }
 
 
