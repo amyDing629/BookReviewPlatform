@@ -1,28 +1,20 @@
-
 const log = console.log;
-
-/****************************** ADMIN USER index-posts js ******************************/
-
-/** After log in, end user can like others' posts **/
 /********** Posts display **********/
 const posts = [];
-const collectedPosts = []; // collection of posts made by current user
+
 
 class Post {
-	constructor(pid, bid, booktitle, booklink, userid, postername, posterlink, posterProfile, pic, content, time, likes) {
-		this.postID = pid;
-        this.bookID = bid;
+	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
+		this.postID = postID;
+        this.bookID = bookID;
         this.booktitle = booktitle;
         this.booklink = booklink;
-        this.userid = userid;
-		this.poster = postername;
-        this.posterlink = posterlink;
+		this.poster = poster;
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
         this.likes = likes; 
-
     }
 }
 
@@ -34,32 +26,34 @@ function blinkHandlerinPost(bid){
                 return result;
             }
         } 
-         // OR other actions...     
+        log('error') // OR other actions...     
     }
+
+
 
 function postCallBack() {
     /// Get post from server
     // code below requires server call
     // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris',null,1, 'admin', null,
+    posts.push(new Post(0, 0, 'Solaris',null, 'admin',
     "https://avatars.githubusercontent.com/u/73209681?v=4", 
     null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
     '2022-02-20 3:02', 0));
 
-    posts.push(new Post(1, 0, 'Solaris',null,0, 'user', null,
+    posts.push(new Post(1, 0, 'Solaris',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post(2, 4, 'Song of Solomon',null,0, 'user', null,
+    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
     'I have to read it every day otherwise I cannot sleep',
     '2022-03-05 00:05', 5));
 
-    posts.push(new Post(3, 3, 'War and Peace',null,0, 'user', null,
+    posts.push(new Post(3, 3, 'War and Peace',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     null,
     "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
@@ -76,12 +70,14 @@ displayPosts()
 // clean all before display
 function cleanPosts(){
     const lis = postul.children;
+    log(lis);
     for (let i=0; i<5; i++){
         if (lis[i] != null){
             lis[i].remove();
         }
     }
 }
+
 
 function displayPosts(){
     cleanPosts();
@@ -107,7 +103,6 @@ function displayPosts(){
             let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
-            let userid = posts[i].userid
 
             let blink = blinkHandlerinPost(bid)
 
@@ -120,21 +115,11 @@ function displayPosts(){
             let userh3 = document.createElement('h3')
             let a1 = document.createElement('a')
             a1.className = 'linkColor'
-
-            // need to handle user link
-            // temporary use
-            if (userid){ // userid is admin, visit myself
-                plink = '../user/admin.html'
-            }
-            else{
-                plink = '../user/admin.html?visit='+userid
-            }
-
             a1.setAttribute('href', plink)
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a1.href)
+                window.location.replace("login.html")
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -188,25 +173,6 @@ function displayPosts(){
             let br = document.createElement('br')
             contentDiv.appendChild(br)
 
-            let likeh5 = document.createElement('h5')
-            let icon = document.createElement('i')
-            icon.className = 'fa fa-heart'
-            icon.innerText = ' '+likes
-            let button = document.createElement('button')
-            button.className = 'btn btn-outline-primary'
-            button.classList.add('like')
-            button.innerText = 'Like this post'
-            let button2 = document.createElement('button')
-            button2.className = 'btn btn-outline-success'
-            button2.classList.add('collect')
-            button2.innerText = 'Collect this post'
-
-            likeh5.appendChild(icon)
-            likeh5.appendChild(button2)
-            likeh5.appendChild(button)
-            contentDiv.appendChild(likeh5)
-
-
             postDiv.appendChild(userDiv)
             postDiv.appendChild(contentDiv)
 
@@ -215,66 +181,3 @@ function displayPosts(){
         }
     }
 }
-
-const likefield = document.querySelector('#posts')
-likefield.addEventListener('click', like)
-
-function like(e){
-    e.preventDefault(); // prevent default action
-
-    if (e.target.classList.contains('like')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                posts[i].likes ++
-                let length = contentDiv.children.length
-                length -= 1
-                const target = contentDiv.children[length]
-                const icon = target.children[0]
-
-                icon.innerText = ' '+ posts[i].likes
-                break;
-            }
-        } 
-	}
-}
-
-const collectfield = document.querySelector('#posts')
-collectfield.addEventListener('click', collect);
-
-function collect(e){
-    e.preventDefault(); // prevent default action
-
-    if (e.target.classList.contains('collect')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                collectedPosts.push(posts[i]) // 
-            }
-        } 
-	}
-}
-
-/*Have not been implemented */
-const postsManage = document.querySelector('.postsManage')
-postsManage.addEventListener('click', addPost)
-function addbooks(e){
-    e.preventDefault();
-    if (e.target.className == 'modify'){
-        console.log("here")
-        const postID1 = document.getElementById('postIDInput1').value
-        const postID2 = document.getElementById('postIDInput2').value
-        const postID3 = document.getElementById('postIDInput3').value
-        
-        displayPosts()
-    }
-        
-}
-
- 
