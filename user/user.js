@@ -243,6 +243,10 @@ function _createPostDiv(post) {
 function displayUserPosts(user) {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
+    if (user.postList.length == 0){
+        content.innerHTML = "You don't have any post.";
+        return
+    }
     let ul = document.createElement('ul');
     let post;
     // TODO: flip page
@@ -422,7 +426,10 @@ function _createUserBooklists(booklist) {
 function displayUserBooklists(user) {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-
+    if (user.booklistList.length == 0){
+        content.innerHTML = "You don't have any booklist.";
+        return;
+    }
     let booklistDiv = document.createElement('div');
     booklistDiv.id = 'booklistTable';
     let pageTitle = document.createElement('h2');
@@ -457,6 +464,10 @@ function displayUserBooklists(user) {
 function displayUserCollections(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
+    if (user.collectionList.length == 0) {
+        content.innerHTML = "You don't have any collection.";
+        return;
+    }
     let ul = document.createElement('ul');
     let collection;
     // TODO: flip page
@@ -488,19 +499,34 @@ function displayManageWindow() {
         if (e.target.innerHTML == 'inactivate'){
             e.target.className = 'activate';
             e.target.innerHTML = 'activate';
-            e.target.parentElement.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
-            e.target.parentElement.parentElement.getElementsByClassName('green')[0].className = 'red';
+            e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactive';
+            e.target.parentElement.getElementsByClassName('green')[0].className = 'red';
         }else{
             e.target.className = 'inactivate';
             e.target.innerHTML = 'inactivate';
 
-            e.target.parentElement.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
-            e.target.parentElement.parentElement.getElementsByClassName('red')[0].className = 'green';
+            e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; active';
+            e.target.parentElement.getElementsByClassName('red')[0].className = 'green';
         }
         
     }   
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
+
+    let pageTitle = document.createElement('h2');
+    pageTitle.innerHTML = 'All Regular Users';
+    pageTitle.className = 'pageTitle';
+    let sortWrap = document.createElement('div');
+    sortWrap.id = 'sortWrap';
+    let sortDefaultButton = document.createElement('button');
+    sortDefaultButton.innerHTML = 'Sort By ID number';
+    let sortByAtoZ = document.createElement('button');
+    sortByAtoZ.innerHTML = 'Sort from A to Z';
+    sortWrap.appendChild(sortDefaultButton);
+    sortWrap.appendChild(sortByAtoZ);
+    pageTitle.appendChild(sortWrap);
+    content.appendChild(pageTitle);
+
     let ul = document.createElement('ul');
     let user;
     for (user of _getRegularUserList()) {
@@ -510,14 +536,14 @@ function displayManageWindow() {
         userInfoDiv.className = 'userInfo';
         let h3 = document.createElement('h3');
         let a = document.createElement('a');
-        a.class = 'userLink';
+        a.className = 'userLink linkColor';
         a.href = 'admin.html?visit=' + user.userID;
         a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
         let span1 = document.createElement('span');
-        span1.innerHTML = '&nbsp;&nbsp;&nbsp; Status:'
+        span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
         let span2 = document.createElement('span');
         span2.className = 'green';
-        span2.innerHTML = '&nbsp; activate';
+        span2.innerHTML = '&nbsp; active';
         h3.appendChild(a);
         h3.appendChild(span1);
         h3.appendChild(span2);
@@ -535,8 +561,6 @@ function displayManageWindow() {
     content.appendChild(ul);
 }
 
-
-
 function displayEditBooksWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
@@ -544,10 +568,10 @@ function displayEditBooksWindow() {
 
 }
 
-
 /*************** actions ****************/
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
+let regularUser2 = new User('user2', 'user2');
 let postSolarisWithImg = new Post('Solaris', null, 'user', null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
@@ -581,13 +605,17 @@ adminUser.collectionList.push(novelBooklist);
 
 users.push(adminUser);
 users.push(regularUser);
+users.push(regularUser2);
 
 if (window.location.href.indexOf('visit') == '-1'){
     if (window.location.href.endsWith('user.html')){
         displayUserInfo(regularUser, false);
     }
     else if (window.location.href.endsWith('admin.html')){
-        displayUserInfo(adminUser, false)
+        displayUserInfo(adminUser, false);
+    }
+    else if (window.location.href.endsWith('user2.html')){
+        displayUserInfo(regularUser2, false);
     }
 }
 else {
