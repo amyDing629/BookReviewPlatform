@@ -261,7 +261,7 @@ a {
 
 #posts ul li{
     list-style-type: none;
-	display: block;
+	/* display: block; */
     margin-left: 145px;
 }
 

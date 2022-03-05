@@ -25,6 +25,23 @@
     float:right;
     margin-right: 5px;
 }
+
+.normalTR{
+    display: block;
+}
+
+.endTR{
+    display: none;
+}
+
+#pageFliper{
+    text-align: center;
+}
+.pagelink{
+    color: #5088e9;
+    background: none;
+    text-decoration: dashed;
+}
 /* ################################### */
 .bookInfo{
     padding: 5px;

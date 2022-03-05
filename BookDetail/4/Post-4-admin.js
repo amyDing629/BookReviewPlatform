@@ -68,9 +68,74 @@ function postCallBack() {
 
 
 
+// page flip
+function filpPage(pageNo, pageLimit) {
+    const allPosts = document.getElementById("post-body")
+    log(allPosts)
+    const totalSize = allPosts.children.length
+    log(totalSize)
+    let totalPage = 0
+    const pageSize = pageLimit
+    // log(pageLimit)
+    
+    // calculate the page num and set up every page:
+    if (totalSize / pageSize > parseInt(totalSize / pageSize)) {
+        totalPage = parseInt(totalSize / pageSize) + 1;
+    } else {
+        totalPage = parseInt(totalSize / pageSize);
+    }
+    // log(totalPage)
+
+    // build every page label and assign onclick function
+    const curr = pageNo
+    const startRow = (curr - 1) * pageSize + 1
+    log(startRow)
+    let endRow = curr * pageSize
+    endRow = (endRow > totalSize) ? totalSize : endRow;
+    log(endRow)
+    let strHolder = ""
+    let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
+    let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
+    let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
+    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    // single page is enough
+    if (totalPage <= 1){
+        strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
+    } else { //multipages
+        if (curr > 1) {
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a>"
+            }
+        } else {
+            strHolder += previousStr;
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+            }
+        }
+        if (curr < totalPage) {
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a>"
+            
+        } else { strHolder += nextStr }
+    }
+
+    // separate different display style for different tr element
+    for (let i = 1; i < (totalSize + 1); i++) {
+        const each = allPosts.children[i - 1];
+        if (i >= startRow && i <= endRow) {
+            each.className="normalTR"
+        } else {
+            each.className="endTR"
+        }
+    }
+    document.getElementById("pageFliper").innerHTML = strHolder;
+}
+
+
 const postul = document.querySelector('#posts ul');
 postCallBack()
 displayPosts()
+filpPage(1,3)
 
 
 // clean all before display
