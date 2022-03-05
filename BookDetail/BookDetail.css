@@ -20,6 +20,11 @@
 .title{
     margin-left: 50px;
 }
+
+.delete{
+    float:right;
+    margin-right: 5px;
+}
 /* ################################### */
 .bookInfo{
     padding: 5px;

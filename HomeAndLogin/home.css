@@ -336,7 +336,7 @@ a {
 } 
 
 /* Trash */
-#posts .delete{
+/* #posts .delete{
     margin-top:2px;
     margin-bottom: 3px;
     background-color: red;
@@ -345,10 +345,10 @@ a {
     float:right;
     border: 2px solid #ccc;
     border-radius: 10%;
-}
+} */
 
 #posts .delete:hover {
-    background-color: black;
+    background-color: red;
   }
 /*   */
 
