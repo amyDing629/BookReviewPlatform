@@ -138,7 +138,7 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a1.href) // need to handle user link
+                window.location.href(a1.href) // need to handle user link
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -157,7 +157,7 @@ function displayPosts(){
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a2.href)
+                window.location.href(a2.href)
             }
             span1.appendChild(a2)
             let span2 = document.createElement('span')

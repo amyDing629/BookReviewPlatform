@@ -1,5 +1,70 @@
 /****************************** END USER index-books js ******************************/
+const allBooks = [];
 
+class DataBook {
+	constructor(bid, title) {
+        this.bookId = bid; // get it from book detail page
+		this.title = title;
+    }
+}
+
+BooksCallBack()
+displaySearchbox()
+
+function BooksCallBack(){
+    // Get all books in database
+    allBooks.push(new DataBook(0, 'Solaris'))
+    allBooks.push(new DataBook(1, 'Tres Tristes Tigres'))
+    allBooks.push(new DataBook(2, 'The Story of the Lost Child'))
+    allBooks.push(new DataBook(3, 'War and Peace'))
+    allBooks.push(new DataBook(4, 'Song of Solomon'))
+}
+
+function displaySearchbox(){
+    const searchbookArea = document.querySelector('.search-book')
+    const t = searchbookArea.children[0]
+    for (let i=0; i<allBooks.length; i++){
+        if (allBooks[i] != null){
+            const id = allBooks[i].bookId
+            const name = allBooks[i].title
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            t.appendChild(option)
+        }
+    }
+    
+
+    const searchlistArea = document.querySelector('.search-list')
+    // todo
+}
+
+/********** Search Book **********/
+const searchArea1 = document.querySelector('#search-button1')
+searchArea1.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button1'){
+        console.log("here")
+        const select = document.getElementById('search-book');
+        const value = select.options[select.selectedIndex].value;
+        const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
+        window.location.href(link)
+    }  
+}
+
+/********** Search List **********/
+const searchArea2 = document.querySelector('#search-button2')
+searchArea2.addEventListener('click', searchList)
+function searchList(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button2'){
+        console.log("here")
+        const select = document.getElementById('search-list');
+        const value = select.options[select.selectedIndex].value;
+       // to do
+    }  
+}
 
 /********** Recommendation book display **********/
 const recommendedBooks = [];
@@ -15,7 +80,7 @@ class Book {
     }
 }
 
- BooksCallBack()
+ RecommendBooksCallBack()
  displayTop()
  displayRecommendations()
 
@@ -32,8 +97,8 @@ function blinkHandler(bid){
     }
 
 
-function BooksCallBack() {
-    /// Get recommendaed books from server
+function RecommendBooksCallBack() {
+    /// Get recommended books from server
     //  code below requires server call
     // books in recommendedBooks list should be added by admin user
     recommendedBooks.push(
@@ -101,7 +166,7 @@ function BooksCallBack() {
             a.setAttribute('href', booklink)
             a.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a.href)
+                window.location.href(a.href)
             }
             a.innerText = 'Learn more about it...'
             p2.appendChild(a)
@@ -181,7 +246,7 @@ function displayRecommendations(){
         a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
-            window.location.replace(a.href)
+            window.location.href(a.href)
         }
 
         innerdiv2.appendChild(h3)

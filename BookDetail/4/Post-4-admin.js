@@ -1,12 +1,12 @@
-
 const log = console.log;
 
-/****************************** ADMIN USER index-posts js ******************************/
+/****************************** END USER index-posts js ******************************/
 
 /** After log in, end user can like others' posts **/
 /********** Posts display **********/
 const posts = [];
 const collectedPosts = []; // collection of posts made by current user
+
 
 class Post {
 	constructor(pid, bid, booktitle, booklink, userid, postername, posterlink, posterProfile, pic, content, time, likes) {
@@ -53,7 +53,7 @@ function postCallBack() {
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
-    posts.push(new Post(2, 4, 'Song of Solomon',null,0, 'user', null,
+    posts.push(new Post(2, 4, 'Song of Solomon',null,0,'user', null,
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
     'I have to read it every day otherwise I cannot sleep',
@@ -75,16 +75,20 @@ displayPosts()
 
 // clean all before display
 function cleanPosts(){
-    const lis = postul.children;
-    for (let i=0; i<5; i++){
-        if (lis[i] != null){
-            lis[i].remove();
-        }
-    }
+    // const lis = postul.children;
+    // log(lis)
+    // for (let i=0; i<5; i++){
+    //     if (lis[i] != null){
+    //         lis[i].remove();
+    //     }
+    // }
+    // log(lis[0])
+    postul.innerHTML = ''
 }
 
 function displayPosts(){
     cleanPosts();
+    // log(posts)
 
     for (let i=0; i<5; i++){
         if (posts[i] != null){
@@ -108,8 +112,8 @@ function displayPosts(){
             let pid = posts[i].postID
             let bid = posts[i].bookID
             let userid = posts[i].userid
+            let blink = posts[i].bookLink
 
-            let blink = blinkHandlerinPost(bid)
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -120,21 +124,21 @@ function displayPosts(){
             let userh3 = document.createElement('h3')
             let a1 = document.createElement('a')
             a1.className = 'linkColor'
-
+            
             // need to handle user link
             // temporary use
-            if (userid){ // userid is admin, visit myself
-                plink = '../user/admin.html'
+            if (userid){
+                plink = '../user/user.html?visit='+userid
             }
-            else{
-                plink = '../user/admin.html?visit='+userid
+            else{ // userid is user, visit myself
+                plink = '../user/user.html'
             }
 
             a1.setAttribute('href', plink)
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.href(a1.href)
+                window.location.replace(a1.href) // need to handle user link
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -153,7 +157,7 @@ function displayPosts(){
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();
-                window.location.href(a2.href)
+                window.location.replace(a2.href)
             }
             span1.appendChild(a2)
             let span2 = document.createElement('span')
@@ -200,10 +204,16 @@ function displayPosts(){
             button2.className = 'btn btn-outline-success'
             button2.classList.add('collect')
             button2.innerText = 'Collect this post'
+            let button3 = document.createElement('button')
+            button3.innerText = 'Delete'
+            button3.className = 'btn btn-outline-danger'
+            button3.id = 'delete'
+            button3.classList.add('delete')
 
             likeh5.appendChild(icon)
+            likeh5.appendChild(button3)
             likeh5.appendChild(button2)
-            likeh5.appendChild(button)
+            likeh5.appendChild(button)        
             contentDiv.appendChild(likeh5)
 
 
@@ -255,26 +265,43 @@ function collect(e){
         const pid = h3.children[1].innerText
         for (let i=0; i<posts.length; i++){
             if(parseInt(posts[i].postID) == pid){
-                collectedPosts.push(posts[i]) // 
+                collectedPosts.push(posts[i])
+
             }
         } 
 	}
 }
 
-/*Have not been implemented */
-const postsManage = document.querySelector('.postsManage')
-postsManage.addEventListener('click', addPost)
-function addbooks(e){
-    e.preventDefault();
-    if (e.target.className == 'modify'){
-        console.log("here")
-        const postID1 = document.getElementById('postIDInput1').value
-        const postID2 = document.getElementById('postIDInput2').value
-        const postID3 = document.getElementById('postIDInput3').value
-        
-        displayPosts()
-    }
-        
-}
 
- 
+const deletefield = document.querySelector('#posts')
+deletefield.addEventListener('click', delete_post)
+// log(posts)
+function delete_post(e){
+    e.preventDefault(); // prevent default action
+    log('delete post')
+
+    if (e.target.classList.contains('delete')) {
+        const contentDiv = e.target.parentElement.parentElement
+        log(contentDiv)
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        log(pid)
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                posts.splice(i, 1) // start from index=i, remove 1 item
+
+                const ul = contentDiv.parentElement.parentElement.parentElement
+                log(ul)
+                const li = contentDiv.parentElement.parentElement
+                // log(li)
+                ul.removeChild(li)
+                log(ul)
+                log(posts)
+                displayPosts()
+                break;
+            }
+        }
+
+    }
+
+}

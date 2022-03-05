@@ -30,11 +30,27 @@
             <li><a class="active" href="index_end_after.html">Home</a></li>
             <li><a class="addUserIdToLink" href="../BookMainPage/BookMainPage_end_after.html">Books</a></li>
             <li><a class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage_end_after.html">Booklists</a></li>
+            <!--New-->
+            <li class="search-book">
+                <select class="form-select form-select-sm" id="search-book">
+                    <option selected>Search for Books...</option>
+                    <!--Dom -->
+                </select>     
+            </li>
             <li>
-                <form>
-                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
-                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
-                </form>
+                <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
+            </li>
+            <li class="search-list">
+                <select class="form-select form-select-sm" id="search-list">
+                    <option selected>Search for BookLists...</option>
+                    <!-- 改这里 -->
+                    <option value="0">Solaris</option>
+                    <option value="1"><span>Tres Tristes Tigres</span></option>
+                    <option value="2"><span>The Story of the Lost Child</span></option>
+                </select> 
+            </li>
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
             </li>
             <!-- New added -->
             <li class="quit">

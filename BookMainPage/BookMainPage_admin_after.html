@@ -17,8 +17,8 @@
                     <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
                 </div>
             </li>
-            <li><a class="active addUserIdToLink" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
-            <li><a class="addUserIdToLink" href="./BookMainPage_admin_after.html">Books</a></li>
+            <li><a class="addUserIdToLink" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
+            <li><a class="active addUserIdToLink" href="./BookMainPage_admin_after.html">Books</a></li>
             <li><a class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage_admin_after.html">Booklists</a></li>
             <li>
                 <form>
@@ -38,23 +38,28 @@
         <div id="adminActionsWrap">
             <form id="addBook" class="addBook">
                 <span>Admin action - add new book</span>
-                <input id="bookNameInput" type="text" placeholder="Book Name" required>
-                <input id="bookAuthorInput" type="text" placeholder="Author" required>
-                <input id="publishYearInput" type="number" min="0000" max="2022" placeholder="Pub." required>
-                <input id="descriptionInput" type="text" placeholder="Description..."required>
-                <input id="coverInput" type="url" placeholder="Cover URL (opt)">
-                <input class="addSubmit" type = "submit" value="Add">
+                <input id="bookNameInput" type="text" placeholder="Book Name*" required>
+                <input id="bookAuthorInput" type="text" placeholder="Author*" required>
+                <input id="publishYearInput" type="number" min="0000" max="2022" placeholder="Pub.*" required>
+                <input id="descriptionInput" type="text" placeholder="Description...*"required>
+                <input id="coverInput" type="url" placeholder="Cover URL (OPT)">
+                <input class="addSubmit, btn btn-primary" type = "submit" value="Add">
             </form>
         </div>
         <br>
         <div class="divideLine"></div>
+        <table id="tableResult">
+            <tbody id="tableResultTBODY">
+            </tbody>
+        </table>
+        <div id="pageFliper"></div>
     </div>
 
     <!-- footer-->
     <footer class="blog-footer">
-        <p><i>Book website[need to be changed to app name] built by team10</i></p>
+        <p><i>&copy; BookLand built by team10</i></p>
         <p>
-          <a href="" class="linkColor"><b>Back to top</a>
+          <a href="" class="linkColor">Back to top</a>
         </p>
     </footer>
     <script type="text/javascript" src="BookMainPage_admin_after.js"></script>

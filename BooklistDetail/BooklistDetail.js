@@ -64,7 +64,7 @@ BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksLi
 
 
 // Display the booklist detail page:
-function displayBooklistDetail(booklist) {
+function displayBooklistDetail(booklist, user) {
     // fill list name
     const booklistInfo = document.querySelector('#booklistInfo')
     const title = booklistInfo.children[0]
@@ -102,12 +102,17 @@ function displayBooklistDetail(booklist) {
 
     // fill description
     const description = document.querySelector('#description')
-    const desc = document.createTextNode(booklist.listDescription)
+    const desc = document.createElement('span')
+    desc.id = 'descriptionText'
+    desc.appendChild(document.createTextNode(booklist.listDescription))
     description.appendChild(desc)
 
     // fill books in the list
-    const books = document.querySelector('#books')
-    const bookUnorderedList = books.children[2]
+    fillBooklistBooks(booklist,user)
+}
+
+function fillBooklistBooks(booklist, user){
+    const bookUL = document.querySelector('#bookUL')
 
 	for(let i = 0; i < booklist.books.length; i++) {
         const li = document.createElement('li')
@@ -116,18 +121,202 @@ function displayBooklistDetail(booklist) {
         // <a> content
         const a = document.createElement('a')
         a.className = "book"
-        a.href = '../BookDetail/BookDetail-'+ booklist.books[i].bookID + '.html'
+        a.href = '../BookDetail/'+ booklist.books[i].bookID +"/"+ booklist.books[i].bookID
+        if(user === 'User'){ // end user
+            a.href+='_end_after.html'
+        } else if (user === 'Admin'){ // admin  
+            a.href+='_admin_after.html'
+        } else { // guest
+            a.href='../BookDetail/'+booklist.books[i].bookID+'/BookDetail-' + booklist.books[i].bookID+ '.html'
+        }
+        a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
         a.appendChild(document.createTextNode(booklist.books[i].name))
         li.appendChild(a)
-        bookUnorderedList.appendChild(li)
-        bookUnorderedList.appendChild(document.createElement('br'))
+        bookUL.appendChild(li)
+        bookUL.appendChild(document.createElement('br'))
     }
 }
 
 function selectBooklistToPlay(){
-    const currentListID = parseInt(window.location.href.split('?')[1].split('=')[1])
-    const list = BooklistsList.filter((list) => list.booklistID === currentListID)
-    displayBooklistDetail(list[0])
+    if (window.location.href.split('?')[1] == null){
+        return;
+    } else if (window.location.href.split('?')[1].split('&').length === 1){ // guest visit any booklist
+        const currentListID = parseInt(window.location.href.split('?')[1].split('booklistID=')[1].split('.')[0])
+        const list = BooklistsList.filter((list) => list.booklistID == currentListID)
+        displayBooklistDetail(list[0], 'guest')
+        selectNarviBarUser('guest')
+    } else { // admin & user
+        const currentListID = parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+        const currentUser = parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        const list = BooklistsList.filter((list) => list.booklistID === currentListID)
+        if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
+            window.location.assign("./UnderConstruction.html")
+        } else {
+            if (currentUser === 0){ //end user, need more dynamiclly fix on phase 2
+                displayBooklistDetail(list[0], 'User')
+                selectNarviBarUser('User')
+                editBooklist('User')
+            } else if (currentUser === 1) {// admin
+                displayBooklistDetail(list[0], 'Admin')
+                selectNarviBarUser('Admin')
+                editBooklist('Admin')
+            }
+        }
+    }
 }
 
-window.onload = selectBooklistToPlay()
+function selectNarviBarUser(user){
+    const userColumn = document.querySelector('.right')
+    const old = userColumn.children[0]
+    const newLI = document.createElement('a')
+    newLI.id="userLoginInfo" 
+        newLI.class="addUserIdToLink"
+    if (user === 'User'){//end user, need more dynamiclly fix on phase 2
+        newLI.href="../user/user.html"
+        newLI.appendChild(document.createTextNode('Hello, User'))
+        userColumn.removeChild(old)
+        userColumn.appendChild(newLI)
+    } else if (user === 'Admin'){ // admin
+        newLI.href="../user/admin.html"
+        newLI.appendChild(document.createTextNode('Hello, Admin'))
+        userColumn.removeChild(old)
+        userColumn.appendChild(newLI)
+    } //else guest
+}
+
+// edit booklist
+function editBooklist(user){
+    const creator = document.querySelector('.creator').innerHTML.split(': ')[1]
+    const description = document.querySelector('#descriptionText')
+    const bookUL = document.querySelector('#bookUL')
+    const button1 = addEditElement('editDescription')
+    const button2 = addEditElement('editBooks')
+    if (creator === user){ // creator only 
+        const div1 = document.createElement('div')
+        div1.className = 'editDiv'
+        div1.appendChild(button1)
+        description.before(div1)
+        const div2 = document.createElement('div')
+        div2.className = 'editDiv'
+        div2.appendChild(button2)
+        bookUL.before(div2)
+    } 
+}
+
+function addEditElement(id){
+    const button = document.createElement('button')
+    button.className = id + ', btn btn-outline-info'
+    button.appendChild(document.createTextNode('Edit'))
+    return button
+}
+
+// DOM modifying functions:
+
+// creator only: edit description
+const description = document.querySelector('#description')
+description.addEventListener("click", editDescription)
+
+function editDescription(e){
+    e.preventDefault()
+    if (e.target.className === 'editDescription, btn btn-outline-info'){
+        let textSpan = document.querySelector('#descriptionText')
+        let request = prompt("Please edit the new description:",textSpan.innerText)
+        let curr = textSpan.innerText
+        while (request == null || request.length === 0 || request === curr){
+            if (request == null) {
+                return;
+            } else if (request === curr){
+                alert('Failed, the description is still same. Please re-enter.')
+                request = prompt("Please edit the new description:",textSpan.innerText)
+            } else {
+                alert('Failed, the new description cannot be empty. Please re-enter.')
+                request = prompt("Please edit the new description:",textSpan.innerText)
+            }
+        }
+        textSpan.innerText = request
+        const self = BooklistsList.filter((booklist)=>
+        booklist.listId === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+        )
+        self.description = request
+    }
+}
+
+// creator only: edit books in the booklist
+const books = document.querySelector('#books')
+books.addEventListener("click", editBooksContent)
+
+function editBooksContent(e){
+    e.preventDefault()
+    if (e.target.className === 'editBooks, btn btn-outline-info'){
+        // get self info
+        let entireBooklist = document.querySelectorAll('.bookli')
+        const listID = BooklistsList.filter((booklist) => 
+        booklist.booklistID === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+        )
+
+        // set up book id reference list
+        let listString = "Book IDs Reference List: \n"
+        let names = BooksList.map((book) =>  '[ID: '+ book.bookID + ']--' + book.name + '\n')
+        let ids = BooksList.map((book) =>  book.bookID)
+        for (each of names){ listString+=each }
+        listString+="\n     Please edit your book IDs collection:\n     [Note]: use space or , to separate every ID."
+
+        // prompt input default: self curr book ids
+        let currList = Array() 
+        const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList.push(book.bookID))
+        
+        
+        let request = prompt(listString, currList)
+        let uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
+        
+        // error check for input format and repeatness 
+        while (uniqueCurrInput === "null" || uniqueCurrInput.length === 0 || JSON.stringify(uniqueCurrInput) === JSON.stringify(currList.sort())){
+            if (uniqueCurrInput === "null") {
+                return;
+            } else if (JSON.stringify(uniqueCurrInput) === JSON.stringify(currList.sort())){
+                alert('Failed, all books are still same. Please re-enter.')
+                request = prompt(listString,currList)
+                uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
+            } else {
+                alert('Failed, booklist cannot be empty. Please re-enter.')
+                request = prompt(listString,currList)
+                uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
+            }
+        }
+
+        // error check for input id validation:
+        const idCollection = BooksList.map((book)=>book.bookID)
+        const Invalid = uniqueCurrInput.filter(inputID => !idCollection.includes(inputID))
+        if(Invalid.length > 0){
+            alert('Failed, you have invalid ID input. Please check the above reference table and re-enter.')
+                return;
+        } else { // valid
+            // modify books in object
+            let newBooksAttribute = Array()
+            const iterate = uniqueCurrInput.map((eachInputID) => {
+                const selected = BooksList.filter((bookObject) => bookObject.bookID === eachInputID)
+                newBooksAttribute.push(selected[0])
+            })
+            BooklistsList[listID[0].booklistID].books = newBooksAttribute
+            
+            // display on page
+            const table = document.querySelector('#bookUL').innerHTML=''
+            fillBooklistBooks(BooklistsList[listID[0].booklistID], document.querySelector('.creator').innerHTML.split(': ')[1])
+        }
+    }
+}
+
+function uniqueSortedIDsArrayGenerator(str){
+    if (str == null){
+        return "null"
+    }
+    const valids = str.replace(/[^0-9\.]+/g, '').split('').map((each) => {
+        const element = parseInt(each)
+        if (isNaN(element) == false){
+            return element
+        }
+    })
+    return Array.from(new Set(valids.sort()))
+}
+
+selectBooklistToPlay()

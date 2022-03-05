@@ -19,7 +19,6 @@
 .booklist{
     left: 0%;
     top: 0px;
-    margin-left: 25%;
     margin-bottom: 1.5rem!important;
     flex: 0 0 auto;
     width: 800px;
@@ -33,7 +32,7 @@
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     background-color: gainsboro;
-    background-image: linear-gradient(180deg,#dadada, #fcfcf7);
+    background-image: linear-gradient(180deg,#f1f1f1, #ffffff);
     font-family: 'Lobster', cursive;
     border: rgba(255, 255, 255, 0) 1px solid;
     border-radius: 20px;
@@ -54,7 +53,6 @@
 }
 
 .iconWrap{
-    width: 260px;
     list-style:none;
     position: relative;
     float: right;
@@ -73,19 +71,20 @@
 }
 
 .likeNum, .collectNum{
-    width: 80px;
+    width: 85px;
     font-size: small;
     float: bottom;
     margin-left: 5px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
-tbody{
+.bookshelf{
     text-align:center;
 }
 
 .bookshelf{
     background: url("../static/bookshelf.png");
-    background-position: bottom;
+    background-position:bottom;
     background-repeat: no-repeat;
     background-size: 400px;
     width: 400px;
@@ -98,42 +97,33 @@ tbody{
     text-align:center;
 }
 
-.booklink{
-    top: 50px;
-    width: 50px;
-    height: 30px;
+.book, .booklink{
 	color: #5088e9;
-    text-indent: 10px;
-    border-collapse: 100px;
-    text-shadow: 4px 4px 20px rgb(92, 87, 46);
+    margin-top: 5px;
+    font-family:'Noto Serif Display', serif;
+    font-size: small;
 }
+
 
 .descriptionsBox {
     width: 600px;
     min-height: 50px;
-    padding-left: 50px;
+    padding-left: 45px;
     font-size: medium;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
 .listID {
-    list-style: none;
-    left:5px;
     float: left;
-    width: 700px;
+    height: 30px;
+    width: 780px;
+    margin: auto;
 }
 
-.deleteButton{
-    text-align: center;
-    font-size: 17px;
+.delete{
     float: right;
-}
-
-.deleteIcon{
-    width: 15px;
-    left:5px;
-    padding-left: 5px;
-    padding-top: 1px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: small;
 }
 
 #sort_a_z, #sort_default{
@@ -148,4 +138,26 @@ tbody{
     z-index: -1;
     border: .5px solid rgb(192, 192, 192);
     margin-bottom: 8px;
+}
+
+#pageFliper{
+    text-align: center;
+}
+
+#tableResult{
+    margin: auto;
+}
+
+.normalTR{
+    display: block;
+}
+
+.endTR{
+    display: none;
+}
+
+.pagelink{
+    color: #5088e9;
+    background: none;
+    text-decoration: dashed;
 }

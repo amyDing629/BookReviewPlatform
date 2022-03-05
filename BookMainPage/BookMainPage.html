@@ -5,40 +5,50 @@
        <title>Book Main</title>
        <link rel="stylesheet" type="text/css" href="BookMainPage.css">
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
+       <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> <!-- For bootstrap -->
     </head>
     <body>
 
     <!-- The top menu -->
-  <div id="topMenu">
-    <ul>
-        <li>
-            <div class="logoContainer">
-                <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
-            </div>
-        </li>
-        <li><a class="active" href="../HomeAndLogin/index.html">Home</a ></li>
-        <li><a href="BookMainPage.html">Books</a ></li>
-        <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a ></li>
-        <li>
-            <form>
-            <input type="text" name="search" placeholder="Search for books, booklists, and users..">
-            </form>
-        </li>
-        <li class="right"><a href="./HomeAndLogin/login.html">Login / Register</a ></li>
-      </ul>
-</div>
+    <div id="topMenu">
+        <ul>
+            <li>
+                <div class="logoContainer">
+                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
+                </div>
+            </li>
+            <li><a href="../HomeAndLogin/index.html">Home</a ></li>
+            <li><a class="active" href="BookMainPage.html">Books</a ></li>
+            <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a ></li>
+            <li>
+                <form>
+                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
+                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
+                </form>
+            </li>
+            <li>
+                <a href="../HomeAndLogin/login.html">Login/Register</a>
+            </li>
+        </ul>
+    </div>
 
+    <!-- books-->
     <div id="bookTable">
         <h2 class="textDecoration"> All Books:</h2>
         <br>
         <div class="divideLine"></div>
+        <table id="tableResult">
+            <tbody id="tableResultTBODY">
+            </tbody>
+        </table>
+        <div id="pageFliper"></div>
     </div>
 
     <!-- footer-->
     <footer class="blog-footer">
-        <p><i>Book website[need to be changed to app name] built by team10</i></p>
+        <p><i>&copy; BookLand built by team10</i></p>
         <p>
-          <a href="" class="linkColor"><b>Back to top</a>
+          <a href="" class="linkColor">Back to top</a>
         </p>
     </footer>
     <script type="text/javascript" src="BookMainPage.js"></script>

@@ -6,7 +6,7 @@ The overall objective of the project is to build a website for readers to share 
 ## Main Features
 ### Regular User
 * a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait).
-* make posts to share their opinions about books or reply to others' posts. 
+* make posts to share their opinions about books
 * collect or like the posts. 
 * customize multiple book lists regarding different demands, as well as a collection of their favorite posts.
 
