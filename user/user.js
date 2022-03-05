@@ -6,6 +6,8 @@ let numberOfPosts = 0;
 var BooklistsNum = 0; 
 var BooksNum = 0; 
 const users = [];
+const posts = [];
+const booklists = [];
 
 /********************** Object ***********************/
 class User {
@@ -184,6 +186,37 @@ function changeButtonColor(target) {
 }
 
 function _createPostDiv(post) {
+    function likeOnClick(e){
+        e.preventDefault(); // prevent default action
+        console.log(e.target);
+        let contentDiv = e.target.parentElement.parentElement
+        let pid = contentDiv.getElementsByClassName('postId')[0].innerHTML
+        console.log(pid);
+        let post;
+        let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
+        console.log(icon);
+        for (post of posts){
+            console.log(parseInt(post.postID));
+            if (parseInt(post.postID) == pid){
+                if (e.target.classList.contains('like')){
+                    post.likes ++;
+                    icon.innerText = ' '+ post.likes;
+                    e.target.classList.remove('like');
+                    e.target.classList.add('dislike');
+                    e.target.innerText = 'Dislike this post';
+                    break;
+                }
+                else if (e.target.classList.contains('dislike')){
+                    post.likes --;
+                    icon.innerText = ' '+ post.likes;
+                    e.target.classList.remove('dislike');
+                    e.target.classList.add('like');
+                    e.target.innerText = 'Like this post';
+                    break;
+                }    
+            } 
+        }
+    }
     let postDiv = document.createElement('div');
     postDiv.className = 'post';
     let userDiv = document.createElement('div');
@@ -279,6 +312,7 @@ function _createPostDiv(post) {
     button.className = 'btn btn-outline-primary'
     button.classList.add('like')
     button.innerText = 'Like this post'
+    button.addEventListener('click', likeOnClick);
     let button2 = document.createElement('button')
     button2.className = 'btn btn-outline-success'
     button2.classList.add('collect')
@@ -326,6 +360,58 @@ function displayUserPosts(user) {
 }
 
 function _createUserBooklists(booklist) {
+    function likeOnClick(e){
+        e.preventDefault(); // prevent default action
+        let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
+        let booklistID = booklistDiv.getElementsByClassName('listID')[0].children[0].innerHTML;
+        let booklist;
+        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('likeNum')[0];
+        for (booklist of booklists){
+            if (parseInt(booklist.booklistID) == booklistID){
+                if (e.target.parentElement.classList.contains('likeButton')){
+                    booklist.likes ++;
+                    likeNum.innerText = 'Liked: '+ booklist.likes;
+                    e.target.parentElement.classList.remove('likeButton');
+                    e.target.parentElement.classList.add('dislikeButton');
+                    break;
+                }
+                else if (e.target.parentElement.classList.contains('dislikeButton')){
+                    booklist.likes --;
+                    likeNum.innerText = 'Liked: '+ booklist.likes;
+                    e.target.parentElement.classList.remove('dislikeButton');
+                    e.target.parentElement.classList.add('likeButton');
+                    break;
+                }    
+            } 
+        }
+    }
+
+    function collectOnClick(e){
+        e.preventDefault(); // prevent default action
+        let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
+        let booklistID = booklistDiv.getElementsByClassName('listID')[0].children[0].innerHTML;
+        let booklist;
+        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('collectNum')[0];
+        for (booklist of booklists){
+            if (parseInt(booklist.booklistID) == booklistID){
+                if (e.target.parentElement.classList.contains('collectButton')){
+                    booklist.collect ++;
+                    likeNum.innerText = 'Collected: '+ booklist.collect;
+                    e.target.parentElement.classList.remove('collectButton');
+                    e.target.parentElement.classList.add('uncollectButton');
+                    break;
+                }
+                else if (e.target.parentElement.classList.contains('uncollectButton')){
+                    booklist.collect --;
+                    likeNum.innerText = 'Collected: '+ booklist.collect;
+                    e.target.parentElement.classList.remove('uncollectButton');
+                    e.target.parentElement.classList.add('collectButton');
+                    break;
+                }    
+            } 
+        }
+    }
+
     const div = document.createElement('div')
     div.className = 'booklist'
 
@@ -452,6 +538,7 @@ function _createUserBooklists(booklist) {
     liLike.className = "infoElement"
     const button1 = document.createElement('button')
     button1.className = "likeButton"
+    button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
     iconImgLike.className = "likeIcon"
     iconImgLike.src = "../static/like_icon.png"
@@ -469,6 +556,7 @@ function _createUserBooklists(booklist) {
     liCollect.className = "infoElement"
     const button2 = document.createElement('button')
     button2.className = "collectButton" 
+    button2.addEventListener('click', collectOnClick);
     const iconImgCollect = document.createElement('img')
     iconImgCollect.className = "collectIcon"
     iconImgCollect.src = "../static/click-&-collect.png"
@@ -540,17 +628,13 @@ function displayUserCollections(user){
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     let filterPosts = document.createElement('button');
     filterPosts.className = 'sortButton btn btn-outline-secondary btn-sm';
-    filterPosts.innerHTML = 'Filter collected posts';
+    filterPosts.innerHTML = 'Collected posts';
     let filterBooklists = document.createElement('button');
     filterBooklists.className = 'sortButton btn btn-outline-secondary btn-sm';
-    filterBooklists.innerHTML = 'Filter collected booklists';
-    let mixed = document.createElement('button');
-    mixed.className = 'sortButton btn btn-outline-secondary btn-sm';
-    mixed.innerHTML = 'Mixed';
-    
+    filterBooklists.innerHTML = 'Collected booklists';
+
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
-    sortWrap.appendChild(mixed);
     sortWrap.appendChild(filterPosts);
     sortWrap.appendChild(filterBooklists);
     content.appendChild(sortWrap);
@@ -654,6 +738,7 @@ function displayEditBooksWindow() {
 
 }
 
+
 /*************** actions ****************/
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
@@ -683,6 +768,10 @@ regularUser.postList.push(postSolarisWithImg);
 regularUser.postList.push(postSongOfSolomon);
 regularUser.postList.push(postWarAndPeace);
 adminUser.postList.push(postSolarisWithoutImg);
+posts.push(postSolarisWithImg);
+posts.push(postSongOfSolomon);
+posts.push(postWarAndPeace);
+posts.push(postSolarisWithoutImg);
 
 let bookSolaris = new Book('Solaris', 'Stanisław Herman Lem', 1970, 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
@@ -696,6 +785,8 @@ let novelBooklist = new Booklist('novels', 'All novels liked.', 'A01', [bookSola
 let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'A01', [bookTres])
 regularUser.booklistList.push(novelBooklist);
 adminUser.booklistList.push(spanishBooklist);
+booklists.push(novelBooklist);
+booklists.push(spanishBooklist);
 
 regularUser.collectionList.push(postSolarisWithoutImg);
 regularUser.collectionList.push(spanishBooklist);
@@ -740,5 +831,3 @@ menuButtonSelected.addEventListener('click', menuButtonsOnClick);
 if (profileButtons != null) {
     profileButtons.addEventListener('click', profileButtonsOnClick);
 }
-
-
