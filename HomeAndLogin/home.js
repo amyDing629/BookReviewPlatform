@@ -1,9 +1,8 @@
 const log = console.log;
 /****************************** Default index js ******************************/
+/*************** Books & Booklists Data ********************/
 
-
-/********** Recommendation book display **********/
-const recommendedBooks = [];
+const allBooks = [];
 
 class Book {
 	constructor(bid, title, author, cover, description, link) {
@@ -16,7 +15,65 @@ class Book {
     }
 }
 
-RecommendedBooksCallBack()
+let BooklistsNum = 0; 
+let BooklistsList = [] 
+
+class DataBooklist {
+	constructor(listName, creator, bookCollection) {
+		this.listName = listName
+		this.creator = creator; 
+        this.books = bookCollection; // list of DataBook here, list of Book object in BooklistMain
+		this.booklistID = BooklistsNum;
+		BooklistsNum++;
+	}
+}
+
+BooksCallBack()
+BookListsCallBack()
+
+
+function BookListsCallBack(){
+// Load default booklist data
+BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
+BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
+BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
+}
+
+
+function BooksCallBack(){
+// Get all books in database
+allBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 
+'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
+)); // currently link is empty
+allBooks.push(
+new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
+'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
+));
+allBooks.push(
+new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
+'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+"The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
+));    
+allBooks.push(
+new Book(3, 'War and Peace', 'Leo Tolstoy', 
+'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
+'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
+)); 
+allBooks.push(
+new Book(4, 'Song of Solomon', 'Toni Morrison', 
+'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
+'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
+));                   
+}
+
+
+/********** Recommendation book display **********/
+const recommendedBooks = [];
+
+
+RecommendBooksCreate()
 displayTop()
 displayRecommendations()
 
@@ -28,31 +85,30 @@ function blinkHandler(bid){
                 let result = '../BookDetail/'+recommendedBooks[i].bookId+'/BookDetail-'+recommendedBooks[i].bookId+'.html'
                 return result;
             }
-        } 
-        log('error') // OR other actions...     
+        }   
     }
 
 
-function RecommendedBooksCallBack() {
-    /// Get recommendaed books from server
-    //  code below requires server call
-    // books in recommendedBooks list should be added by admin user
-    recommendedBooks.push(
-        new Book(0, 'Solaris', 'Stanisław Herman Lem', 
-        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
-        )); // currently link is empty
-    recommendedBooks.push(
-        new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
-        'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
-        'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-        )); 
-    recommendedBooks.push(
-        new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
-        'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
-        'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.',
-        )); 
- }
+    function RecommendBooksCreate() {
+        //Create RecommendedBooklist according to the frequency of the book put in some booklists
+        let popularity = new Array(allBooks.length).fill(0)
+        for(let i=0; i<allBooks.length; i++){
+                const bid = allBooks[i].bookId
+                for (let j=0; j<BooklistsList.length; j++){
+                    const result = BooklistsList[j].books.filter((Book) => Book.bookId == bid)
+                    popularity[i] += result.length;
+                }
+            }
+            for (let k=0; k<3; k++){
+                let max = popularity.reduce(function(a, b) {
+                    return Math.max(a, b);
+                }, -Infinity);
+                let index = popularity.indexOf(max)
+                recommendedBooks.push(allBooks[index])
+                popularity[index] = -1
+            }
+        
+        }
 
  function displayTop(){
      /*

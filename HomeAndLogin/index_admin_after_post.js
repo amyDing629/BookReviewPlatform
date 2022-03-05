@@ -6,6 +6,7 @@ const log = console.log;
 /** After log in, end user can like others' posts **/
 /********** Posts display **********/
 const posts = [];
+const homeposts = [];
 const collectedPosts = []; // collection of posts made by current user
 
 class Post {
@@ -64,31 +65,33 @@ function postCallBack() {
     null,
     "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
     '2022-03-05 16:00', 0));
+    
   }
 
 
 
 const postul = document.querySelector('#posts ul');
 postCallBack()
+homepostsCreate()
 displayPosts()
 
-
-// clean all before display
-function cleanPosts(){
-    const lis = postul.children;
-    for (let i=0; i<5; i++){
-        if (lis[i] != null){
-            lis[i].remove();
-        }
+function homepostsCreate(){
+    for (let i=0; i<posts.length; i++){
+        homeposts.push(posts[i])
     }
 }
 
 function displayPosts(){
-    cleanPosts();
 
     for (let i=0; i<5; i++){
-        if (posts[i] != null){
-            let li = document.createElement('li')
+        if (homeposts[i] != null){
+            let li = postul.children[i]
+            
+            /*clean all before display */
+            for (let j =0; j<li.children.length; j++){
+                li.removeChild(li.children[j])
+            }
+            
 
             let postDiv = document.createElement('div')
             postDiv.className = 'post'
@@ -97,17 +100,17 @@ function displayPosts(){
             let contentDiv = document.createElement('div')
             contentDiv.className ='postContent'
 
-            let title = posts[i].booktitle
-            let userName = posts[i].poster
-            let userProfile = posts[i].posterProfile
-            let pic = posts[i].pic
-            let content = posts[i].content
-            let time = posts[i].time
-            let likes = posts[i].likes
-            let plink = posts[i].posterlink
-            let pid = posts[i].postID
-            let bid = posts[i].bookID
-            let userid = posts[i].userid
+            let title = homeposts[i].booktitle
+            let userName = homeposts[i].poster
+            let userProfile = homeposts[i].posterProfile
+            let pic = homeposts[i].pic
+            let content = homeposts[i].content
+            let time = homeposts[i].time
+            let likes = homeposts[i].likes
+            let plink = homeposts[i].posterlink
+            let pid = homeposts[i].postID
+            let bid = homeposts[i].bookID
+            let userid = homeposts[i].userid
 
             let blink = blinkHandlerinPost(bid)
 
@@ -211,7 +214,7 @@ function displayPosts(){
             postDiv.appendChild(contentDiv)
 
             li.appendChild(postDiv)
-            postul.appendChild(li)
+
         }
     }
 }
@@ -227,15 +230,15 @@ function like(e){
 		const contentDiv = e.target.parentElement.parentElement
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                posts[i].likes ++
+        for (let i=0; i<homeposts.length; i++){
+            if(parseInt(homeposts[i].postID) == pid){
+                homeposts[i].likes ++
                 let length = contentDiv.children.length
                 length -= 1
                 const target = contentDiv.children[length]
                 const icon = target.children[0]
 
-                icon.innerText = ' '+ posts[i].likes
+                icon.innerText = ' '+ homeposts[i].likes
                 break;
             }
         } 
@@ -253,28 +256,73 @@ function collect(e){
 		const contentDiv = e.target.parentElement.parentElement
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                collectedPosts.push(posts[i]) // 
+        for (let i=0; i<homeposts.length; i++){
+            if(parseInt(homeposts[i].postID) == pid){
+                collectedPosts.push(homeposts[i]) // only collect and do nothing in phase1
             }
         } 
 	}
 }
 
-/*Have not been implemented */
-const postsManage = document.querySelector('.postsManage')
-postsManage.addEventListener('click', addPost)
-function addbooks(e){
-    e.preventDefault();
-    if (e.target.className == 'modify'){
-        console.log("here")
-        const postID1 = document.getElementById('postIDInput1').value
-        const postID2 = document.getElementById('postIDInput2').value
-        const postID3 = document.getElementById('postIDInput3').value
-        
-        displayPosts()
+displayPostManagerBar()
+function displayPostManagerBar(){
+    const t = document.querySelector('#modify_post1')
+    for (let i=0; i<homeposts.length; i++){
+        if (homeposts[i] != null){
+            const postid = homeposts[i].postID
+            const option = document.createElement('option')
+            option.value = postid
+            option.innerText = 'post number: '+postid+'th'
+            t.appendChild(option)
+        }
     }
+
+    const t2 = document.querySelector('#modify_post2')
+    for (let j=0; j<posts.length; j++){
+        if (posts[j] != null){
+            const postid = posts[j].postID
+            const option = document.createElement('option')
+            option.value = postid
+            option.innerText = 'To postID: '+postid
+            t2.appendChild(option)
+        }
+    }
+}  
+
+// Modify
+const modifyArea = document.querySelector('#modify_post_button')
+modifyArea.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'modify_post_button'){
+        const toreplace = document.getElementById('modify_post1')
+        const replacedwith = document.getElementById('modify_post2')
+        // new
+        if (toreplace.selectedIndex!=0 && replacedwith.selectedIndex!=0){
+            const value1 = toreplace.options[toreplace.selectedIndex].value; 
+            const value2 = replacedwith.options[replacedwith.selectedIndex].value;   
+            const targetpost = homeposts[value2]
+            homeposts[value1] = targetpost  
+            displayPosts()
+        }       
         
+    }  
 }
+    
+
+// const postsManage = document.querySelector('.postsManage')
+// postsManage.addEventListener('click', addPost)
+// function addbooks(e){
+//     e.preventDefault();
+//     if (e.target.className == 'modify'){
+//         console.log("here")
+//         const postID1 = document.getElementById('postIDInput1').value
+//         const postID2 = document.getElementById('postIDInput2').value
+//         const postID3 = document.getElementById('postIDInput3').value
+        
+//         displayPosts()
+//     }
+        
+// }
 
  
