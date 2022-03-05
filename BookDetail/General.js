@@ -22,8 +22,3 @@
         profileButton.innerHTML = 'Edit Description';
     }
 }
-
-const desButton = document.querySelector('#DesButton');
-desButton.addEventListener('click', profileButtonsOnClick);
-
-
