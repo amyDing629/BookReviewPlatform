@@ -1,4 +1,5 @@
 @import "../HomeAndLogin/home.css";
+@import "../BooklistMainPage/BooklistMainPage.css";
 
 #userMainPage {
     padding: 5px;
@@ -34,12 +35,11 @@
 }
 
 #id {
-	margin-top: 20px;
-	font-size: 150%;
-	color: rgb(63, 63, 63);
+	color: transparent;
+	float: right;
 }
 
-#signature {
+#signature, #sigForm {
 	margin-top: 20px;
 	font-size: 150%;
 
@@ -47,9 +47,11 @@
 
 #profileButton {
 	font-size: 150%;
-	margin-top: 20px;
+	margin-top: 40px;
 	margin-bottom: 200px;
 }
+
+
 
 
 #menu {
@@ -73,92 +75,14 @@
 	display: inline-block;	
 }
 
-.menuButton {
-    font-weight: bold;
-	font-size: 150%;
-	background-color: white;
-}
-
-.menuButtonSelected {
-    font-weight: bold;
-	font-size: 150%;
-	background-color: rgb(130, 131, 130);
-}
-
-#contents{
-	padding: 5px;
-	margin-top: 40px;
-	
-}
-
 #contents ul {
-	text-align: left;
-	margin-top: 10px;
-	background-color: white;
-	/* border: 2px solid rgb(71, 71, 71);
-    border-radius: 20px; */
-    width: 700px;	
-	overflow: auto;
 	list-style: none; 
 }
 
 #contents ul li {
 	margin-bottom: 20px;
-	margin-top: 10px;
 }
 
-.userPost {
-	margin-left: 20px;
-}
-
-.contentName {
-	font-weight: bold;
-	font-size: 150%;
-	float: left;
-	font-family: 'Lobster', cursive;
-}
-
-.contentID {
-	float:left;
-	margin-left: 10px;
-	font-size: 150%;
-	color: darkgray;
-	font-family: 'Lobster', cursive;
-}
-
-.contentTime {
-	font-family: 'Lobster', cursive;
-    float: right;
-	margin-right: 50px;
-}
-
-.contentContext {
-	margin-top: 10px;
-	width: 650px;
-	float: left;
-	margin-bottom: 15px;
-	display: block;
-}
-
-.contentPic {
-    display: block;
-}
-
-.fa-heart {
-    color:rgb(66, 66, 66);
-	margin-top: 10px;
-	float: left;
-} 
-
-.likeButton {
-	margin-top: 7px;	
-	float: right;
-	margin-right: 540px;
-	font-size:100%;
-	border-radius: 10px;
-	background-color: rgb(132, 133, 132);
-	margin-bottom: 10px;
-}
 /** Display lists **/
 .sortButton {
     color: #fff;
@@ -166,6 +90,16 @@
     border-color: #6c757d;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     font-size: small;
+	margin-top: 40px;
+	margin-left: 10px;
+}
+
+.bookId {
+	color: transparent;
+}
+
+.listID {
+	color: transparent;
 }
 
 /** Manage Users **/

@@ -31,20 +31,17 @@ class AdminUser extends User {
 }
 
 class Post {
-	constructor(booktitle, booklink, poster, posterlink, posterProfile, pic, content, time, likes) {
-		this.booktitle = booktitle;
+	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
+		this.postID = postID;
+        this.bookID = bookID;
+        this.booktitle = booktitle;
         this.booklink = booklink;
 		this.poster = poster;
-        this.posterlink = posterlink // if the current user does not login, cannot visit poster link (unsolved)
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
-        this.likes = likes; // only logined user can like? (unsolved)
-
-		// set post ID
-		this.postID = numberOfPosts;
-		numberOfPosts++;
+        this.likes = likes; 
     }
 }
 
@@ -167,12 +164,12 @@ function displayUserInfo(user, isVisit) {
         let manageButtonLi = document.createElement("li");
         let manageButton = document.createElement("button");
         manageButton.innerHTML = 'Manage';
-        manageButton.className = 'menuButton';
+        manageButton.className = 'btn btn-light';
         manageButtonLi.appendChild(manageButton);
         buttons.appendChild(manageButtonLi);
         let editBookButtonLi = document.createElement("li");
         let editBookButton = document.createElement("button");
-        editBookButton.className = 'menuButton';
+        editBookButton.className = 'btn btn-light';
         editBookButton.innerHTML = 'Edit Books';
         editBookButtonLi.appendChild(editBookButton);
         buttons.appendChild(editBookButtonLi);
@@ -181,62 +178,119 @@ function displayUserInfo(user, isVisit) {
 }
 
 function changeButtonColor(target) {
-    let changeBackTarget = document.getElementsByClassName('menuButtonSelected')[0];
-    changeBackTarget.classList.add('menuButton');
-    changeBackTarget.classList.remove('menuButtonSelected');
-    target.classList.add('menuButtonSelected');
-    target.classList.remove('menuButton');
+    let changeBackTarget = document.getElementsByClassName('selected')[0];
+    changeBackTarget.className = 'btn btn-light';
+    target.className = 'selected btn btn-dark';
 }
 
 function _createPostDiv(post) {
     let postDiv = document.createElement('div');
-    postDiv.className = 'userPost';
+    postDiv.className = 'post';
+    let userDiv = document.createElement('div');
+    userDiv.className = 'userProfileContainer';
+    let contentDiv = document.createElement('div');
+    contentDiv.className ='postContent';
 
-    let contentName = document.createElement('div');
-    contentName.className = 'contentName';
+    let title = post.booktitle;
+    let userName = post.poster;
+    let userProfile = post.posterProfile;
+    let pic = post.pic;
+    let content = post.content;
+    let time = post.time;
+    let likes = post.likes;
+    let plink = post.posterlink;
+    let pid = post.postID;
+    let bid = post.bookID;
 
-    let a = document.createElement('a');
-    a.className = 'linkColor';
-    a.setAttribute('href', post.booklink);
-    a.innerText = post.booktitle;
+    let blink = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
 
-    contentName.innerHTML = 'Book Name: ';
-    contentName.appendChild(a);
-    postDiv.appendChild(contentName);
+    let img1 = document.createElement('img');
+    img1.className='userProfile';
+    img1.setAttribute('src', userProfile);
+    img1.setAttribute('alt', 'profile');
+    userDiv.appendChild(img1);
 
-    let contentTime = document.createElement('div');
-    contentTime.className = 'contentTime';
-    contentTime.innerHTML = post.time;
-    postDiv.appendChild(contentTime);
-
-    let contentID = document.createElement('div');
-    contentID.className = 'contentID';
-    contentID.innerHTML = '#' + post.postID;
-    postDiv.appendChild(contentID);
-
-    let contentContext = document.createElement('div');
-    contentContext.className = 'contentContext';
-    contentContext.innerHTML = post.content;
-    postDiv.appendChild(contentContext);
-    
-    if (post.pic != null){
-        let contentPic = document.createElement('img');
-        contentPic.className = 'contentPic';
-        contentPic.setAttribute('src', post.pic);
-        postDiv.appendChild(contentPic);
+    let userh3 = document.createElement('h3');
+    let a1 = document.createElement('a');
+    a1.className = 'linkColor';
+    a1.setAttribute('href', plink);
+    a1.innerText = userName;
+    a1.onclick = function open(e){
+        e.preventDefault();
+        window.location.href("login.html");
     }
-    
-    let h3 = document.createElement('h3');
-    let iHeart = document.createElement('i');
-    iHeart.className = 'fa fa-heart';
-    iHeart.innerHTML = ' ' + post.likes;
-    h3.appendChild(iHeart);
-    postDiv.appendChild(h3);
+    let spanid2 = document.createElement('span');
+    spanid2.className = 'postId';
+    spanid2.innerText = pid;
+    userh3.appendChild(a1);
+    userh3.appendChild(spanid2); // Post id is here
 
-    let likeButton = document.createElement('button');
-    likeButton.className = 'likeButton';
-    likeButton.innerHTML = 'Like';
-    postDiv.appendChild(likeButton);
+    contentDiv.appendChild(userh3);
+
+    let pbook = document.createElement('p');
+    pbook.innerText = 'Book Name: ';
+    let span1 = document.createElement('span');
+    let a2 = document.createElement('a');
+    a2.className = 'linkColor';
+    a2.setAttribute('href', blink);
+    a2.innerText = title;
+    a2.onclick = function open(e){
+        e.preventDefault();
+        window.location.href(a2.href);
+    }
+    span1.appendChild(a2);
+    let span2 = document.createElement('span');
+    span2.className = 'postTime';
+    span2.innerText = time;
+
+    let spanid3 = document.createElement('span');
+    spanid3.className = 'bookId';
+    spanid3.innerText = ' bookID: ';
+    let spanid4 = document.createElement('span');
+    spanid4.className = 'bookId';
+    spanid4.innerText = bid;
+
+    pbook.appendChild(span1);
+    pbook.appendChild(span2);
+    pbook.appendChild(spanid3); 
+    pbook.appendChild(spanid4); // Book id is here
+    contentDiv.appendChild(pbook);
+
+    let p = document.createElement('p');
+    p.innerText = content;
+    contentDiv.appendChild(p);
+
+    if (pic != null){
+        let img2 = document.createElement('img');
+        img2.className='postContentPicture';
+        img2.setAttribute('src', pic);
+        img2.setAttribute('alt', 'pic');
+        contentDiv.appendChild(img2);
+    }
+
+    let br = document.createElement('br');
+    contentDiv.appendChild(br);
+
+    let likeh5 = document.createElement('h5')
+    let icon = document.createElement('i')
+    icon.className = 'fa fa-heart'
+    icon.innerText = ' '+likes
+    let button = document.createElement('button')
+    button.className = 'btn btn-outline-primary'
+    button.classList.add('like')
+    button.innerText = 'Like this post'
+    let button2 = document.createElement('button')
+    button2.className = 'btn btn-outline-success'
+    button2.classList.add('collect')
+    button2.innerText = 'Collect this post'
+
+    likeh5.appendChild(icon)
+    likeh5.appendChild(button2)
+    likeh5.appendChild(button)
+    contentDiv.appendChild(likeh5)
+
+    postDiv.appendChild(userDiv);
+    postDiv.appendChild(contentDiv);
     return postDiv;
 
 }
@@ -250,16 +304,17 @@ function displayUserPosts(user) {
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
     content.appendChild(sortWrap);
 
     let ul = document.createElement('ul');
+    ul.id = 'posts';
     let post;
     // TODO: flip page
     for (post of user.postList) {
@@ -445,10 +500,10 @@ function displayUserBooklists(user) {
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
@@ -478,19 +533,19 @@ function displayUserCollections(user){
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     let filterPosts = document.createElement('button');
-    filterPosts.className = 'sortButton';
+    filterPosts.className = 'sortButton btn btn-outline-secondary btn-sm';
     filterPosts.innerHTML = 'Filter collected posts';
     let filterBooklists = document.createElement('button');
-    filterBooklists.className = 'sortButton';
+    filterBooklists.className = 'sortButton btn btn-outline-secondary btn-sm';
     filterBooklists.innerHTML = 'Filter collected booklists';
     let mixed = document.createElement('button');
-    mixed.className = 'sortButton';
+    mixed.className = 'sortButton btn btn-outline-secondary btn-sm';
     mixed.innerHTML = 'Mixed';
     
     sortWrap.appendChild(sortDefaultButton);
@@ -499,6 +554,7 @@ function displayUserCollections(user){
     sortWrap.appendChild(filterPosts);
     sortWrap.appendChild(filterBooklists);
     content.appendChild(sortWrap);
+    content.appendChild(document.createElement('br'));
 
     let ul = document.createElement('ul');
     let collection;
@@ -548,10 +604,10 @@ function displayManageWindow() {
     let sortWrap = document.createElement('div');
     sortWrap.id = 'sortWrap';
     let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton';
+    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortDefaultButton.innerHTML = 'Sort By ID number';
     let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton';
+    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
     sortByAtoZ.innerHTML = 'Sort from A to Z';
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
@@ -602,17 +658,30 @@ function displayEditBooksWindow() {
 let regularUser = new User('user', 'user');
 let adminUser = new AdminUser('admin', 'admin');
 let regularAmy = new User('amy', 'amy');
-let postSolarisWithImg = new Post('Solaris', null, 'user', null,
+let postSolarisWithImg = new Post(1, 0, 'Solaris',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
     'I really like this book! I really like this book! I really like this book! I really like this book!',
-    '2022-03-01 18:05', 1)
-let postSolarisWithoutImg = new Post('Solaris', null, 'admin', null,
-    'https://avatars.githubusercontent.com/u/71192401?v=4', null,
+    '2022-03-01 18:05', 1);
+let postSolarisWithoutImg = new Post(0, 0, 'Solaris',null, 'admin',
+    "https://avatars.githubusercontent.com/u/73209681?v=4", 
+    null,
     'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0)
+    '2022-02-20 3:02', 0);
+let postSongOfSolomon = new Post(2, 4, 'Song of Solomon',null, 'user',
+    'https://avatars.githubusercontent.com/u/71192401?v=4', 
+    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
+    'I have to read it every day otherwise I cannot sleep',
+    '2022-03-05 00:05', 5);
+let postWarAndPeace = new Post(3, 3, 'War and Peace',null, 'user',
+    'https://avatars.githubusercontent.com/u/71192401?v=4', 
+    null,
+    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
+    '2022-03-05 16:00', 0);
 
 regularUser.postList.push(postSolarisWithImg);
+regularUser.postList.push(postSongOfSolomon);
+regularUser.postList.push(postWarAndPeace);
 adminUser.postList.push(postSolarisWithoutImg);
 
 let bookSolaris = new Book('Solaris', 'Stanisław Herman Lem', 1970, 
@@ -660,9 +729,9 @@ else {
 
 
 // Setup onclick
-const menuButtons = document.getElementsByClassName('menuButton');
+const menuButtons = document.getElementsByClassName('btn btn-light');
 const profileButtons = document.querySelector('#profileButton');
-const menuButtonSelected = document.querySelector('.menuButtonSelected');
+const menuButtonSelected = document.querySelector('.selected');
 let menuButton;
 for (menuButton of menuButtons) {
     menuButton.addEventListener('click', menuButtonsOnClick);

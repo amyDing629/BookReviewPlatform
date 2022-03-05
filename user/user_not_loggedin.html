@@ -4,7 +4,14 @@
         <meta charset="utf-8">
        <title>UserMainPage</title>
        <link rel="stylesheet" type="text/css" href="user.css">
-       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+       <!-- For reference -->
+        <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/blog/">
+
+        <!-- For bootstrap -->
+        <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
+        
+        <!-- For icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
     </head>
 
   <body>
@@ -25,7 +32,7 @@
               <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
               </form>
           </li>
-          <li class="right"><a href="./HomeAndLogin/login.html">Login / Register</a ></li>
+          <li class="right"><a href="../HomeAndLogin/login.html">Login / Register</a ></li>
         </ul>
     </div>
 
@@ -44,25 +51,12 @@
     <div id="menu">
       <div id="menubar">
         <ul>
-          <li><button class="menuButtonSelected">Posts</button></li>
-          <li><button class="menuButton">Lists</button></li>
-          <li><button class="menuButton">Collections</button></li>
+          <li><button class="menuButtonSelected, btn btn-dark">Posts</button></li>
+          <li><button class="menuButton, btn btn-dark">Lists</button></li>
+          <li><button class="menuButton, btn btn-dark">Collections</button></li>
         </ul>
       </div>
       <div id="contents">
-        <ul>
-          <li>
-            <div class="userPost">
-              <div class='contentName'>Book Name: sample book</div>
-              <div class='contentTime'>2022-03-01 18:05</div>
-              <div class='contentID'>#-1</div>
-              <h4 class='contentContext'>I really like this book! I really like this book! I really like this book! I really like this book!</h4>
-              <img class="contentPic" src='https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg' alt=""></img>
-              <h3><i class="fa fa-heart"> 0</i></h3>
-              <button class="likeButton">Like</button>
-            </div>
-          </li>
-        </ul>
       </div>
     </div>
   </div>
