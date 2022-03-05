@@ -1,14 +1,32 @@
-/****************************** Admin USER index-books js ******************************/
-const allBooks = [];
 
-class DataBook {
-	constructor(bid, title) {
-        this.bookId = bid; // get it from book detail page
-		this.title = title;
+
+/****************************** Admin USER index-books js ******************************/
+topMenuLink()
+
+function topMenuLink(){
+    const quit = document.querySelector('#topMenu .quit')
+    const a = quit.children[0]
+    a.onclick = function open(e){
+        e.preventDefault();
+        window.location.href = (a.href)
     }
 }
 
-/*************** Booklist data ********************/
+/*************** Books & Booklists Data ********************/
+
+const allBooks = [];
+
+class Book {
+	constructor(bid, title, author, cover, description, link) {
+        this.bookId = bid; // get it from book detail page
+		this.title = title;
+		this.author = author;
+        this.cover = cover;
+        this.description = description;
+        this.link = link; // link to book detail page
+    }
+}
+
 let BooklistsNum = 0; 
 let BooklistsList = [] 
 
@@ -22,25 +40,45 @@ class DataBooklist {
 	}
 }
 
-// Load default booklist data
-BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
-BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
-BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
-
-/*************** Booklist data [END] ********************/
-
-
 BooksCallBack()
+BookListsCallBack()
 displaySearchbox()
 
 function BooksCallBack(){
     // Get all books in database
-    allBooks.push(new DataBook(0, 'Solaris'))
-    allBooks.push(new DataBook(1, 'Tres Tristes Tigres'))
-    allBooks.push(new DataBook(2, 'The Story of the Lost Child'))
-    allBooks.push(new DataBook(3, 'War and Peace'))
-    allBooks.push(new DataBook(4, 'Song of Solomon'))
+    allBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 
+        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
+        )); // currently link is empty
+    allBooks.push(
+        new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
+        'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+        'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
+        ));
+    allBooks.push(
+        new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
+        'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+        "The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
+        ));    
+    allBooks.push(
+            new Book(3, 'War and Peace', 'Leo Tolstoy', 
+            'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
+            'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
+            )); 
+    allBooks.push(
+            new Book(4, 'Song of Solomon', 'Toni Morrison', 
+            'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
+            'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
+            ));                   
 }
+
+function BookListsCallBack(){
+    // Load default booklist data
+    BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
+    BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
+    BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
+}
+
 
 function displaySearchbox(){
     const searchbookArea = document.querySelector('.search-book')
@@ -71,7 +109,7 @@ function displaySearchbox(){
     }
 }
 
-/********** Search Book **********/
+// Search Book 
 const searchArea1 = document.querySelector('#search-button1')
 searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
@@ -79,13 +117,16 @@ function searchBook(e){
     if (e.target.id == 'search-button1'){
         console.log("here")
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
-        window.location.href = (link)
+        // new
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
+            window.location.href = (link)
+        }
     }  
 }
 
-/********** Search List **********/
+// Search List 
 const searchArea2 = document.querySelector('#search-button2')
 searchArea2.addEventListener('click', searchList)
 function searchList(e){
@@ -93,40 +134,20 @@ function searchList(e){
     if (e.target.id == 'search-button2'){
         console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
-        window.location.href = (link)
+        // new
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            window.location.href = (link)
+        }
     }  
 }
 
 
 
-
 /********** Recommendation book display **********/
 const recommendedBooks = [];
-
-function topMenuLink(){
-    const quit = document.querySelector('#topMenu .quit')
-    const a = quit.children[0]
-    a.onclick = function open(e){
-        e.preventDefault();
-        window.location.href = (a.href)
-    }
-}
-
-
-class Book {
-	constructor(bid, title, author, cover, description, link) {
-        this.bookId = bid; // get it from book detail page
-		this.title = title;
-		this.author = author;
-        this.cover = cover;
-        this.description = description;
-        this.link = link; // link to book detail page
-    }
-}
- topMenuLink()
- RecommendBooksCallBack()
+ RecommendBooksCreate()
  displayTop()
  displayRecommendations()
 
@@ -137,30 +158,29 @@ function blinkHandler(bid){
                 let result = '../BookDetail/'+recommendedBooks[i].bookId+'/'+recommendedBooks[i].bookId+'_admin_after.html'
                 return result;
             }
-        } 
-        // OR other actions...     
+        }   
     }
 
 
-function RecommendBooksCallBack() {
-    /// Get recommendaed books from server
-    //  code below requires server call
-    // books in recommendedBooks list should be added by admin user
-    recommendedBooks.push(
-        new Book(0, 'Solaris', 'Stanisław Herman Lem', 
-        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
-        )); // currently link is empty
-    recommendedBooks.push(
-        new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
-        'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
-        'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-        ));
-    recommendedBooks.push(
-        new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
-        'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
-        'The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.',
-        ));    
+function RecommendBooksCreate() {
+   //Create RecommendedBooklist according to the frequency of the book put in some booklists
+   let popularity = new Array(allBooks.length).fill(0)
+   for(let i=0; i<allBooks.length; i++){
+        const bid = allBooks[i].bookId
+        for (let j=0; j<BooklistsList.length; j++){
+            const result = BooklistsList[j].books.filter((Book) => Book.bookId == bid)
+            popularity[i] += result.length;
+        }
+    }
+    for (let k=0; k<3; k++){
+        let max = popularity.reduce(function(a, b) {
+            return Math.max(a, b);
+        }, -Infinity);
+        let index = popularity.indexOf(max)
+        recommendedBooks.push(allBooks[index])
+        popularity[index] = -1
+    }
+
  }
 
  function displayTop(){
@@ -293,36 +313,36 @@ function displayRecommendations(){
     }
 }
 
-/*Have not been implemented */
+
 
 // admin only action
-const topArea = document.querySelector('.top')
-top.addEventListener('click', modifyTop)
-function modifyTop(e){
-    e.preventDefault();
-    if (e.target.className == 'addSubmit'){
-        console.log("here")
-        const bookID = document.getElementById('bookIDInput').value
+// const topArea = document.querySelector('.top')
+// top.addEventListener('click', modifyTop)
+// function modifyTop(e){
+//     e.preventDefault();
+//     if (e.target.className == 'addSubmit'){
+//         console.log("here")
+//         const bookID = document.getElementById('bookIDInput').value
         
-        //recommendedBooks[0] = new Book(bookID, bookname, author, cover, description, null)
-        displayTop()
-    }
+//         //recommendedBooks[0] = new Book(bookID, bookname, author, cover, description, null)
+//         displayTop()
+//     }
         
-}
+// }
 
-const restArea = document.querySelector('.rest')
-restArea.addEventListener('click', addbooks)
-function addbooks(e){
-    e.preventDefault();
-    if (e.target.className == 'modify'){
-        console.log("here")
-        const bookID1 = document.getElementById('bookIDInput1').value
+// const restArea = document.querySelector('.rest')
+// restArea.addEventListener('click', addbooks)
+// function addbooks(e){
+//     e.preventDefault();
+//     if (e.target.className == 'modify'){
+//         console.log("here")
+//         const bookID1 = document.getElementById('bookIDInput1').value
        
-        const bookID2 = document.getElementById('bookIDInput2').value
+//         const bookID2 = document.getElementById('bookIDInput2').value
         
-        //recommendedBooks[1] = new Book(bookID1, bookname1, author1, cover1, description1, null)
-        //recommendedBooks[2] = new Book(bookID2, bookname2, author2, cover2, description2, null)
-        displayRecommendations()
-    }
+//         //recommendedBooks[1] = new Book(bookID1, bookname1, author1, cover1, description1, null)
+//         //recommendedBooks[2] = new Book(bookID2, bookname2, author2, cover2, description2, null)
+//         displayRecommendations()
+//     }
         
-}
+// }
