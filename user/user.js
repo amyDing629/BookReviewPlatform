@@ -188,13 +188,10 @@ function changeButtonColor(target) {
 function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
-        console.log(e.target);
         let contentDiv = e.target.parentElement.parentElement
         let pid = contentDiv.getElementsByClassName('postId')[0].innerHTML
-        console.log(pid);
         let post;
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
-        console.log(icon);
         for (post of posts){
             console.log(parseInt(post.postID));
             if (parseInt(post.postID) == pid){
@@ -216,6 +213,20 @@ function _createPostDiv(post) {
                 }    
             } 
         }
+    }
+
+    function collectOnClick(e){
+        e.preventDefault(); // prevent default action
+        if (e.target.classList.contains('collect')){
+            e.target.classList.remove('collect');
+            e.target.classList.add('collected');
+            e.target.innerText = 'Collected!';
+        }
+        else if (e.target.classList.contains('collected')){
+            e.target.classList.remove('collected');
+            e.target.classList.add('collect');
+            e.target.innerText = 'Collect';
+        }    
     }
 
     function deletePostButtonOnClick(e) {
@@ -323,6 +334,7 @@ function _createPostDiv(post) {
     button2.className = 'btn btn-outline-success'
     button2.classList.add('collect')
     button2.innerText = 'Collect'
+    button2.addEventListener('click', collectOnClick);
     // end user: delete button only for lists created by self
     const userInfo = document.querySelector('#userLoginInfo').innerText
 
