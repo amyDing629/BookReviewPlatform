@@ -9,27 +9,43 @@
     </head>
     <body>
  	<!-- The Top Menu -->
- 	<div id="topMenu">
+     <div id="topMenu">
         <ul>
             <li>
                 <div class="logoContainer">
-                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
+                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="icon">
                 </div>
             </li>
-            <li><a class="addUserIdToLink" href="../HomeAndLogin/index_admin_after.html">Home</a></li>
+            <li><a class="active" href="">Home</a></li>
             <li><a class="addUserIdToLink" href="../BookMainPage/BookMainPage_admin_after.html">Books</a></li>
-            <li><a class="active addUserIdToLink" href="./BooklistMainPage_admin_after.html">Booklists</a></li>
-            <li>
-                <form>
-                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
-                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
-                </form>
+            <li><a class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage_admin_after.html">Booklists</a></li>
+            <!-- New -->
+            <li class="search-book">
+                <select class="form-select form-select-sm" id="search-book">
+                    <option selected>Search for Books...</option>
+                    <!--Dom -->
+                </select>     
             </li>
-            <li class="right">
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
+            </li>
+            <li class="search-list">
+                <select class="form-select form-select-sm" id="search-list">
+                    <option selected>Search for BookLists...</option>
+                    <!--Dom search booklist-->
+                </select> 
+            </li>
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
+            </li>
+            <li class="quit">
+                <a href="index.html">QUIT</a>
+            </li>
+            <li>
                 <a id="userLoginInfo" class="addUserIdToLink" href="../user/admin.html">Hello, Admin</a>
             </li>
           </ul>
- 	</div>
+    </div>
 
      <!-- All booklists -->
     <div id="booklistTable">

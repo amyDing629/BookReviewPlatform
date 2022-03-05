@@ -2,7 +2,7 @@
 var BooklistsNum = 0; 
 var BooklistsList = [] 
 
-// temp hardcode for all books:
+/************** temp hardcode for all books ******************/
 var BooksNum = 0; 
 var BooksList = [] 
 class Book {
@@ -36,7 +36,80 @@ BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
 BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
 'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
 'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
-// temp [end]
+/************** temp for book [END] ******************/
+
+
+/************** temp for search bar ******************/
+function displaySearchbox(){
+    const searchbookArea = document.querySelector('.search-book')
+    const t = searchbookArea.children[0]
+    for (let i=0; i<BooksNum; i++){
+        if (BooksList[i] != null){
+            const id = BooksList[i].bookID
+            const name = BooksList[i].name
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            t.appendChild(option)
+        }
+    }
+    const searchlistArea = document.querySelector('.search-list')
+    const column = searchlistArea.children[0]
+    for (let i=0; i<BooklistsNum; i++){
+        if (BooklistsList[i] != null){
+            const id = BooklistsList[i].booklistID
+            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            column.appendChild(option)
+        }
+    }
+}
+
+/********** Search Book **********/
+const searchArea1 = document.querySelector('#search-button1')
+searchArea1.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button1'){
+        const select = document.getElementById('search-book');
+        const value = select.options[select.selectedIndex].value;
+        const user = document.querySelector('.right').innerText.split(', ')
+        let link = '../BookDetail/'
+        if (user.length === 1){ // ['Login/Register']
+            link+=value+'/BookDetail-'+value+'.html'
+        } else if (user[1] === 'Admin'){
+            link+=value+'/'+value+'_admin_after.html'
+        } else if (user[1] === 'User'){
+            link+=value+'/'+value+'_end_after.html'
+        }
+        window.location.href = (link)
+    }  
+}
+
+/********** Search List **********/
+const searchArea2 = document.querySelector('#search-button2')
+searchArea2.addEventListener('click', searchList)
+function searchList(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button2'){
+        console.log("here")
+        const select = document.getElementById('search-list');
+        const value = select.options[select.selectedIndex].value;
+        const user = document.querySelector('.right').innerText.split(', ')
+        let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
+        if (user.length === 1){ // ['Login/Register']
+            link += ".html"
+        } else if (user[1] === 'Admin'){
+            link += "&userID=1.html"
+        } else if (user[1] === 'User'){
+            link += "&userID=0.html"
+        }
+        window.location.href = (link)
+    }  
+}
+/************** temp for search bar [END] ******************/
 
 class Booklist {
 	constructor(listName, listDescription, creator, bookCollection) {
@@ -167,20 +240,32 @@ function selectBooklistToPlay(){
 
 function selectNarviBarUser(user){
     const userColumn = document.querySelector('.right')
-    const old = userColumn.children[0]
-    const newLI = document.createElement('a')
-    newLI.id="userLoginInfo" 
-        newLI.class="addUserIdToLink"
     if (user === 'User'){//end user, need more dynamiclly fix on phase 2
-        newLI.href="../user/user.html"
-        newLI.appendChild(document.createTextNode('Hello, User'))
-        userColumn.removeChild(old)
-        userColumn.appendChild(newLI)
+        userColumn.innerHTML =''
+        const newLI = document.createElement('li')
+        newLI.className = "quit"
+        newLI.innerHTML = "<a href=\"../HomeAndLogin/index.html\">QUIT</a>"
+        const a = document.createElement('a')
+        a.id = 'userLoginInfo'
+        a.className = 'addUserIdToLink'
+        a.href = "../user/user.html"
+        a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
+        a.appendChild(document.createTextNode('Hello, User'))
+        userColumn.appendChild(a)
+        userColumn.before(newLI)
     } else if (user === 'Admin'){ // admin
-        newLI.href="../user/admin.html"
-        newLI.appendChild(document.createTextNode('Hello, Admin'))
-        userColumn.removeChild(old)
-        userColumn.appendChild(newLI)
+        userColumn.innerHTML =''
+        const newLI = document.createElement('li')
+        newLI.className = "quit"
+        newLI.innerHTML = "<a href=\"../HomeAndLogin/index.html\">QUIT</a>"
+        const a = document.createElement('a')
+        a.id = 'userLoginInfo'
+        a.className = 'addUserIdToLink'
+        a.href = "../user/admin.html"
+        a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
+        a.appendChild(document.createTextNode('Hello, Admin'))
+        userColumn.appendChild(a)
+        userColumn.before(newLI)
     } //else guest
 }
 
@@ -319,4 +404,5 @@ function uniqueSortedIDsArrayGenerator(str){
     return Array.from(new Set(valids.sort()))
 }
 
+displaySearchbox() // for navi bar search function
 selectBooklistToPlay()
