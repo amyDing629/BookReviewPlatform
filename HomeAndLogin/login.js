@@ -6,7 +6,7 @@ function back(e){
     e.preventDefault();
     if (e.target.className == 'btn btn-dark'){
         log('hi')
-        window.location.replace('index.html')
+        window.location.href('index.html')
     }  
 }
 
@@ -17,7 +17,7 @@ function benewacc(e){
     e.preventDefault();
     if (e.target.className == 'btn btn-dark'){
         log('hi')
-        window.location.replace('register.html')
+        window.location.href('register.html')
     }  
 }
 

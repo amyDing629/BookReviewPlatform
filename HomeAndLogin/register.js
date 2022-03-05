@@ -6,7 +6,7 @@ function back(e){
     e.preventDefault();
     if (e.target.className == 'btn btn-dark'){
         log('hi')
-        window.location.replace('login.html')
+        window.location.href('login.html')
     }  
 }
 

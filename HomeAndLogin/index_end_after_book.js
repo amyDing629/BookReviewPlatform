@@ -49,7 +49,7 @@ function searchBook(e){
         const select = document.getElementById('search-book');
         const value = select.options[select.selectedIndex].value;
         const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
-        window.location.replace(link)
+        window.location.href(link)
     }  
 }
 
@@ -166,7 +166,7 @@ function RecommendBooksCallBack() {
             a.setAttribute('href', booklink)
             a.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace(a.href)
+                window.location.href(a.href)
             }
             a.innerText = 'Learn more about it...'
             p2.appendChild(a)
@@ -246,7 +246,7 @@ function displayRecommendations(){
         a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
-            window.location.replace(a.href)
+            window.location.href(a.href)
         }
 
         innerdiv2.appendChild(h3)
