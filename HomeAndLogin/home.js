@@ -103,7 +103,7 @@ function RecommendedBooksCallBack() {
             a.setAttribute('href', booklink)
             a.onclick = function open(e){
                 e.preventDefault();
-                window.location.href(a.href)
+                window.location.href=(a.href)
             }
             a.innerText = 'Learn more about it...'
             p2.appendChild(a)
@@ -168,7 +168,7 @@ function displayRecommendations(){
         a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
-            window.location.href(a.href)
+            window.location.href=(a.href)
         }
 
         innerdiv2.appendChild(h3)
@@ -308,7 +308,7 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.href("login.html")
+                window.location.href=("login.html")
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -327,7 +327,7 @@ function displayPosts(){
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();
-                window.location.href(a2.href)
+                window.location.href=(a2.href)
             }
             span1.appendChild(a2)
             let span2 = document.createElement('span')

@@ -8,6 +8,28 @@ class DataBook {
     }
 }
 
+/*************** Booklist data ********************/
+let BooklistsNum = 0; 
+let BooklistsList = [] 
+
+class DataBooklist {
+	constructor(listName, creator, bookCollection) {
+		this.listName = listName
+		this.creator = creator; 
+        this.books = bookCollection; // list of DataBook here, list of Book object in BooklistMain
+		this.booklistID = BooklistsNum;
+		BooklistsNum++;
+	}
+}
+
+// Load default booklist data
+BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
+BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
+BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
+
+/*************** Booklist data [END] ********************/
+
+
 BooksCallBack()
 displaySearchbox()
 
@@ -36,7 +58,17 @@ function displaySearchbox(){
     
 
     const searchlistArea = document.querySelector('.search-list')
-    // todo
+    const column = searchlistArea.children[0]
+    for (let i=0; i<BooklistsNum; i++){
+        if (BooklistsList[i] != null){
+            const id = BooklistsList[i].booklistID
+            const name = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            column.appendChild(option)
+        }
+    }
 }
 
 /********** Search Book **********/
@@ -49,7 +81,7 @@ function searchBook(e){
         const select = document.getElementById('search-book');
         const value = select.options[select.selectedIndex].value;
         const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
-        window.location.href(link)
+        window.location.href = (link)
     }  
 }
 
@@ -62,7 +94,8 @@ function searchList(e){
         console.log("here")
         const select = document.getElementById('search-list');
         const value = select.options[select.selectedIndex].value;
-       // to do
+        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // end userID: 0 'User'
+        window.location.href = (link)
     }  
 }
 
@@ -166,7 +199,7 @@ function RecommendBooksCallBack() {
             a.setAttribute('href', booklink)
             a.onclick = function open(e){
                 e.preventDefault();
-                window.location.href(a.href)
+                window.location.href = (a.href)
             }
             a.innerText = 'Learn more about it...'
             p2.appendChild(a)
@@ -246,7 +279,7 @@ function displayRecommendations(){
         a.innerText = 'Learn more'
         a.onclick = function open(e){
             e.preventDefault();
-            window.location.href(a.href)
+            window.location.href = (a.href)
         }
 
         innerdiv2.appendChild(h3)

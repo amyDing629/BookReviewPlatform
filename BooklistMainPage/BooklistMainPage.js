@@ -38,6 +38,64 @@ BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
 'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
 // temp [end]
 
+/************** temp for search bar ******************/
+function displaySearchbox(){
+    const searchbookArea = document.querySelector('.search-book')
+    const t = searchbookArea.children[0]
+    for (let i=0; i<BooksNum; i++){
+        if (BooksList[i] != null){
+            const id = BooksList[i].bookID
+            const name = BooksList[i].name
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            t.appendChild(option)
+        }
+    }
+    const searchlistArea = document.querySelector('.search-list')
+    const column = searchlistArea.children[0]
+    for (let i=0; i<BooklistsNum; i++){
+        if (BooklistsList[i] != null){
+            const id = BooklistsList[i].booklistID
+            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            column.appendChild(option)
+        }
+    }
+}
+
+/********** Search Book **********/
+const searchArea1 = document.querySelector('#search-button1')
+searchArea1.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button1'){
+        console.log("here")
+        const select = document.getElementById('search-book');
+        const value = select.options[select.selectedIndex].value;
+        const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
+        window.location.href = (link)
+    }  
+}
+
+/********** Search List **********/
+const searchArea2 = document.querySelector('#search-button2')
+searchArea2.addEventListener('click', searchList)
+function searchList(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button2'){
+        console.log("here")
+        const select = document.getElementById('search-list');
+        const value = select.options[select.selectedIndex].value;
+        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
+        window.location.href = (link)
+    }  
+}
+/************** temp for search bar [END] ******************/
+
+
 class Booklist {
 	constructor(listName, listDescription, creator, bookCollection) {
 		this.listName = listName;
@@ -46,8 +104,8 @@ class Booklist {
         } else {
             this.listDescription = listDescription
         }
-		this.creator = creator; // user id?
-        this.books = bookCollection; // list of bids
+		this.creator = creator // username, temp
+        this.books = bookCollection; // list of Book object
 		this.booklistID = BooklistsNum;
 		BooklistsNum++;
         this.likes = 0;
@@ -355,5 +413,6 @@ function sortByAtoZ(){
 
 
 // load main list
+displaySearchbox() // for search bar function 
 displayAllBooklists(BooklistsList)
 filpPage(1,3)

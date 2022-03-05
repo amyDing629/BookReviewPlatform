@@ -20,13 +20,28 @@
             <li><a class="addUserIdToLink" href="../HomeAndLogin/index_end_after.html">Home</a></li>
             <li><a class="active addUserIdToLink" href="BookMainPage_end_after.html">Books</a></li>
             <li><a class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage_end_after.html">Booklists</a></li>
-            <li>
-                <form>
-                <input type="text" id="search" placeholder="Search for books, booklists, and users.." >
-                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
-                </form>
+            <li class="search-book">
+                <select class="form-select form-select-sm" id="search-book">
+                    <option selected>Search for Books...</option>
+                    <!--Dom -->
+                </select>     
             </li>
-            <li class="right">
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
+            </li>
+            <li class="search-list">
+                <select class="form-select form-select-sm" id="search-list">
+                    <option selected>Search for BookLists...</option>
+                    <!--Dom search booklist-->
+                </select> 
+            </li>
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
+            </li>
+            <li class="quit">
+                <a href="index.html">QUIT</a>
+            </li>
+            <li>
                 <a id="userLoginInfo" class="addUserIdToLink" href="../user/user.html">Hello, User</a>
             </li>
           </ul>
