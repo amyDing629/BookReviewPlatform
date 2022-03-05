@@ -32,7 +32,7 @@
             <!-- New -->
             <li class="search-book">
                 <select class="form-select form-select-sm" id="search-book">
-                    <option selected>Search for Books...</option>
+                    <option selected disabled>Search for Books...</option> <!--modified -->
                     <!--Dom -->
                 </select>     
             </li>
@@ -41,7 +41,7 @@
             </li>
             <li class="search-list">
                 <select class="form-select form-select-sm" id="search-list">
-                    <option selected>Search for BookLists...</option>
+                    <option selected disabled>Search for BookLists...</option> <!--modified -->
                     <!--Dom search booklist-->
                 </select> 
             </li>
@@ -66,17 +66,10 @@
 
 	<!-- Recommendation books section -->
     <div id="recommendation"> 
+        <!--Recommmended based on the frequency of a book appears in booklists -->
 		<h1 class="textDecoration">  Recommended books </h1>
         <div class="top">
-        <div id="adminActionsWrap">
-            <form id="addBook" class="addBook">
-                <span><b>Admin action - modify top recommendation</b></span>
-                <input id="bookIDInput" type="text" placeholder="Book ID" required>
-                <input class="addSubmit, btn btn-outline-danger" type = "submit" value="modify">
-                <br>
-                <span><b>NOTE: this functionality has not been implemented yet FOR PHASE1, as the books should come from database, and admin will choose existing books to display</b></span>
-            </form>
-        </div>
+        
         </div>
         <!-- NEW ADDED -->
         <!-- Max 3 books (1 top + 2) -->
@@ -90,19 +83,7 @@
         <!-- Since we only have two books now, I just put one book at here and top also -->
         <!-- One is directly demoed in html, another is by dom -->
         <div class="rest">
-            <div id="adminActionsWrap">
-                <form id="addBook" class="addBook">
-                    <span><b>Admin action - modify rest recommendations</b></span>
-                    <br>
-                    <span>Book1 -</span>
-                    <input id="bookIDInput1" type="text" placeholder="Book ID1" required>
-                    <span>Book2 -</span>
-                    <input id="bookIDInput2" type="text" placeholder="Book ID2" required>
-                    <input class="modify, btn btn-outline-danger" type = "submit" value="modify">
-                    <br>
-                    <span><b>NOTE: this functionality has not been implemented yet FOR PHASE1, as the books should come from database, and admin will choose existing books to display</b></span>
-                </form>
-            </div>
+            
         </div>    
         <div class="row mb-2">
             
@@ -116,25 +97,26 @@
                 <h3 class="pb-4 mb-4 fst-italic border-bottom, textDecoration2">
                     People in BookLand
                   </h3>
-            <div class="postsManage">
-                    <div id="adminActionsWrap">
-                        <form id="addPost" class="addPost">
-                            <span><b>Admin action - modify Posts displayed, can have THREE posts at maximum (All posts will be clear first)</b></span>
-                            <br>
-                            <span>Post1 - </span>
-                            <input id="postIDInput1" type="text" placeholder="postID1" required>
-                            <span>Post2 - </span>
-                            <input id="postIDInput2" type="text" placeholder="postID2" required>
-                            <span>Post3 - </span>
-                            <input id="postIDInput3" type="text" placeholder="postID3" required>
-                            <input class="modify, btn btn-outline-danger" type = "submit" value="add Post">
-                            <br>
-                            <span><b>NOTE: this functionality has not been implemented yet FOR PHASE1, as the books should come from database, and admin will choose existing books to display</b></span>
-                        </form>
-                    </div>
-                </div>        
+                <div class="adminManage">
+                <h5>Admin Only: modify Posts listed here </h5>
+                <h5>For phase1: we only have 4 posts hence...</h5>
+                <select class="form-select" id="modify_post1">
+                    <option selected disabled="disabled">modify post ID...</option>
+                    <!--Dom -->
+                </select> 
+                <select class="form-select" id="modify_post2">
+                    <option selected disabled="disabled">TO post ID...</option>
+                    <!--Dom -->
+                </select> 
+                <button type="submit" class="btn btn-danger" id="modify_post_button"> Modify to this post </button>
+            </div>
               <ul>
-                <!-- Max 3 posts -->
+                <!-- Max 5 posts -->
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
              </ul>
             </div> 
             <!--Right part -->

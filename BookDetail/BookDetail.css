@@ -1,5 +1,12 @@
 @import "../../HomeAndLogin/home.css"; 
 
+#posts .textDecoration2{
+    text-align: left;
+    text-decoration: underline;
+    font-family: 'Noto Serif Display', serif;
+    border-bottom: 2px solid rgb(199, 196, 196);
+}
+
 .active{
     background-color: white;
 }
@@ -24,6 +31,23 @@
 .delete{
     float:right;
     margin-right: 5px;
+}
+
+.normalTR{
+    display: block;
+}
+
+.endTR{
+    display: none;
+}
+
+#pageFliper{
+    text-align: center;
+}
+.pagelink{
+    color: #5088e9;
+    background: none;
+    text-decoration: dashed;
 }
 /* ################################### */
 .bookInfo{

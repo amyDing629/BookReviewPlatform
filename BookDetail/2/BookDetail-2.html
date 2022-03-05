@@ -15,23 +15,40 @@
         <ul>
             <li>
                 <div class="logoContainer">
-                    <img class="logo" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt="xyy">
+                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
                 </div>
             </li>
-            <li><a class="active" href="../HomeAndLogin/index.html">Home</a></li>
-            <li><a href="../../BookMainPage/BookMainPage.html">Books</a></li>
-            <li><a href="../../BooklistMainPage/BooklistMainPage.html">Booklists</a></li>
-            <li>
-                <form>
-                <input type="text" name="search" placeholder="Search for books, booklists, and users..">
-                <button type="submit" class="btn btn-light"><i class="fa fa-search"></i></button>
-                </form>
+            <!-- New -->
+            <li><a class="active" href="index.html">Home</a></li>
+            <li><a href="../BookMainPage/BookMainPage.html">Books</a></li>
+            <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a></li>
+            <li class="search-book">
+                <select class="form-select form-select-sm" id="search-book" disabled>
+                    <option selected>Search for Books...</option>
+                    <!--Dom -->
+                </select>     
             </li>
-            <li class="right">
-                <a href="../../HomeAndLogin/login.html">Login/Register</a>
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button1" disabled><i class="fa fa-search"></i> Books</button>
+            </li>
+            <li class="search-list">
+                <select class="form-select form-select-sm" id="search-list" disabled>
+                    <option selected>Search for BookLists...</option>
+                    <!-- 改这里 -->
+                    <option value="0">Solaris</option>
+                    <option value="1"><span>Tres Tristes Tigres</span></option>
+                    <option value="2"><span>The Story of the Lost Child</span></option>
+                </select> 
+            </li>
+            <li>
+                <button type="submit" class="btn btn-dark" id="search-button2" disabled><i class="fa fa-search"></i> Booklists</button>
+            </li>
+            <li>
+                <a href="login.html">Login/Register</a>
             </li>
           </ul>
  	</div>
+
 
      <div class="bookInfo" id="bookInfo">
         <!-- <div class="coverContainer">
@@ -73,15 +90,14 @@
                 <h3 class="pb-4 mb-4 fst-italic border-bottom, textDecoration2">
                     People in BookLand
                   </h3>
-              <ul>
+              <ul id="post-body">
                 <!-- Max 5 posts -->
              </ul>
             </div> 
             
-             
+            <div id="pageFliper"></div>
         </div>   
     </div> 
-
 
     <script type="text/javascript" src="BookDetail-2.js"></script>
     <script type="text/javascript" src="Post-2.js"></script>
