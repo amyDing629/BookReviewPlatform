@@ -220,7 +220,7 @@ function _createPostDiv(post) {
 
     function deletePostButtonOnClick(e) {
         let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[1].removeChild(deletePostDiv);
+        document.getElementById('contents').children[2].removeChild(deletePostDiv);
     }
 
     let postDiv = document.createElement('div');
@@ -362,6 +362,7 @@ function displayUserPosts(user) {
     sortWrap.appendChild(sortDefaultButton);
     sortWrap.appendChild(sortByAtoZ);
     content.appendChild(sortWrap);
+    content.appendChild(document.createElement('br'));
 
     let ul = document.createElement('ul');
     ul.id = 'posts';
@@ -447,7 +448,7 @@ function _createUserBooklists(booklist) {
 
     // end user: delete button only for lists created by self
     const userInfo = document.querySelector('#userLoginInfo').innerText
-    if (userInfo.toLowerCase() === booklist.creator.toLowerCase()) {
+    if (userInfo.toLowerCase() === booklist.creator.toLowerCase() || userInfo.toLowerCase() == 'admin') {
         const div1 = document.createElement('div')
         div1.className = 'delete'
         const button3 = document.createElement('button')
