@@ -1,6 +1,7 @@
 const log = console.log;
 /****************************** Default index js ******************************/
 
+
 /********** Recommendation book display **********/
 const recommendedBooks = [];
 
@@ -15,9 +16,9 @@ class Book {
     }
 }
 
- BooksCallBack()
- displayTop()
- displayRecommendations()
+RecommendedBooksCallBack()
+displayTop()
+displayRecommendations()
 
 
 function blinkHandler(bid){
@@ -32,7 +33,7 @@ function blinkHandler(bid){
     }
 
 
-function BooksCallBack() {
+function RecommendedBooksCallBack() {
     /// Get recommendaed books from server
     //  code below requires server call
     // books in recommendedBooks list should be added by admin user

@@ -9,13 +9,11 @@ a {
     color: black;
 }
 
-
 /** Some color classes  **/
 
 .linkColor {
 	color: #5088e9;
 }
-
 
 .transparent{
     /* Can use to hide ids */
@@ -108,7 +106,6 @@ a {
 }
 
 
-
 #topMenu li a:hover {
     background-color: #ccc;
   }
@@ -116,6 +113,49 @@ a {
 .active {
     background-color: grey;
 }
+
+/*new added*/
+#search-button1{
+    margin-top:5px;
+    margin-left:5px;
+    margin-right:20px;
+}
+
+#search-button2{
+    margin-top:5px;
+    margin-left:5px;
+    margin-right:10px;
+}
+
+#topMenu li.search-book{
+
+    margin-top:9px;
+    margin-left:5px;
+}
+#topMenu li.search-list{
+
+    margin-top:9px;
+    margin-left:5px;
+}
+
+
+.dropdown-menu li {
+    position: relative;
+  }
+  .dropdown-menu .dropdown-submenu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: -7px;
+  }
+  .dropdown-menu .dropdown-submenu-left {
+    right: 100%;
+    left: auto;
+  }
+  .dropdown-menu > li:hover > .dropdown-submenu {
+    display: block;
+  }
+
 
 #topMenu input[type=text] {
     width: 500px;
@@ -281,6 +321,19 @@ a {
     margin-right: 5px;
 }
 
+.collect{
+    float:right;
+    margin-right: 5px;
+}
+
+
+#posts h5{
+    padding-top: 10px;
+}
+
+.fa-heart {
+    color:black;
+} 
 
 /* Trash */
 #posts .delete{
@@ -298,22 +351,6 @@ a {
     background-color: black;
   }
 /*   */
-
-
-.collect{
-    float:right;
-    margin-right: 5px;
-}
-
-
-#posts h5{
-    padding-top: 10px;
-}
-
-.fa-heart {
-    color:black;
-} 
-
 
 
 /**** NEW ADDED ****/
