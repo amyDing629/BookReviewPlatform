@@ -1,5 +1,12 @@
 @import "../../HomeAndLogin/home.css"; 
 
+#posts .textDecoration2{
+    text-align: left;
+    text-decoration: underline;
+    font-family: 'Noto Serif Display', serif;
+    border-bottom: 2px solid rgb(199, 196, 196);
+}
+
 .active{
     background-color: white;
 }
