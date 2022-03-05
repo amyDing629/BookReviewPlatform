@@ -308,16 +308,10 @@ a {
     margin-bottom: 5px;
 }
 
-.like, .dislike{   
+.like, .dislike, .collect, .delete{   
     float:right;
     margin-right: 5px;
 }
-
-.collect{
-    float:right;
-    margin-right: 5px;
-}
-
 
 #posts h5{
     padding-top: 10px;

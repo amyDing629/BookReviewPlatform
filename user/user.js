@@ -203,7 +203,7 @@ function _createPostDiv(post) {
                     icon.innerText = ' '+ post.likes;
                     e.target.classList.remove('like');
                     e.target.classList.add('dislike');
-                    e.target.innerText = 'Dislike this post';
+                    e.target.innerText = 'Dislike';
                     break;
                 }
                 else if (e.target.classList.contains('dislike')){
@@ -211,12 +211,18 @@ function _createPostDiv(post) {
                     icon.innerText = ' '+ post.likes;
                     e.target.classList.remove('dislike');
                     e.target.classList.add('like');
-                    e.target.innerText = 'Like this post';
+                    e.target.innerText = 'Like';
                     break;
                 }    
             } 
         }
     }
+
+    function deletePostButtonOnClick(e) {
+        let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
+        document.getElementById('contents').children[1].removeChild(deletePostDiv);
+    }
+
     let postDiv = document.createElement('div');
     postDiv.className = 'post';
     let userDiv = document.createElement('div');
@@ -311,14 +317,24 @@ function _createPostDiv(post) {
     let button = document.createElement('button')
     button.className = 'btn btn-outline-primary'
     button.classList.add('like')
-    button.innerText = 'Like this post'
+    button.innerText = 'Like'
     button.addEventListener('click', likeOnClick);
     let button2 = document.createElement('button')
     button2.className = 'btn btn-outline-success'
     button2.classList.add('collect')
-    button2.innerText = 'Collect this post'
+    button2.innerText = 'Collect'
+    // end user: delete button only for lists created by self
+    const userInfo = document.querySelector('#userLoginInfo').innerText
 
     likeh5.appendChild(icon)
+    if (userInfo.toLowerCase() === post.poster.toLowerCase() || userInfo.toLowerCase() == 'admin') {
+        let button3 = document.createElement('button');
+        button3.className = "btn btn-outline-danger";
+        button3.classList.add('delete');
+        button3.addEventListener('click', deletePostButtonOnClick);
+        button3.innerText = 'Delete';
+        likeh5.appendChild(button3);
+    }
     likeh5.appendChild(button2)
     likeh5.appendChild(button)
     contentDiv.appendChild(likeh5)
@@ -412,6 +428,11 @@ function _createUserBooklists(booklist) {
         }
     }
 
+    function deleteBooklistButtonOnClick(e) {
+        let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
+        document.getElementById('contents').children[2].removeChild(booklistDiv);
+    }
+
     const div = document.createElement('div')
     div.className = 'booklist'
 
@@ -423,6 +444,22 @@ function _createUserBooklists(booklist) {
     IDcontent.appendChild(document.createTextNode(booklist.booklistID))
     id.appendChild(IDcontent)
     div.appendChild(id)
+
+    // end user: delete button only for lists created by self
+    const userInfo = document.querySelector('#userLoginInfo').innerText
+    if (userInfo.toLowerCase() === booklist.creator.toLowerCase()) {
+        const div1 = document.createElement('div')
+        div1.className = 'delete'
+        const button3 = document.createElement('button')
+        button3.className = "deleteButton, btn btn-danger" 
+        button3.appendChild(document.createTextNode("Delete this list"))
+        button3.addEventListener('click', deleteBooklistButtonOnClick);
+        div1.appendChild(button3)
+        id.appendChild(div1)
+
+
+        div.appendChild(id)
+    }
 
     // infoWrap
     const ul1 = document.createElement('ul')
@@ -781,8 +818,8 @@ let bookTres = new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971
     'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
     'It is a highly experimental, Joycean novel, playful and rich in literary allusions.')
 
-let novelBooklist = new Booklist('novels', 'All novels liked.', 'A01', [bookSolaris,bookTres])
-let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'A01', [bookTres])
+let novelBooklist = new Booklist('novels', 'All novels liked.', 'user', [bookSolaris,bookTres])
+let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [bookTres])
 regularUser.booklistList.push(novelBooklist);
 adminUser.booklistList.push(spanishBooklist);
 booklists.push(novelBooklist);
