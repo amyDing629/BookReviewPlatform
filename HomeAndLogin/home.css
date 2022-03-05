@@ -316,7 +316,7 @@ a {
 	max-width: 400px;
 }
 
-.like{   
+.like, .dislike {   
     float:right;
     margin-right: 5px;
 }
