@@ -242,25 +242,24 @@ function filpPage(pageNo, pageLimit) {
     let endRow = curr * pageSize
     endRow = (endRow > totalSize) ? totalSize : endRow;
     let strHolder = ""
-    let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
-    let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
-    let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
-    let setupStr = "<li class=\"page-item\"><a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    let previousStr = "Previous"
+    let nextStr = "Next"
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"filpPage("
     let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
     // single page is enough
     if (totalPage <= 1){
         strHolder = disabled + previousStr + "</span></li>"+
-        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a></li>" + disabled + nextStr + "</span></li>"
+        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + "</a></li>" + disabled + nextStr + "</span></li>"
     } else { //multipages
         if (curr > 1) {
             strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a></li>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + "</a></li>"
             }
         } else {
             strHolder += disabled + previousStr + "</span></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a></li>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j +"</a></li>"
             }
         }
         if (curr < totalPage) {
@@ -268,7 +267,6 @@ function filpPage(pageNo, pageLimit) {
             
         } else { strHolder += disabled + nextStr + "</span></li>"}
     }
-    
 
 
     //separate different display style for different tr element
@@ -280,11 +278,16 @@ function filpPage(pageNo, pageLimit) {
             each.className="endTR"
         }
     }
-    document.getElementById("pageFliperUL").innerHTML = strHolder;
+    document.querySelector("#pageFliperUL").innerHTML = strHolder;
 
     // set up current page 
     const allPageButton = document.querySelectorAll(".page-item")
-    allPageButton[pageNo+1].className="page-item active"
+    for (each of allPageButton){
+        if (each.children[0].innerText == pageNo){
+            each.className = "page-item active"
+            each.ariaCurrent = "page"
+        }
+    }
 }
 
 // update display

@@ -76,13 +76,13 @@ function searchBook(e){
         const select = document.getElementById('search-book');
         if (select.selectedIndex!=0 ){
             const value = select.options[select.selectedIndex].value;
-            const user = document.querySelector('.right').innerText.split(', ')
+            const user = document.querySelector('.right').innerText
             let link = '../BookDetail/'
             if (user.length === 1){ // ['Login/Register']
                 link+=value+'/BookDetail-'+value+'.html'
-            } else if (user[1] === 'Admin'){
+            } else if (user === 'Admin'){
                 link+=value+'/'+value+'_admin_after.html'
-            } else if (user[1] === 'User'){
+            } else if (user === 'User'){
                 link+=value+'/'+value+'_end_after.html'
             }
             window.location.href = (link)
@@ -100,13 +100,13 @@ function searchList(e){
         const select = document.getElementById('search-list');
         if (select.selectedIndex!=0 ){
             const value = select.options[select.selectedIndex].value;
-        const user = document.querySelector('.right').innerText.split(', ')
+        const user = document.querySelector('.right').innerText
         let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
         if (user.length === 1){ // ['Login/Register']
             link += ".html"
-        } else if (user[1] === 'Admin'){
+        } else if (user === 'Admin'){
             link += "&userID=1.html"
-        } else if (user[1] === 'User'){
+        } else if (user === 'User'){
             link += "&userID=0.html"
         }
         window.location.href = (link)
@@ -254,7 +254,7 @@ function selectNarviBarUser(user){
         a.className = 'addUserIdToLink'
         a.href = "../user/user.html"
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('Hello, User'))
+        a.appendChild(document.createTextNode('User'))
         userColumn.appendChild(a)
         userColumn.before(newLI)
     } else if (user === 'Admin'){ // admin
@@ -267,7 +267,7 @@ function selectNarviBarUser(user){
         a.className = 'addUserIdToLink'
         a.href = "../user/admin.html"
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('Hello, Admin'))
+        a.appendChild(document.createTextNode('Admin'))
         userColumn.appendChild(a)
         userColumn.before(newLI)
     } //else guest

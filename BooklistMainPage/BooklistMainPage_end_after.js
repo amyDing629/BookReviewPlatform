@@ -515,7 +515,7 @@ function addNewBooklist(e){
             // avoid duplicates
             const uniqueInput = Array.from(new Set(validInputs))
             const addedBooks = uniqueInput.map((book)=> BooksList[book])
-            BooklistsList.push(new Booklist(listName, description, 'Admin', addedBooks)) // phase 2 need implement user
+            BooklistsList.push(new Booklist(listName, description, 'User', addedBooks)) // phase 2 need implement user
             document.getElementById('booklistNameInput').value =""
             document.getElementById('description').value = ""
             renewPage()

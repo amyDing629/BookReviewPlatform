@@ -175,7 +175,7 @@ function displayAllBooklists(BooklistsList) {
         const span2 = document.createElement('span')
         const a2 = document.createElement('a')
         a2.className = "linkColor"
-        a2.href = "../user/user.html" //// need fix later 
+        a2.href = "../HomeAndLogin/login.html" //// need fix later 
         if (BooklistsList[i].creator === 'User'){
             a2.href+="?visit=1"
         } 
