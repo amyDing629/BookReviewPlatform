@@ -855,12 +855,12 @@ function _getRegularUserList() {
 function displayManageWindow() {
     function manageButtonOnClick(e) {
         if (e.target.innerHTML == 'inactivate'){
-            e.target.className = 'activate';
+            e.target.className = 'activate btn btn-outline-primary';
             e.target.innerHTML = 'activate';
             e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactive';
             e.target.parentElement.getElementsByClassName('green')[0].className = 'red';
         }else{
-            e.target.className = 'inactivate';
+            e.target.className = 'inactivate btn btn-outline-primary';
             e.target.innerHTML = 'inactivate';
 
             e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; active';
@@ -895,7 +895,7 @@ function displayManageWindow() {
         userInfoDiv.appendChild(h3);
 
         let inActivateButton = document.createElement('button');
-        inActivateButton.className = 'manageButton';
+        inActivateButton.className = 'manageButton btn btn-outline-primary';
         inActivateButton.innerHTML = 'inactivate';
         inActivateButton.addEventListener('click', manageButtonOnClick);
 
