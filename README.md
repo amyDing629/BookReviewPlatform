@@ -5,16 +5,16 @@ The overall objective of the project is to build a website for readers to share 
 
 ## Main Features
 ### Regular User
-* a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait).
+* a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait)
 * make posts to share their opinions about books
-* collect or like the posts. 
-* customize multiple book lists regarding different demands, as well as a collection of their favorite posts.
+* collect or like the posts
+* customize multiple book lists regarding different demands, as well as a collection of their favorite posts
 
 ### Admin User
 * all regular users' features
-* manage the account status of regular users, including disabling and reactivating accounts.
-* add or remove books from the database and update book descriptions.
-* manage posts (specifically, delete the post).
+* manage the account status of regular users, including disabling and reactivating accounts
+* add or remove books from the database and update book descriptions
+* manage posts (specifically, delete the post)
 
 ## Temp Structure (leave to phase2)
 - **HomeAndLogin**
