@@ -983,7 +983,9 @@ function filpPage(pageNo, pageLimit) {
 
 /*************** actions ****************/
 let regularUser = new User('user', 'user');
+regularUser.profilePhoto = 'https://avatars.githubusercontent.com/u/71192401?v=4';
 let adminUser = new AdminUser('admin', 'admin');
+adminUser.profilePhoto = 'https://avatars.githubusercontent.com/u/73209681?v=4';
 let regularAmy = new User('amy', 'amy');
 let postSolarisWithImg = new Post(1, 0, 'Solaris',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
