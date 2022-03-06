@@ -99,11 +99,12 @@ searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
-        console.log("here")
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
+            window.location.href = (link)
+        }
     }  
 }
 
@@ -113,11 +114,12 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // user userID: 0
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // user userID: 0
+            window.location.href = (link)
+        }
     }  
 }
 /************** temp for search bar [END] ******************/

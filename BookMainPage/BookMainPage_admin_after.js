@@ -98,11 +98,12 @@ searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
-        console.log("here")
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
+            window.location.href = (link)
+        } 
     }  
 }
 
@@ -112,11 +113,12 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            window.location.href = (link)
+        }
     }  
 }
 /************** temp for search bar [END] ******************/
@@ -153,6 +155,10 @@ function displayAllBooks(BooksList) {
         const a = document.createElement('a')
         a.className = "linkColor"
         a.href = "../BookDetail/" + BooksList[i].bookID +"/"+BooksList[i].bookID+ "_admin_after.html"
+        // temp for new added book, need delete on phase 2 due to database settle 
+        if (BooksList[i].bookID > 4){
+            a.ref = "../BookDetail/5/5_admin_after.html"
+        }
         a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
@@ -239,24 +245,24 @@ function filpPage(pageNo, pageLimit) {
     let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
     let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
     let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
-    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    let setupStr = "<li class=\"page-item\" ><a class=\"pagelink page-link\" href=\"#\" onClick=\"filpPage("
     // single page is enough
     if (totalPage <= 1){
-        strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
+        strHolder =  + previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a></li>" + nextStr
     } else { //multipages
         if (curr > 1) {
-            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a></li>"
             }
         } else {
             strHolder += previousStr;
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a></li>"
             }
         }
         if (curr < totalPage) {
-            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a>"
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a></li>"
             
         } else { strHolder += nextStr }
     }
@@ -270,7 +276,7 @@ function filpPage(pageNo, pageLimit) {
             each.className="endTR"
         }
     }
-    document.getElementById("pageFliper").innerHTML = strHolder;
+    document.getElementById("pageFliperUL").innerHTML = strHolder;
 }
 
 // update display
@@ -306,6 +312,13 @@ function addNewBook(e){
                 cover = document.getElementById('coverInput').value.length
             }
             BooksList.push(new Book(bookname,author,year,cover,description))
+            //clear input boxes:
+            document.getElementById('bookNameInput').value = ""
+            document.getElementById('bookAuthorInput').value = ""
+            document.getElementById('publishYearInput').value = null
+            document.getElementById('descriptionInput').value = ""
+            document.getElementById('coverInput').value = ""
+            confirm("Added successfully.")
             renewBooklist()
         }
     }

@@ -78,6 +78,15 @@
     font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
+.collectedButton{
+    width: 85px;
+    font-size: small;
+    float: bottom;
+    margin-left: 5px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-style: oblique;
+}
+
 .bookshelf{
     text-align:center;
 }
@@ -127,9 +136,7 @@
 }
 
 #sort_a_z, #sort_default{
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    color: rgb(255, 255, 255);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     font-size: small;
 }

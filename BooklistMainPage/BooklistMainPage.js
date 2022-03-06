@@ -72,11 +72,13 @@ searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
-        console.log("here")
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
+            window.location.href = (link)
+        }
+        
     }  
 }
 
@@ -86,11 +88,12 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
+            window.location.href = (link)
+        }
     }  
 }
 /************** temp for search bar [END] ******************/
@@ -379,6 +382,8 @@ sort_a_z.addEventListener("click", sortByAtoZ)
 
 
 function sortDefault() {
+    document.querySelector('#sort_a_z').className = "btn btn-secondary"
+    document.querySelector('#sort_default').className = "btn btn-secondary active"
     const nowBooks = document.querySelector('#tableResultTBODY')
     const allBooklists = document.querySelectorAll('.booklist')
     for (each of allBooklists){
@@ -389,6 +394,8 @@ function sortDefault() {
   }
 
 function sortByAtoZ(){
+    document.querySelector('#sort_a_z').className = "btn btn-secondary active"
+    document.querySelector('#sort_default').className = "btn btn-secondary"
     let nameArr = []
     let sortedBooklistsList = []
     for (let i=0; i<BooklistsNum; i++){

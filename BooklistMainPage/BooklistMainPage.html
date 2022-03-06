@@ -23,7 +23,7 @@
             <!-- New -->
             <li class="search-book">
                 <select class="form-select form-select-sm" id="search-book">
-                    <option selected>Search for Books...</option>
+                    <option selected disabled>Search for Books...</option>
                     <!--Dom -->
                 </select>     
             </li>
@@ -32,7 +32,7 @@
             </li>
             <li class="search-list">
                 <select class="form-select form-select-sm" id="search-list">
-                    <option selected>Search for BookLists...</option>
+                    <option selected disabled>Search for BookLists...</option>
                     <!--Dom search booklist-->
                 </select> 
             </li>
@@ -48,9 +48,9 @@
     <!-- All booklists -->
     <div id="booklistTable">
         <h2 class="textDecoration"> All Booklists:</h2>
-        <div id="sortWrap">
-            <button id="sort_default" class="btn btn-light" onclick="sortDefault()">Sort by ID number</button>
-            <button id="sort_a_z" class="btn btn-light" onclick="sortByAtoZ()">Sort from A to Z</button>
+        <div id="sortWrap" class="btn-group btn-group-toggle">
+            <button id="sort_default" class="btn btn-secondary active" onclick="sortDefault()">Sort by ID number</button>
+            <button id="sort_a_z" class="btn btn-secondary" onclick="sortByAtoZ()">Sort from A to Z</button>
         </div>
         <br>
         <div class="divideLine"></div>

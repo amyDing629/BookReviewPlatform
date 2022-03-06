@@ -72,11 +72,12 @@ searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
-        console.log("here")
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
+            window.location.href = (link)
+        }
     }  
 }
 
@@ -86,11 +87,12 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
-        const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
-        window.location.href = (link)
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            window.location.href = (link)
+        }
     }  
 }
 /************** temp for search bar [END] ******************/
@@ -281,7 +283,7 @@ function displayAllBooklists(BooklistsList) {
 
         const spanLike = document.createElement('span')
         spanLike.className = "likeNum"
-        const likeNum = document.createTextNode("Liked: "+BooklistsList[i].likes)
+        const likeNum = document.createTextNode("Likes: "+BooklistsList[i].likes)
         spanLike.appendChild(likeNum)
         liLike.appendChild(spanLike)
 
@@ -298,7 +300,7 @@ function displayAllBooklists(BooklistsList) {
 
         const spanCollect = document.createElement('span')
         spanCollect.className = "collectNum"
-        const collectNum = document.createTextNode("Collected: " + BooklistsList[i].collect)
+        const collectNum = document.createTextNode("Collects: " + BooklistsList[i].collect)
         spanCollect.appendChild(collectNum)
         liCollect.appendChild(spanCollect)
         
@@ -325,9 +327,10 @@ function increaseLikeOrCollect(e){
             if (pageIndex === index && iconName == 'collectIcon'){
                 selectedBookList[0].collect++
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
+                allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon'){
                 selectedBookList[0].likes++
-                allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
+                allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
             }
         }
     }
@@ -398,9 +401,15 @@ const sort_a_z = document.querySelector('#sort_a_z')
 sort_default.addEventListener("click",sortDefault)
 sort_a_z.addEventListener("click", sortByAtoZ)
 
-function sortDefault(){renewPage()}
+function sortDefault(){
+    document.querySelector('#sort_default').className = "btn btn-secondary active"
+    document.querySelector('#sort_a_z').className = "btn btn-secondary"
+    renewPage()
+}
 
 function sortByAtoZ(){
+    document.querySelector('#sort_a_z').className = "btn btn-secondary active"
+    document.querySelector('#sort_default').className = "btn btn-secondary"
     let nameArr = []
     let sortedBooklistsList = []
     for (let i=0; i<BooklistsNum; i++){
@@ -461,6 +470,8 @@ function addNewBooklist(e){
             const addedBooks = uniqueInput.map((book)=> BooksList[book])
             BooklistsList.push(new Booklist(listName, description, 'Admin', addedBooks)) // phase 2 need implement user
             renewPage()
+            document.getElementById('booklistNameInput').value =""
+            document.getElementById('description').value = ""
         } else {
             alert("Invalid input! Please re-check all your book IDs.")
         }
