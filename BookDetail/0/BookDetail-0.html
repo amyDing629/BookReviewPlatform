@@ -4,9 +4,12 @@
  <head>
  	<meta charset="UTF-8">
     <title> BookLand</title>
+    <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="../BookDetail.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
-    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> <!-- For bootstrap -->
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+    <!-- For bootstrap -->
+    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
  </head>
 
 <body>
@@ -34,7 +37,6 @@
             <li class="search-list">
                 <select class="form-select form-select-sm" id="search-list" disabled>
                     <option selected>Search for BookLists...</option>
-                    <!-- 改这里 -->
                     <option value="0">Solaris</option>
                     <option value="1"><span>Tres Tristes Tigres</span></option>
                     <option value="2"><span>The Story of the Lost Child</span></option>
@@ -49,41 +51,14 @@
           </ul>
  	</div>
 
+    <!-- Book Cover, book basic infor includes author, publish time and book ID -->
+    <div class="bookInfo" id="bookInfo"></div>
 
-     <div class="bookInfo" id="bookInfo">
-        <!-- <div class="coverContainer">
-            <img class="cover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-        </div>
-
-        <div class="bookIntro">
-            <span class="bookAuthor">Author: Stanisław Lem</span><br><br>
-            <span class="bookId">BookID: 0 </span><br><br>
-            <span class="publish">Publish Time: 1961</span>
-        </div> -->
-     </div>
-
-     <div class="title"><strong class="des">Description:</strong></div>
-     <div class="bookDescription" id="bookDescription">
-        <!-- <strong class="des">Description:</strong> Solaris is a 1961 science fiction novel by Polish writer Stanisław Lem. 
-        It follows a crew of scientists on a research station as they attempt to understand 
-        an extraterrestrial intelligence, which takes the form of a vast ocean on the titular 
-        alien planet. The novel is among Lem's best-known works.The book has been adapted numerous times for film,
-        radio, and theater. Prominent film adaptations include Andrei Tarkovsky's 1972 version and Steven Soderbergh's 
-        2002 version, although Lem later remarked that none of these films reflected the book's thematic
-        emphasis on the limitations of human rationality. -->
-        
-     </div>
+    <div class="title"><strong class="des">Description:</strong></div>
+    <!-- brief description of book -->
+    <div class="bookDescription" id="bookDescription"></div>
 
      
-
-    <!-- Post section
-    <div id="posts">
-        <h1 class="textDecoration">  Comments: </h1>
-        <ul>
-
-        </ul>
-    </div>  -->
-
     <!-- Post section -->
     <div id="posts">
         <div class="row g-5">
@@ -93,7 +68,7 @@
                     People in BookLand
                   </h3>
               <ul id="post-body">
-                <!-- Max 5 posts -->
+                <!-- Max 3 posts per page-->
              </ul>
 
             </div>
@@ -103,10 +78,10 @@
     </div> 
 
     <script type="text/javascript" src="BookDetail-0.js"></script>
-
+    <script type="text/javascript" src="../General.js"></script>
     <script type="text/javascript" src="Post-0.js"></script>
     <script type="text/javascript" src="../../HomeAndLogin/topmenu.js"></script>
-    <!-- NEW ADDED -->	
+    <!-- Footer -->	
     <footer class="blog-footer">
         <p><i>&copy; BookLand built by team10</i></p>
         <p>
