@@ -68,13 +68,7 @@ filpPage(1,3)
 
 // clean all before display
 function cleanPosts(){
-    const lis = postul.children;
-    log(lis);
-    for (let i=0; i<5; i++){
-        if (lis[i] != null){
-            lis[i].remove();
-        }
-    }
+    postul.innerHTML = ''
 }
 
 

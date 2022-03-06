@@ -115,9 +115,8 @@ function displayPosts(){
             a1.className = 'linkColor'
             
             // need to handle user link
-            // temporary use
-            if (userid){
-                plink = '../../user/user.html?visit='+userid
+            if (userName == 'admin'){
+                plink = '../../user/admin.html'
             }
             else{ // userid is user, visit myself
                 plink = '../../user/user.html'
