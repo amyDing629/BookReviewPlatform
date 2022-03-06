@@ -278,12 +278,19 @@ function displayAllBooklists(BooklistsList) {
         const iconImgLike = document.createElement('img')
         iconImgLike.className = "likeIcon"
         iconImgLike.src = "../static/like_icon.png"
+        if (BooklistsList[i].likes > 0){ // need fix on phase 2 // already liked status
+            iconImgLike.src = "../static/heart_icon.png"
+            button1.className = "likeButton, btn btn-outline-success"
+        } 
         button1.appendChild(iconImgLike)
         liLike.appendChild(button1)
 
         const spanLike = document.createElement('span')
         spanLike.className = "likeNum"
         const likeNum = document.createTextNode("Likes: "+BooklistsList[i].likes)
+        if (BooklistsList[i].likes > 0){ // need fix on phase 2 // already liked status
+            const likeNum = document.createTextNode("Liked: "+BooklistsList[i].likes)
+        } 
         spanLike.appendChild(likeNum)
         liLike.appendChild(spanLike)
 
@@ -295,12 +302,18 @@ function displayAllBooklists(BooklistsList) {
         const iconImgCollect = document.createElement('img')
         iconImgCollect.className = "collectIcon"
         iconImgCollect.src = "../static/click-&-collect.png"
+        if (BooklistsList[i].collect > 0){ // need fix on phase 2 // already collect status
+            button2.className = "collectButton, btn btn-success"
+        } 
         button2.appendChild(iconImgCollect)
         liCollect.appendChild(button2)
 
         const spanCollect = document.createElement('span')
         spanCollect.className = "collectNum"
         const collectNum = document.createTextNode("Collects: " + BooklistsList[i].collect)
+        if (BooklistsList[i].collect > 0){ // need fix on phase 2 // already collect status
+            const collectNum = document.createTextNode("Collected: " + BooklistsList[i].collect)
+        } 
         spanCollect.appendChild(collectNum)
         liCollect.appendChild(spanCollect)
         
