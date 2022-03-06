@@ -16,7 +16,7 @@ The overall objective of the project is to build a website for readers to share 
 * add or remove books from the database and update book descriptions.
 * manage posts (specifically, delete the post).
 
-## Funtionality Explaination
+## Temp Structure (leave to phase2)
 - **HomeAndLogin**
   - index.html (Home page for tourist）
   - index_end_after.html (Home page for end users）
@@ -25,4 +25,3 @@ The overall objective of the project is to build a website for readers to share 
  
   
    
-## Structure
