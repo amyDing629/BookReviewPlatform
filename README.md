@@ -3,6 +3,9 @@
 ## Overall Purpose
 The overall objective of the project is to build a website for readers to share their thoughts on readings with others. Through this platform, readers can view various kinds of book lists made by other readers, create their own book lists, and make friends that have similar reading tastes.
 
+## Specification
+### index.html location
+* The entrance of the website (index.html) is at *HomeAndLogin* folder: [here](./HomeAndLogin/index.html).
 ## Main Features
 ### Regular User
 * a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait)
@@ -63,11 +66,14 @@ The overall objective of the project is to build a website for readers to share 
 
   ### BooklistDetail
   - **Guest**
-    
+    - All guests have top menu bar that allows to navigate specific book detail or booklist detail pages for guests.
+    - All guests have login/register button at the top-right corner that allows to login or register.
+    - All information of the booklist is displayed on the main area. Booklist section have links of books that allow the guest navigate to the associated book in guest permission. 
   - **Regular User**
-    -
+    - All end users have the same functionalities and displayings as the guest.
+    - Besides, they could edit their own booklists by changing book collections, or edit the description
   - **Admin User**
-    -
+    - All admins have the same functionalities and displayings as the end users.
   
   ### BookMainPage
   - **Guest**
@@ -106,5 +112,5 @@ The overall objective of the project is to build a website for readers to share 
     - Below the sorting buttons, Add new booklist columns allows end users to create new booklist. List name is required, description is optional. 
     - Inside adding booklist prompted box, all books are listed as reference, end users will enter the book IDs into a string, and then create.
   - **Admin User**
-    - All admin users have the end users functionalities and displayings. 
+    - All admin users have all the end users functionalities and displayings. 
     - Besides, admins could delete every booklists.
