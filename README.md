@@ -18,11 +18,10 @@ The overall objective of the project is to build a website for readers to share 
 
 ## Funtionality Explaination
 - **HomeAndLogin**
-  - index.html
-    - can use topMenu to visit other pages 
-    (home: index.html, books: BookMainPage, booklists: BookListMainPage, login/register: login page)
-    - can view recommendation books and search for its information by clicking (BookDetail page)
-    - can view posts posted by BookLand users, but cannot visit user profile, after clicking username will go to login page
+  - index.html (Home page for tourist）
+  - index_end_after.html (Home page for end users）
+  - index_admin_after.html (Home page for admin users)
+
  
   
    
