@@ -163,7 +163,6 @@ function displayPosts(){
             let pic = posts[i].pic
             let content = posts[i].content
             let time = posts[i].time
-            let likes = posts[i].likes
             let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
@@ -183,7 +182,7 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace("login.html")
+                window.location.replace("../../HomeAndLogin/login.html")
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -198,7 +197,7 @@ function displayPosts(){
             let span1 = document.createElement('span')
             let a2 = document.createElement('a')
             a2.className = 'linkColor'
-            a2.setAttribute('href', blink)
+            a2.setAttribute('href', 'BookDetail-2.html')
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();
