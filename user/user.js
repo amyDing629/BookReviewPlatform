@@ -8,6 +8,7 @@ var BooksNum = 0;
 const users = [];
 const posts = [];
 const booklists = [];
+const books = [];
 
 /********************** Object ***********************/
 class User {
@@ -52,7 +53,6 @@ class Book {
 	constructor(name, author, year, coverURL, description) {
 		this.name = name;
 		this.author = author;
-		this.year = year;
 		this.coverURL = coverURL; 
         this.description = description;
         this.postCollection = [] // collection of post ids associated with the book
@@ -251,7 +251,44 @@ function changeButtonColor(target) {
 //     }
 //     return sortedList;
 //   }
+/************ Search Bar Functions */
+function blinkHandler(bid){
+    // handler for book Detail page
+        for (let i =0; i<books.length; i++){
+            if (books[i].bookId == bid){
+                let result = '../BookDetail/'+books[i].bookId+'/'+books[i].bookId+'_end_after.html'
+                return result;
+            }
+        }   
+    }
+function displaySearchbox(){
+    const searchbookArea = document.querySelector('.search-book')
+    const t = searchbookArea.children[0]
+    for (let i=0; i<books.length; i++){
+        if (books[i] != null){
+            const id = books[i].bookID
+            const name = books[i].name
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            t.appendChild(option)
+        }
+    }
+    const searchlistArea = document.querySelector('.search-list')
+    const column = searchlistArea.children[0]
+    for (let i=0; i<BooklistsNum; i++){
+        if (booklists[i] != null){
+            const id = booklists[i].booklistID
+            const name = "[" + booklists[i].listName + "] -- " + booklists[i].creator
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            column.appendChild(option)
+        }
+    }
+}
 
+/********** Display functions ************ */
 function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
@@ -856,20 +893,40 @@ posts.push(postSongOfSolomon);
 posts.push(postWarAndPeace);
 posts.push(postSolarisWithoutImg);
 
-let bookSolaris = new Book('Solaris', 'Stanisław Herman Lem', 1970, 
-    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-    'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.')
+books.push(new Book('Solaris', 'Stanisław Herman Lem', 
+        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
+        )); // currently link is empty
+books.push(
+    new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
+    'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+    'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
+    ));
+books.push(
+    new Book('The Story of the Lost Child', 'Elena Ferrante', 
+    'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+    "The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
+    ));    
+books.push(
+        new Book('War and Peace', 'Leo Tolstoy', 
+        'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
+        'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
+        )); 
+books.push(
+        new Book('Song of Solomon', 'Toni Morrison', 
+        'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
+        'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
+        ));   
 
-let bookTres = new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
-    'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
-    'It is a highly experimental, Joycean novel, playful and rich in literary allusions.')
 
-let novelBooklist = new Booklist('novels', 'All novels liked.', 'user', [bookSolaris,bookTres])
-let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [bookTres])
+let novelBooklist = new Booklist('novels', 'All novels liked.', 'admin', [books[0],books[1]]);
+let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [books[1]]);
+let before20list = new Booklist('Before 20th', 'Before 20 centuries', 'user', [books[0],books[1], books[3], books[4]]);
 regularUser.booklistList.push(novelBooklist);
 adminUser.booklistList.push(spanishBooklist);
 booklists.push(novelBooklist);
 booklists.push(spanishBooklist);
+booklists.push(before20list);
 
 regularUser.postCollectionList.push(postSolarisWithoutImg);
 regularUser.booklistCollectionList.push(spanishBooklist);
@@ -879,6 +936,12 @@ adminUser.booklistCollectionList.push(novelBooklist);
 users.push(adminUser);
 users.push(regularUser);
 users.push(regularAmy);
+
+            
+// handle links
+for (let i=0; i<books.length; i++){
+    books[i].link = blinkHandler(books[i].bookId)
+}        
 
 if (window.location.href.indexOf('visit') == '-1'){
     if (window.location.href.endsWith('user.html')){
@@ -914,4 +977,39 @@ menuButtonSelected.addEventListener('click', menuButtonsOnClick);
 if (profileButtons != null) {
     profileButtons.addEventListener('click', profileButtonsOnClick);
 }
+
+// Search Book 
+const searchArea1 = document.querySelector('#search-button1')
+searchArea1.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button1'){
+        console.log("here")
+        const select = document.getElementById('search-book');
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
+            window.location.href = (link)
+        }
+        
+    }  
+}
+
+// Search List 
+const searchArea2 = document.querySelector('#search-button2')
+searchArea2.addEventListener('click', searchList)
+function searchList(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button2'){
+        console.log("here")
+        const select = document.getElementById('search-list');
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // end userID: 0 'User'
+            window.location.href = (link)
+        }
+    }  
+}
+displaySearchbox()
+
 
