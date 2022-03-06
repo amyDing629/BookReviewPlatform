@@ -1,5 +1,12 @@
 @import "../HomeAndLogin/home.css"; 
 
+.postContent {
+	margin-top: 20px;
+	width: 450px;
+	float: left;
+    margin-bottom: 5px;
+}
+
 #posts .textDecoration2{
     text-align: left;
     text-decoration: underline;

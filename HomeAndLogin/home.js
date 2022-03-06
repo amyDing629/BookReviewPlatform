@@ -30,6 +30,17 @@ class DataBooklist {
 
 BooksCallBack()
 BookListsCallBack()
+displaySearchbox()
+
+function blinkHandler(bid){
+    // handler for book Detail page link
+    for (let i =0; i<allBooks.length; i++){
+        if (allBooks[i].bookId == bid){
+            let result = '../BookDetail/'+allBooks[i].bookId+'/BookDetail-'+allBooks[i].bookId+'.html'
+            return result;
+        }
+    }   
+}    
 
 
 function BookListsCallBack(){
@@ -66,7 +77,75 @@ new Book(4, 'Song of Solomon', 'Toni Morrison',
 'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
 'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
 ));                   
+
+// handle links
+for (let i=0; i<allBooks.length; i++){
+    allBooks[i].link = blinkHandler(allBooks[i].bookId)
 }
+}
+
+function displaySearchbox(){
+    const searchbookArea = document.querySelector('.search-book')
+    const t = searchbookArea.children[0]
+    for (let i=0; i<allBooks.length; i++){
+        if (allBooks[i] != null){
+            const id = allBooks[i].bookId
+            const name = allBooks[i].title
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            t.appendChild(option)
+        }
+    }
+    
+    const searchlistArea = document.querySelector('.search-list')
+    const column = searchlistArea.children[0]
+    for (let i=0; i<BooklistsNum; i++){
+        if (BooklistsList[i] != null){
+            const id = BooklistsList[i].booklistID
+            const name = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
+            const option = document.createElement('option')
+            option.value = id
+            option.innerText = name
+            column.appendChild(option)
+        }
+    }
+}
+
+// Search Book 
+const searchArea1 = document.querySelector('#search-button1')
+searchArea1.addEventListener('click', searchBook)
+function searchBook(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button1'){
+        console.log("here")
+        const select = document.getElementById('search-book');
+        // new
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
+            window.location.href = (link)
+        }
+    }  
+}
+
+// Search List 
+const searchArea2 = document.querySelector('#search-button2')
+searchArea2.addEventListener('click', searchList)
+function searchList(e){
+    e.preventDefault();
+    if (e.target.id == 'search-button2'){
+        console.log("here")
+        const select = document.getElementById('search-list');
+        // new
+        if (select.selectedIndex!=0){
+            const value = select.options[select.selectedIndex].value;
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
+            window.location.href = (link)
+        }
+    }  
+}
+
 
 
 /********** Recommendation book display **********/
@@ -78,58 +157,36 @@ displayTop()
 displayRecommendations()
 
 
-function blinkHandler(bid){
-    // handler for book Detail page link
-        for (let i =0; i<recommendedBooks.length; i++){
-            if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/'+recommendedBooks[i].bookId+'/BookDetail-'+recommendedBooks[i].bookId+'.html'
-                return result;
+function RecommendBooksCreate() {
+    //Create RecommendedBooklist according to the frequency of the book put in some booklists
+    let popularity = new Array(allBooks.length).fill(0)
+    for(let i=0; i<allBooks.length; i++){
+            const bid = allBooks[i].bookId
+            for (let j=0; j<BooklistsList.length; j++){
+                const result = BooklistsList[j].books.filter((Book) => Book.bookId == bid)
+                popularity[i] += result.length;
             }
-        }   
-    }
-
-
-    function RecommendBooksCreate() {
-        //Create RecommendedBooklist according to the frequency of the book put in some booklists
-        let popularity = new Array(allBooks.length).fill(0)
-        for(let i=0; i<allBooks.length; i++){
-                const bid = allBooks[i].bookId
-                for (let j=0; j<BooklistsList.length; j++){
-                    const result = BooklistsList[j].books.filter((Book) => Book.bookId == bid)
-                    popularity[i] += result.length;
-                }
-            }
-            for (let k=0; k<3; k++){
-                let max = popularity.reduce(function(a, b) {
-                    return Math.max(a, b);
-                }, -Infinity);
-                let index = popularity.indexOf(max)
-                recommendedBooks.push(allBooks[index])
-                popularity[index] = -1
-            }
-        
         }
+        for (let k=0; k<3; k++){
+            let max = popularity.reduce(function(a, b) {
+                return Math.max(a, b);
+            }, -Infinity);
+            let index = popularity.indexOf(max)
+            recommendedBooks.push(allBooks[index])
+            popularity[index] = -1
+        }
+        }
+    
 
  function displayTop(){
-     /*
-     <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-                <img class="TopbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
-                <h1 class="display-4 fst-italic, fancychar1">Solaris<span class='transparent>0</span></h1>
-                <h4 class="fancychar1">Stanisław Herman Lem</h4>
-                <p class="lead my-3">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
-                <p class="lead mb-0"><a href="../BookDetail/BookDetail-Solaris.html" class="text-white fw-bold">Continue reading...</a></p>
-            </div> 
-      */
         const div = document.getElementsByClassName('p-4 p-md-5 mb-4 text-white rounded bg-dark')
-        log(div)
         if (recommendedBooks[0] !=null){
             const bookName = recommendedBooks[0].title;
             const bookAuthor = recommendedBooks[0].author;
             const bookCover = recommendedBooks[0].cover;
             const description = recommendedBooks[0].description;
             const bid = recommendedBooks[0].bookId;
-
-            const booklink = blinkHandler(0);
+            const booklink = recommendedBooks[0].link;
 
             let img = document.createElement('img')
             img.className = 'TopbookCover'
@@ -186,7 +243,7 @@ function displayRecommendations(){
         const description = recommendedBooks[i].description;
         const bid = recommendedBooks[i].bookId;
 
-        const booklink = blinkHandler(i);
+        const booklink = recommendedBooks[i].link
 
         let outerdiv = document.createElement('div')
         outerdiv.className = 'col-md-6'
@@ -270,10 +327,8 @@ function blinkHandlerinPost(bid){
                 let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
                 return result;
             }
-        } 
-        log('error') // OR other actions...     
+        }  
     }
-
 
 
 function postCallBack() {
@@ -315,7 +370,6 @@ displayPosts()
 // clean all before display
 function cleanPosts(){
     const lis = postul.children;
-    log(lis);
     for (let i=0; i<5; i++){
         if (lis[i] != null){
             lis[i].remove();

@@ -1,3 +1,18 @@
+
+/****************************** Admin USER index-books js ******************************/
+topMenuLink()
+
+function topMenuLink(){
+    const quit = document.querySelector('#topMenu .quit')
+    const a = quit.children[0]
+    a.onclick = function open(e){
+        e.preventDefault();
+        window.location.href = (a.href)
+    }
+}
+
+/*************** Books & Booklists Data ********************/
+
 const allBooks = [];
 
 class Bookopt {
@@ -24,11 +39,9 @@ class DataBooklist {
 	}
 }
 
-
 BooksCallBack()
 BookListsCallBack()
 displaySearchbox()
-
 
 function BooksCallBack(){
     // Get all books in database
@@ -63,7 +76,8 @@ function BookListsCallBack(){
     BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
     BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
     BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
-    }
+}
+
 
 function displaySearchbox(){
     const searchbookArea = document.querySelector('.search-book')
@@ -102,12 +116,12 @@ function searchBook(e){
     if (e.target.id == 'search-button1'){
         console.log("here")
         const select = document.getElementById('search-book');
+        // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
+            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
             window.location.href = (link)
         }
-        
     }  
 }
 
@@ -119,13 +133,15 @@ function searchList(e){
     if (e.target.id == 'search-button2'){
         console.log("here")
         const select = document.getElementById('search-list');
+        // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // end userID: 0 'User'
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
             window.location.href = (link)
         }
     }  
 }
+
 
 /* If 'Edit' is clicked, display edition page.
    If 'Submit' is clicked, display confirmed information */

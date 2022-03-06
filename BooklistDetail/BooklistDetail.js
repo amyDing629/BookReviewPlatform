@@ -74,17 +74,19 @@ function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
         const select = document.getElementById('search-book');
-        const value = select.options[select.selectedIndex].value;
-        const user = document.querySelector('.right').innerText.split(', ')
-        let link = '../BookDetail/'
-        if (user.length === 1){ // ['Login/Register']
-            link+=value+'/BookDetail-'+value+'.html'
-        } else if (user[1] === 'Admin'){
-            link+=value+'/'+value+'_admin_after.html'
-        } else if (user[1] === 'User'){
-            link+=value+'/'+value+'_end_after.html'
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
+            const user = document.querySelector('.right').innerText.split(', ')
+            let link = '../BookDetail/'
+            if (user.length === 1){ // ['Login/Register']
+                link+=value+'/BookDetail-'+value+'.html'
+            } else if (user[1] === 'Admin'){
+                link+=value+'/'+value+'_admin_after.html'
+            } else if (user[1] === 'User'){
+                link+=value+'/'+value+'_end_after.html'
+            }
+            window.location.href = (link)
         }
-        window.location.href = (link)
     }  
 }
 
@@ -96,7 +98,8 @@ function searchList(e){
     if (e.target.id == 'search-button2'){
         console.log("here")
         const select = document.getElementById('search-list');
-        const value = select.options[select.selectedIndex].value;
+        if (select.selectedIndex!=0 ){
+            const value = select.options[select.selectedIndex].value;
         const user = document.querySelector('.right').innerText.split(', ')
         let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
         if (user.length === 1){ // ['Login/Register']
@@ -107,6 +110,7 @@ function searchList(e){
             link += "&userID=0.html"
         }
         window.location.href = (link)
+        }
     }  
 }
 /************** temp for search bar [END] ******************/
