@@ -5,8 +5,8 @@ const log = console.log;
 
 /** After log in, end user can like others' posts **/
 /********** Posts display **********/
-const posts = [];
-const homeposts = [];
+const posts = []; // all posts
+const homeposts = []; // for admin edit
 const collectedPosts = []; // collection of posts made by current user
 
 class Post {
@@ -92,7 +92,6 @@ function displayPosts(){
                 li.removeChild(li.children[j])
             }
             
-
             let postDiv = document.createElement('div')
             postDiv.className = 'post'
             let userDiv = document.createElement('div')
@@ -225,13 +224,12 @@ likefield.addEventListener('click', like)
 function like(e){
     e.preventDefault(); // prevent default action
 
-    if (e.target.classList.contains('like')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<homeposts.length; i++){
-            if(parseInt(homeposts[i].postID) == pid){
+    const contentDiv = e.target.parentElement.parentElement
+    const h3 = contentDiv.children[0]
+    const pid = h3.children[1].innerText
+    for (let i=0; i<homeposts.length; i++){
+        if(parseInt(homeposts[i].postID) == pid){
+            if (e.target.classList.contains('like')) {
                 homeposts[i].likes ++
                 let length = contentDiv.children.length
                 length -= 1
@@ -239,10 +237,28 @@ function like(e){
                 const icon = target.children[0]
 
                 icon.innerText = ' '+ homeposts[i].likes
+                e.target.classList.remove('like');
+                e.target.classList.add('dislike');
+                e.target.innerText = 'Dislike';
                 break;
             }
-        } 
-	}
+            else if (e.target.classList.contains('dislike')){
+                homeposts[i].likes --
+                let length = contentDiv.children.length
+                length -= 1
+                const target = contentDiv.children[length]
+                const icon = target.children[0]
+
+                icon.innerText = ' '+ homeposts[i].likes
+                e.target.classList.remove('dislike');
+                e.target.classList.add('like');
+                e.target.innerText = 'Like';
+                break;
+            }
+            
+        }
+    } 
+	
 }
 
 const collectfield = document.querySelector('#posts')
@@ -267,6 +283,7 @@ function collect(e){
 }
 
 displayPostManagerBar()
+
 function displayPostManagerBar(){
     const t = document.querySelector('#modify_post1')
     for (let i=0; i<homeposts.length; i++){

@@ -226,24 +226,37 @@ likefield.addEventListener('click', like)
 function like(e){
     e.preventDefault(); // prevent default action
 
-    if (e.target.classList.contains('like')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
+    const contentDiv = e.target.parentElement.parentElement
+    const h3 = contentDiv.children[0]
+    const pid = h3.children[1].innerText
+    for (let i=0; i<posts.length; i++){
+        if(parseInt(posts[i].postID) == pid){
+            if (e.target.classList.contains('like')) {
                 posts[i].likes ++
                 let length = contentDiv.children.length
                 length -= 1
                 const target = contentDiv.children[length]
                 const icon = target.children[0]
-
                 icon.innerText = ' '+ posts[i].likes
+                e.target.classList.remove('like');
+                e.target.classList.add('dislike');
+                e.target.innerText = 'Dislike';
                 break;
             }
-        } 
-	}
+            else if (e.target.classList.contains('dislike')){
+                posts[i].likes --
+                let length = contentDiv.children.length
+                length -= 1
+                const target = contentDiv.children[length]
+                const icon = target.children[0]
+                icon.innerText = ' '+ posts[i].likes
+                e.target.classList.remove('dislike');
+                e.target.classList.add('like');
+                e.target.innerText = 'Like';
+                break;
+            }
+        }
+    } 
 }
 
 const collectfield = document.querySelector('#posts')
