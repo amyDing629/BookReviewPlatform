@@ -281,12 +281,19 @@ function displayAllBooklists(BooklistsList) {
         const iconImgLike = document.createElement('img')
         iconImgLike.className = "likeIcon"
         iconImgLike.src = "../static/like_icon.png"
+        if (BooklistsList[i].likes > 0){ // need fix on phase 2 // already liked status
+            iconImgLike.src = "../static/heart_icon.png"
+            button1.className = "likeButton, btn btn-outline-success"
+        } 
         button1.appendChild(iconImgLike)
         liLike.appendChild(button1)
 
         const spanLike = document.createElement('span')
         spanLike.className = "likeNum"
-        const likeNum = document.createTextNode("Likes: "+BooklistsList[i].likes)
+        let likeNum = document.createTextNode("Likes: "+BooklistsList[i].likes)
+        if (BooklistsList[i].likes > 0){ // need fix on phase 2 // already liked status
+            likeNum = document.createTextNode("Liked: "+BooklistsList[i].likes)
+        } 
         spanLike.appendChild(likeNum)
         liLike.appendChild(spanLike)
 
@@ -298,12 +305,18 @@ function displayAllBooklists(BooklistsList) {
         const iconImgCollect = document.createElement('img')
         iconImgCollect.className = "collectIcon"
         iconImgCollect.src = "../static/click-&-collect.png"
+        if (BooklistsList[i].collect > 0){ // need fix on phase 2 // already collect status
+            button2.className = "collectButton, btn btn-success"
+        } 
         button2.appendChild(iconImgCollect)
         liCollect.appendChild(button2)
 
         const spanCollect = document.createElement('span')
         spanCollect.className = "collectNum"
-        const collectNum = document.createTextNode("Collects: " + BooklistsList[i].collect)
+        let collectNum = document.createTextNode("Collects: " + BooklistsList[i].collect)
+        if (BooklistsList[i].collect > 0){ // need fix on phase 2 // already collect status
+            collectNum = document.createTextNode("Collected: " + BooklistsList[i].collect)
+        } 
         spanCollect.appendChild(collectNum)
         liCollect.appendChild(spanCollect)
         
@@ -428,18 +441,25 @@ sort_a_z.addEventListener("click", sortByAtoZ)
 function sortDefault(){
     document.querySelector('#sort_default').className = "btn btn-secondary active"
     document.querySelector('#sort_a_z').className = "btn btn-secondary"
-    renewPage()
+    const nowBooks = document.querySelector('#tableResultTBODY')
+    const allBooklists = document.querySelectorAll('.booklist')
+    for (each of allBooklists){
+        nowBooks.removeChild(each.parentElement)
+    }
+    displayAllBooklists(BooklistsList)
+    filpPage(1,3)
 }
 
 function sortByAtoZ(){
     document.querySelector('#sort_a_z').className = "btn btn-secondary active"
     document.querySelector('#sort_default').className = "btn btn-secondary"
+    //const currBooklistList = Array.prototype.slice.call(document.querySelectorAll('.booklist'))
     let nameArr = []
     let sortedBooklistsList = []
     for (let i=0; i<BooklistsNum; i++){
         nameArr.push(BooklistsList[i].listName)
     }
-    nameArr = nameArr.sort()
+    nameArr = nameArr.sort((x,y)=>x.localeCompare(y))
     for (let i=0; i<BooklistsNum; i++) {
         for (let j=0; j<BooklistsNum; j++){
             if (nameArr[i] == BooklistsList[j].listName) {
@@ -453,18 +473,18 @@ function sortByAtoZ(){
         nowBooks.removeChild(each.parentElement)
     }
     displayAllBooklists(sortedBooklistsList)
+    console.log(sortedBooklistsList)
     filpPage(1,3)
 }
 
-function renewPage(){
-    const tableResultTBODY = document.querySelector('#tableResultTBODY')
-    const nowBooklists = document.querySelectorAll('.booklist')
-    for (each of nowBooklists){
-        tableResultTBODY.removeChild(each.parentElement)
+function renewPage() {
+    if (document.querySelector("#sort_a_z").className === 'btn btn-secondary active'){
+        sortByAtoZ()
+    } else { // sort by default
+        sortDefault()
     }
-    displayAllBooklists(BooklistsList)
-    filpPage(1,3)
-}
+  }
+
 // all user action: create new booklist
 const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
 endUserActionsWrap.addEventListener('click', addNewBooklist)
@@ -495,15 +515,17 @@ function addNewBooklist(e){
             // avoid duplicates
             const uniqueInput = Array.from(new Set(validInputs))
             const addedBooks = uniqueInput.map((book)=> BooksList[book])
-            BooklistsList.push(new Booklist(listName, description, 'User', addedBooks)) // phase 2 need implement user
-            renewPage()
+            BooklistsList.push(new Booklist(listName, description, 'Admin', addedBooks)) // phase 2 need implement user
             document.getElementById('booklistNameInput').value =""
             document.getElementById('description').value = ""
+            renewPage()
         } else {
             alert("Invalid input! Please re-check all your book IDs.")
         }
     }
 }
+
+
 // self-created booklist only: delete self-created list
 booklistTable.addEventListener('click', deleteBooklist)
 

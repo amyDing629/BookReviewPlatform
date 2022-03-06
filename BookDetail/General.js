@@ -119,7 +119,7 @@ function searchBook(e){
         // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../'+value+'/'+value+'_admin_after.html'
+            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
             window.location.href = (link)
         }
     }  
@@ -136,7 +136,7 @@ function searchList(e){
         // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
             window.location.href = (link)
         }
     }  
@@ -166,4 +166,47 @@ function searchList(e){
         userInfo.insertBefore(newSignature, profileButton);
         profileButton.innerHTML = 'Edit Description';
     }
+}
+
+const desButton = document.querySelector('#DesButton');
+desButton.addEventListener('click', profileButtonsOnClick);
+
+
+// display the book information like book cover, author...
+window.onload = function displayAllBooks() {
+    const bookInfo = document.querySelector('#bookInfo');
+
+    const coverContainer = document.createElement('div');
+
+    coverContainer.className = 'coverContainer';
+    const bookCover = document.createElement('img');
+    bookCover.className = 'cover';
+    bookCover.src = BooksList[0].coverURL;
+    coverContainer.appendChild(bookCover);
+    bookInfo.appendChild(coverContainer);
+
+    const bookIntro = document.createElement('div');
+    bookIntro.className = 'bookIntro';
+
+    const bookAuthor = document.createElement('span');
+    bookAuthor.className = "bookAuthor";
+    bookAuthor.innerText = 'Author: ' + BooksList[0].author;
+    const bookId = document.createElement('span');
+    bookId.className = "bookId";
+    bookId.innerText = 'bookID: ' + BooksList[0].bookID; 
+    const publish = document.createElement('span');
+    publish.className = "publish" ;
+    publish.innerText = "publish: " + BooksList[0].year;
+
+    bookIntro.appendChild(bookAuthor);
+    bookIntro.appendChild(document.createElement('br'));
+    bookIntro.appendChild(bookId);
+    bookIntro.appendChild(document.createElement('br'));
+    bookIntro.appendChild(publish);
+    bookInfo.appendChild(bookIntro);
+
+    const bookDescription = document.querySelector('#bookDescription');
+
+    const descriContent = document.createTextNode(BooksList[0].description)
+    bookDescription.appendChild(descriContent)
 }

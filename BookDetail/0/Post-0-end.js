@@ -283,25 +283,30 @@ likefield.addEventListener('click', like)
 
 function like(e){
     e.preventDefault(); // prevent default action
-
-    if (e.target.classList.contains('like')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                posts[i].likes ++
-                let length = contentDiv.children.length
-                length -= 1
-                const target = contentDiv.children[length]
-                const icon = target.children[0]
-
-                icon.innerText = ' '+ posts[i].likes
+    let contentDiv = e.target.parentElement.parentElement
+    let pid = contentDiv.getElementsByClassName('postId')[0].innerHTML
+    let post;
+    let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
+    for (post of posts) {
+        if (parseInt(post.postID) == pid) {
+            if (e.target.classList.contains('like')) {
+                post.likes++;
+                icon.innerText = ' ' + post.likes;
+                e.target.classList.remove('like');
+                e.target.classList.add('dislike');
+                e.target.innerText = 'Dislike';
                 break;
             }
-        } 
-	}
+            else if (e.target.classList.contains('dislike')) {
+                post.likes--;
+                icon.innerText = ' ' + post.likes;
+                e.target.classList.remove('dislike');
+                e.target.classList.add('like');
+                e.target.innerText = 'Like';
+                break;
+            }
+        }
+    }
 }
 
 const addArea = document.querySelector('.col-md-4');
