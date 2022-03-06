@@ -18,17 +18,6 @@ class Post {
     }
 }
 
-function blinkHandlerinPost(bid){
-    // handler for book Detail page link
-        for (let i =0; i<posts.length; i++){
-            if (posts[i].bookID == bid){
-                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
-                return result;
-            }
-        } 
-        log('error') // OR other actions...     
-    }
-
 
 
 function postCallBack() {
@@ -133,13 +122,6 @@ filpPage(1,3)
 
 // clean all before display
 function cleanPosts(){
-    // const lis = postul.children;
-    // log(lis);
-    // for (let i=0; i<5; i++){
-    //     if (lis[i] != null){
-    //         lis[i].remove();
-    //     }
-    // }
     postul.innerHTML = ''
 }
 
@@ -164,12 +146,9 @@ function displayPosts(){
             let pic = posts[i].pic
             let content = posts[i].content
             let time = posts[i].time
-            let likes = posts[i].likes
             let plink = posts[i].posterlink
             let pid = posts[i].postID
             let bid = posts[i].bookID
-
-            let blink = blinkHandlerinPost(bid)
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -184,7 +163,7 @@ function displayPosts(){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace("login.html")
+                window.location.replace("../../HomeAndLogin/login.html")
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -199,7 +178,7 @@ function displayPosts(){
             let span1 = document.createElement('span')
             let a2 = document.createElement('a')
             a2.className = 'linkColor'
-            a2.setAttribute('href', blink)
+            a2.setAttribute('href', 'BookDetail-0.html')
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();

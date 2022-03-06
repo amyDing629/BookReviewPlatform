@@ -78,7 +78,7 @@
     font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
-.collectedButton{
+.likedButton, .collectedButton{
     width: 85px;
     font-size: small;
     float: bottom;
@@ -148,7 +148,9 @@
 }
 
 #pageFliper{
+    margin: auto;
     text-align: center;
+    width: fit-content;
 }
 
 #tableResult{
@@ -161,10 +163,4 @@
 
 .endTR{
     display: none;
-}
-
-.pagelink{
-    color: #5088e9;
-    background: none;
-    text-decoration: dashed;
 }

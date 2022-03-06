@@ -185,10 +185,10 @@ function displayPosts(){
             // need to handle user link
             // temporary use
             if (userid){
-                plink = '../user/user.html?visit='+userid
+                plink = '../../user/user.html?visit='+userid
             }
             else{ // userid is user, visit myself
-                plink = '../user/user.html'
+                plink = '../../user/user.html'
             }
 
             a1.setAttribute('href', plink)
@@ -210,7 +210,7 @@ function displayPosts(){
             let span1 = document.createElement('span')
             let a2 = document.createElement('a')
             a2.className = 'linkColor'
-            a2.setAttribute('href', blink)
+            a2.setAttribute('href', '4_end_after.html')
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();

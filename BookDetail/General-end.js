@@ -1,16 +1,4 @@
 
-/****************************** Admin USER index-books js ******************************/
-topMenuLink()
-
-function topMenuLink(){
-    const quit = document.querySelector('#topMenu .quit')
-    const a = quit.children[0]
-    a.onclick = function open(e){
-        e.preventDefault();
-        window.location.href = (a.href)
-    }
-}
-
 /*************** Books & Booklists Data ********************/
 
 const allBooks = [];
@@ -39,9 +27,21 @@ class DataBooklist {
 	}
 }
 
+
 BooksCallBack()
 BookListsCallBack()
 displaySearchbox()
+
+function blinkHandler(bid){
+    // handler for book Detail page
+        for (let i =0; i<allBooks.length; i++){
+            if (allBooks[i].bookId == bid){
+                let result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_end_after.html'
+                return result;
+            }
+        }   
+    }
+
 
 function BooksCallBack(){
     // Get all books in database
@@ -68,7 +68,12 @@ function BooksCallBack(){
             new Bookopt(4, 'Song of Solomon', 'Toni Morrison', 
             'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
             'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
-            ));                   
+            ));   
+            
+    // handle links
+    for (let i=0; i<allBooks.length; i++){
+    allBooks[i].link = blinkHandler(allBooks[i].bookId)
+    }        
 }
 
 function BookListsCallBack(){
@@ -76,8 +81,7 @@ function BookListsCallBack(){
     BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
     BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
     BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
-}
-
+    }
 
 function displaySearchbox(){
     const searchbookArea = document.querySelector('.search-book')
@@ -116,12 +120,12 @@ function searchBook(e){
     if (e.target.id == 'search-button1'){
         console.log("here")
         const select = document.getElementById('search-book');
-        // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../'+value+'/'+value+'_admin_after.html'
+            const link = '../'+value+'/'+value+'_end_after.html'
             window.location.href = (link)
         }
+        
     }  
 }
 
@@ -133,37 +137,10 @@ function searchList(e){
     if (e.target.id == 'search-button2'){
         console.log("here")
         const select = document.getElementById('search-list');
-        // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            const link = '../../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // end userID: 0 'User'
             window.location.href = (link)
         }
     }  
-}
-
-
-/* If 'Edit' is clicked, display edition page.
-   If 'Submit' is clicked, display confirmed information */
-   function profileButtonsOnClick(e) {
-    let userInfo = e.target.parentElement;
-    let profileButton = document.getElementById('DesButton');
-    if (e.target.innerHTML == 'Edit Description') {
-        userInfo.removeChild(document.getElementById('bookDescription'));
-        let sigForm = document.createElement('input');
-        sigForm.type = 'text';
-        sigForm.id = 'sigForm';
-        userInfo.insertBefore(sigForm, profileButton);
-        profileButton.innerHTML = 'Submit';
-    }
-    else if (e.target.innerHTML == 'Submit') {
-        let signature = document.getElementById('sigForm').value;
-        userInfo.removeChild(document.getElementById('sigForm'));
-        let newSignature = document.createElement('div');
-        newSignature.id = 'bookDescription';
-        newSignature.className = 'bookDescription';
-        newSignature.innerHTML = signature;
-        userInfo.insertBefore(newSignature, profileButton);
-        profileButton.innerHTML = 'Edit Description';
-    }
 }

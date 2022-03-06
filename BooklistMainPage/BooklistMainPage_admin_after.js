@@ -324,19 +324,32 @@ function increaseLikeOrCollect(e){
         const allBooklists = document.querySelectorAll('.booklist')
         for (let i = 0; i < allBooklists.length; i++){
             const pageIndex = parseInt(allBooklists[i].children[0].children[0].innerHTML)
-            if (pageIndex === index && iconName == 'collectIcon'){
+            const type = e.target.parentElement.nextSibling.innerText
+            if (pageIndex === index && iconName == 'collectIcon' && type.includes("Collects")){ // haven't collected
                 selectedBookList[0].collect++
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
-            } else if (pageIndex === index && iconName == 'likeIcon'){
+            } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
                 selectedBookList[0].likes++
+                allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
+                allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/heart_icon.png"
+            } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
+                selectedBookList[0].collect--
+                allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
+                allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
+            } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
+                selectedBookList[0].likes--
                 allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
+                allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/like_icon.png"
             }
         }
     }
     
 }
 
+// flip page
 function filpPage(pageNo, pageLimit) {
     const allBooks = document.getElementById("tableResultTBODY")
     const totalSize = allBooks.rows.length
@@ -356,31 +369,31 @@ function filpPage(pageNo, pageLimit) {
     let endRow = curr * pageSize
     endRow = (endRow > totalSize) ? totalSize : endRow;
     let strHolder = ""
-    let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
-    let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
-    let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
-    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    let previousStr = "Previous"
+    let nextStr = "Next"
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"filpPage("
+    let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
     // single page is enough
     if (totalPage <= 1){
-        strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
+        strHolder = disabled + previousStr + "</span></li>"+
+        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + "</a></li>" + disabled + nextStr + "</span></li>"
     } else { //multipages
         if (curr > 1) {
-            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + "</a></li>"
             }
         } else {
-            strHolder += previousStr;
+            strHolder += disabled + previousStr + "</span></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j +"</a></li>"
             }
         }
         if (curr < totalPage) {
-            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a>"
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a></li>"
             
-        } else { strHolder += nextStr }
+        } else { strHolder += disabled + nextStr + "</span></li>"}
     }
-    
 
 
     //separate different display style for different tr element
@@ -392,7 +405,16 @@ function filpPage(pageNo, pageLimit) {
             each.className="endTR"
         }
     }
-    document.getElementById("pageFliper").innerHTML = strHolder;
+    document.querySelector("#pageFliperUL").innerHTML = strHolder;
+
+    // set up current page 
+    const allPageButton = document.querySelectorAll(".page-item")
+    for (each of allPageButton){
+        if (each.children[0].innerText == pageNo){
+            each.className = "page-item active"
+            each.ariaCurrent = "page"
+        }
+    }
 }
 
 // select the list sorting way
@@ -449,6 +471,10 @@ function addNewBooklist(e){
     e.preventDefault();
     if (e.target.className == 'addSubmit, btn btn-primary'){
         const listName = document.getElementById('booklistNameInput').value
+        if (listName.length === 0){
+            alert("No list name, your booklist name cannot be empty.")
+            return;
+        }
         const description = document.getElementById('description').value
         let listString = "Books: \n"
         let names = BooksList.map((book) =>  '[ID: '+ book.bookID + ']--' + book.name + '\n')
