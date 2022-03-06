@@ -95,7 +95,9 @@ body {
 }
 
 #pageFliper{
+    margin: auto;
     text-align: center;
+    width: fit-content;
 }
 
 #tableResult{
@@ -107,10 +109,4 @@ body {
 
 .endTR{
     display: none;
-}
-
-.pagelink{
-    color: #5088e9;
-    background: none;
-    text-decoration: dashed;
 }

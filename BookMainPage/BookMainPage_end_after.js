@@ -232,30 +232,32 @@ function filpPage(pageNo, pageLimit) {
     let endRow = curr * pageSize
     endRow = (endRow > totalSize) ? totalSize : endRow;
     let strHolder = ""
-    let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
-    let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
-    let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
-    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    let previousStr = "Previous"
+    let nextStr = "Next"
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"filpPage("
+    let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
     // single page is enough
     if (totalPage <= 1){
-        strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
+        strHolder = disabled + previousStr + "</span></li>"+
+        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + "</a></li>" + disabled + nextStr + "</span></li>"
     } else { //multipages
         if (curr > 1) {
-            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a>"
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr + "</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + "</a></li>"
             }
         } else {
-            strHolder += previousStr;
+            strHolder += disabled + previousStr + "</span></li>"
             for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + spaceStr +"</a>"
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j +"</a></li>"
             }
         }
         if (curr < totalPage) {
-            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a>"
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a></li>"
             
-        } else { strHolder += nextStr }
+        } else { strHolder += disabled + nextStr + "</span></li>"}
     }
+
 
     //separate different display style for different tr element
     for (let i = 1; i < (totalSize + 1); i++) {
@@ -266,7 +268,16 @@ function filpPage(pageNo, pageLimit) {
             each.className="endTR"
         }
     }
-    document.getElementById("pageFliper").innerHTML = strHolder;
+    document.querySelector("#pageFliperUL").innerHTML = strHolder;
+
+    // set up current page 
+    const allPageButton = document.querySelectorAll(".page-item")
+    for (each of allPageButton){
+        if (each.children[0].innerText == pageNo){
+            each.className = "page-item active"
+            each.ariaCurrent = "page"
+        }
+    }
 }
     
 displaySearchbox() // for search bar function
