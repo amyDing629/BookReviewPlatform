@@ -199,11 +199,11 @@ function displayPosts(){
             let button = document.createElement('button')
             button.className = 'btn btn-outline-primary'
             button.classList.add('like')
-            button.innerText = 'Like this post'
+            button.innerText = 'Like'
             let button2 = document.createElement('button')
             button2.className = 'btn btn-outline-success'
             button2.classList.add('collect')
-            button2.innerText = 'Collect this post'
+            button2.innerText = 'Collect'
 
             likeh5.appendChild(icon)
             likeh5.appendChild(button2)
@@ -260,6 +260,8 @@ function collect(e){
         for (let i=0; i<posts.length; i++){
             if(parseInt(posts[i].postID) == pid){
                 collectedPosts.push(posts[i])
+                const h5 = contentDiv.children[contentDiv.children.length-1]
+                h5.children[1].innerText='Collected!'
 
             }
         } 

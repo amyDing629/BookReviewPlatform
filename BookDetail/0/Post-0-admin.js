@@ -133,7 +133,7 @@ function filpPage(pageNo, pageLimit) {
 const postul = document.querySelector('#posts ul');
 postCallBack()
 displayPosts()
-filpPage(1,3)
+
 
 // clean all before display
 function cleanPosts(){
@@ -261,11 +261,11 @@ function displayPosts(){
             let button = document.createElement('button')
             button.className = 'btn btn-outline-primary'
             button.classList.add('like')
-            button.innerText = 'Like this post'
+            button.innerText = 'Like'
             let button2 = document.createElement('button')
             button2.className = 'btn btn-outline-success'
             button2.classList.add('collect')
-            button2.innerText = 'Collect this post'
+            button2.innerText = 'Collect'
             let button3 = document.createElement('button')
             button3.innerText = 'Delete'
             button3.className = 'btn btn-outline-danger'
@@ -286,6 +286,7 @@ function displayPosts(){
             postul.appendChild(li)
         }
     }
+    filpPage(1,3)
 }
 
 const likefield = document.querySelector('#posts')
@@ -309,26 +310,6 @@ function like(e){
 
                 icon.innerText = ' '+ posts[i].likes
                 break;
-            }
-        } 
-	}
-}
-
-const collectfield = document.querySelector('#posts')
-collectfield.addEventListener('click', collect);
-
-function collect(e){
-    e.preventDefault(); // prevent default action
-
-    if (e.target.classList.contains('collect')) {
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                collectedPosts.push(posts[i])
-
             }
         } 
 	}
@@ -366,4 +347,63 @@ function delete_post(e){
 
     }
 
+}
+
+
+const addArea = document.querySelector('.col-md-4');
+log(addArea)
+
+addArea.addEventListener('click', addNewPost)
+
+function addNewPost(e){
+    e.preventDefault();
+    log(1)
+    if (e.target.classList.contains('addSubmit,')){
+        log(2)
+        const postContent = document.getElementById('postContent').value
+        log(postContent)
+        const picUrl = document.getElementById('picInput').value
+
+        const today = new Date();
+        const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + ' ' + today.getHours()+':'+today.getMinutes();
+
+        if(picUrl.length > 0){
+            log(3)
+            posts.push(new Post(posts.length, 0, 'Solaris', null, 0, 'user', null,
+            'https://avatars.githubusercontent.com/u/71192401?v=4', picUrl, postContent, date, 0))
+        }else{
+            posts.push(new Post(posts.length, 0, 'Solaris', null, 0, 'user', null,
+            'https://avatars.githubusercontent.com/u/71192401?v=4', null, postContent, date, 0))
+        }
+
+        displayPosts();
+        const postContentInput = document.getElementById('postContent')
+        const picUrlInput = document.getElementById('picInput')
+        postContentInput.value = ''
+        picUrlInput.value = ''
+    }
+}
+
+
+const collectfield = document.querySelector('#posts')
+collectfield.addEventListener('click', collect);
+
+function collect(e){
+    e.preventDefault(); // prevent default action
+
+    if (e.target.classList.contains('collect')) {
+	
+		const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        log(100)
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                collectedPosts.push(posts[i])
+                const h5 = contentDiv.children[contentDiv.children.length-1]
+                h5.children[2].innerText='Collected!'
+
+            }
+        } 
+	}
 }
