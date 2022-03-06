@@ -19,7 +19,7 @@ The overall objective of the project is to build a website for readers to share 
 
 ## Temp Structure (leave to phase2)
 - **HomeAndLogin**
-  - index.html (Home page for tourist）
+  - **index.html (Home page for tourist**
   - index_end_after.html (Home page for end users）
   - index_admin_after.html (Home page for admin users)
 
