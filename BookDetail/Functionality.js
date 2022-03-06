@@ -45,6 +45,9 @@ window.onload = function displayAllBooks() {
     const bookIntro = document.createElement('div');
     bookIntro.className = 'bookIntro';
 
+    const bookName = document.createElement('span');
+    bookName.innerText = 'Name: ' + BooksList[0].name
+
     const bookAuthor = document.createElement('span');
     bookAuthor.className = "bookAuthor";
     bookAuthor.innerText = 'Author: ' + BooksList[0].author;
@@ -55,9 +58,9 @@ window.onload = function displayAllBooks() {
     publish.className = "publish" ;
     publish.innerText = "publish: " + BooksList[0].year;
 
-    bookIntro.appendChild(bookAuthor);
+    bookIntro.appendChild(bookName);
     bookIntro.appendChild(document.createElement('br'));
-    bookIntro.appendChild(bookId);
+    bookIntro.appendChild(bookAuthor);
     bookIntro.appendChild(document.createElement('br'));
     bookIntro.appendChild(publish);
     bookInfo.appendChild(bookIntro);
