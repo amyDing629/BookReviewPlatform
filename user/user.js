@@ -185,6 +185,92 @@ function changeButtonColor(target) {
     target.className = 'selected btn btn-dark';
 }
 
+function sortDefault(itemList, isByID, isPost) {
+    let sortHelperList = [];
+    let sortedList = [];
+    let item;
+    for (item of itemList){
+        if (isPost == true){
+            if (isByID == true) {
+                sortHelperList.push(item.postID);
+            }
+            else if (isByID == false) {
+                sortHelperList.push(item.bookTitle);
+            }
+        }
+        else if (isPost == false) {
+            if (isByID == true) {
+                sortHelperList.push(item.booklistID);
+            }
+            else if (isByID == false) {
+                sortHelperList.push(item.listName);
+            }
+        }
+    }
+    sortHelperList = sortHelperList.sort()
+    let ele;
+    for (ele of sortHelperList){
+        if (isPost == true) {
+            let post;
+            for (post of itemList) {
+                if (isByID == true) {
+                    if (post.postID == ele) {
+                        sortedList.push(post);
+                        break;
+                    }
+                }
+                else {
+                    if (post.bookTitle == ele) {
+                        sortedList.push(post);
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            let booklist;
+            for (booklist of itemList) {
+                if (isByID == true) {
+                    if (booklist.booklistID == ele) {
+                        sortedList.push(booklist);
+                        break;
+                    }
+                }
+                else {
+                    if (booklist.listName == ele) {
+                        sortedList.push(booklist);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return sortedList;
+  }
+
+function sortByAtoZ(){
+    let nameArr = []
+    let sortedBooklistsList = []
+    for (let i=0; i<BooklistsNum; i++){
+        nameArr.push(BooklistsList[i].listName)
+    }
+    nameArr = nameArr.sort()
+    for (let i=0; i<BooklistsNum; i++) {
+        for (let j=0; j<BooklistsNum; j++){
+            if (nameArr[i] == BooklistsList[j].listName) {
+                sortedBooklistsList.push(BooklistsList[j])
+            }
+        }
+    }
+    const nowBooks = document.querySelector('#tableResultTBODY')
+    const allBooklists = document.querySelectorAll('.booklist')
+    for (each of allBooklists){
+        nowBooks.removeChild(each.parentElement)
+    }
+    displayAllBooklists(sortedBooklistsList)
+    filpPage(1,3)
+}
+
 function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
@@ -659,6 +745,13 @@ function displayUserBooklists(user) {
     content.appendChild(ul);
 
 }
+// function collection(isPost, isByID, collectionList) {
+//     if (isPost == true) {
+//         if (isByID == true) {
+//             pass;
+//         }
+//     }
+// }
 
 function displayUserCollections(user){
     let content = document.getElementById('contents');
@@ -692,7 +785,7 @@ function displayUserCollections(user){
 
     let ul = document.createElement('ul');
     let collection;
-    // TODO: flip page
+    // Default post by ID.
     for (collection of user.collectionList) {
         let li = document.createElement('li');
         if (collection.constructor.name == 'Post') {
