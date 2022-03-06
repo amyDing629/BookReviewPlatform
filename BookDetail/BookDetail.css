@@ -6,6 +6,9 @@
 	float: left;
     margin-bottom: 5px;
 }
+.active2{
+    background-color: white;
+}
 
 #posts .textDecoration2{
     text-align: left;
@@ -14,9 +17,6 @@
     border-bottom: 2px solid rgb(199, 196, 196);
 }
 
-.active{
-    background-color: white;
-}
 
 #topMenu li:last-child {
     float:right;
