@@ -986,13 +986,13 @@ for (let i=0; i<books.length; i++){
 }        
 
 if (window.location.href.indexOf('visit') == '-1'){
-    if (window.location.href.endsWith('user.html')){
+    if (window.location.href.indexOf('user.html') != -1){
         displayUserInfo(regularUser, false);
     }
-    else if (window.location.href.endsWith('admin.html')){
+    else if (window.location.href.indexOf('admin.html') != -1){
         displayUserInfo(adminUser, false);
     }
-    else if (window.location.href.endsWith('amy.html')){
+    else if (window.location.href.indexOf('amy.html') != -1){
         displayUserInfo(regularAmy, false);
     }
 }

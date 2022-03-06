@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+       <title>BookLand</title>
+       <link rel="stylesheet" type="text/css" href="user.css">
+       <!-- For reference -->
+      <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/blog/">
+
+      <!-- For bootstrap -->
+      <link href="../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
+      
+      <!-- For icons -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+    </head>
+
+  <body>
+    <!-- The Top Menu -->
+    <div id="topMenu">
+      <ul>
+          <li>
+              <div class="logoContainer">
+                  <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="icon">
+              </div>
+          </li>
+          <li><a class="active" href="../HomeAndLogin/index_end_after.html">Home</a></li>
+          <li><a class="addUserIdToLink" href="../BookMainPage/BookMainPage_end_after.html">Books</a></li>
+          <li><a class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage_end_after.html">Booklists</a></li>
+          <!--New-->
+          <li class="search-book">
+              <select class="form-select form-select-sm" id="search-book">
+                  <option selected disabled>Search for Books...</option>
+                  <!--Dom -->
+              </select>     
+          </li>
+          <li>
+              <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
+          </li>
+          <li class="search-list">
+              <select class="form-select form-select-sm" id="search-list">
+                  <option selected disabled>Search for BookLists...</option>
+                  <!-- DOM search booklist-->
+              </select> 
+          </li>
+          <li>
+              <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
+          </li>
+          <!-- New added -->
+          <li class="quit">
+            <a href="../HomeAndLogin/index.html">QUIT</a>
+          </li>
+          <li>
+            <a id="userLoginInfo" class="addUserIdToLink" href="../user/amy.html">Amy</a>
+          </li>
+        </ul>
+ </div>
+
+
+  <!-- User Info -->
+  <div id="userMainPage">
+    <div id="userInfo">
+      <div class="profilePicContainer"><img class="profilePic" src="https://avatars.githubusercontent.com/u/71192401?v=4" alt=""></div>
+      <div id="userName">Tom </div>
+      <div id="id">user ID: -1</div>
+      <div id="signature">Say something about yourself ... </div>
+      <button id="profileButton" class='btn btn-dark'>Edit Signature</button>
+      <!-- The left menu -->
+    </div>
+   
+    <div id="menu">
+      <div id="menubar">
+        <ul>
+          <li><button class="selected btn btn-dark">Posts</button></li>
+          <li><button class="btn btn-light">Booklists</button></li>
+          <li><button class="btn btn-light">Post Collections</button></li>
+          <li><button class="btn btn-light">Booklist Collections</button></li>
+        </ul>
+      </div>
+      <div id="contents">
+      </div>
+    </div>
+  </div>
+  <!-- NEW ADDED -->
+  <footer class="blog-footer">
+    <p><i>Book website BookLand built by team10</i></p>
+    <p>
+    <a href="" class="linkColor"><b>Back to top</a>
+    </p>
+  </footer>
+  <script type="text/javascript" src="user.js"></script>
+  <script type="text/javascript" src="../HomeAndLogin/topmenu.js"></script>
+  </body>
+</html>
+
