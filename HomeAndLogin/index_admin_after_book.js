@@ -44,6 +44,18 @@ BooksCallBack()
 BookListsCallBack()
 displaySearchbox()
 
+
+function blinkHandler(bid){
+    // handler for book Detail page
+        for (let i =0; i<allBooks.length; i++){
+            if (allBooks[i].bookId == bid){
+                let result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_admin_after.html'
+                return result;
+            }
+        }   
+    }
+
+
 function BooksCallBack(){
     // Get all books in database
     allBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 
@@ -69,7 +81,12 @@ function BooksCallBack(){
             new Book(4, 'Song of Solomon', 'Toni Morrison', 
             'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
             'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
-            ));                   
+            ));  
+
+    // handle links
+    for (let i=0; i<allBooks.length; i++){
+        allBooks[i].link = blinkHandler(allBooks[i].bookId)
+        }                               
 }
 
 function BookListsCallBack(){
@@ -151,16 +168,6 @@ const recommendedBooks = [];
  displayTop()
  displayRecommendations()
 
-function blinkHandler(bid){
-    // handler for book Detail page
-        for (let i =0; i<recommendedBooks.length; i++){
-            if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/'+recommendedBooks[i].bookId+'/'+recommendedBooks[i].bookId+'_admin_after.html'
-                return result;
-            }
-        }   
-    }
-
 
 function RecommendBooksCreate() {
    //Create RecommendedBooklist according to the frequency of the book put in some booklists
@@ -201,7 +208,7 @@ function RecommendBooksCreate() {
             const description = recommendedBooks[0].description;
             const bid = recommendedBooks[0].bookId;
 
-            const booklink = blinkHandler(0);
+            const booklink = recommendedBooks[0].link;
 
             let img = document.createElement('img')
             img.className = 'TopbookCover'

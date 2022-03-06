@@ -33,6 +33,16 @@ BooksCallBack()
 BookListsCallBack()
 displaySearchbox()
 
+function blinkHandler(bid){
+    // handler for book Detail page
+        for (let i =0; i<allBooks.length; i++){
+            if (allBooks[i].bookId == bid){
+                let result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_end_after.html'
+                return result;
+            }
+        }   
+    }
+
 
 function BooksCallBack(){
     // Get all books in database
@@ -59,7 +69,12 @@ function BooksCallBack(){
             new Book(4, 'Song of Solomon', 'Toni Morrison', 
             'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
             'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
-            ));                   
+            ));   
+            
+    // handle links
+    for (let i=0; i<allBooks.length; i++){
+    allBooks[i].link = blinkHandler(allBooks[i].bookId)
+    }        
 }
 
 function BookListsCallBack(){
@@ -139,16 +154,6 @@ displayTop()
 displayRecommendations()
 
 
-function blinkHandler(bid){
-    // handler for book Detail page
-        for (let i =0; i<recommendedBooks.length; i++){
-            if (recommendedBooks[i].bookId == bid){
-                let result = '../BookDetail/'+recommendedBooks[i].bookId+'/'+recommendedBooks[i].bookId+'_end_after.html'
-                return result;
-            }
-        }   
-    }
-
 
 function RecommendBooksCreate() {
     //Create RecommendedBooklist according to the frequency of the book put in some booklists
@@ -172,15 +177,7 @@ function RecommendBooksCreate() {
     }
 
  function displayTop(){
-     /*
-     <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-                <img class="TopbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png'>
-                <h1 class="display-4 fst-italic, fancychar1">Solaris<span class='transparent>0</span></h1>
-                <h4 class="fancychar1">Stanisław Herman Lem</h4>
-                <p class="lead my-3">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
-                <p class="lead mb-0"><a href="../BookDetail/BookDetail-Solaris.html" class="text-white fw-bold">Continue reading...</a></p>
-            </div> 
-      */
+
         const div = document.getElementsByClassName('p-4 p-md-5 mb-4 text-white rounded bg-dark')
         if (recommendedBooks[0] !=null){
             const bookName = recommendedBooks[0].title;
@@ -189,7 +186,7 @@ function RecommendBooksCreate() {
             const description = recommendedBooks[0].description;
             const bid = recommendedBooks[0].bookId;
 
-            const booklink = blinkHandler(0);
+            const booklink = recommendedBooks[0].link;
 
             let img = document.createElement('img')
             img.className = 'TopbookCover'
@@ -234,23 +231,6 @@ function RecommendBooksCreate() {
 
 
 function displayRecommendations(){
-
-    /*
-    <div class="col-md-6">
-              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                  <!-- <strong class="d-inline-block mb-2 text-primary">BOOK TYPE</strong> -->
-                                                                    <!-- BID -->
-                  <h3 class="fancychar2">Solaris<span class="transparent">0</span></h3>
-                  <div class="mb-1 text-muted">Stanisław Herman Lem</div>
-                  <img class="RecommendationbookCover" src = 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg'>
-                  <br>
-                  <p class="card-text mb-auto ,justify">It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.</p>
-                  <a href="../BookDetail/BookDetail-Solaris.html" class="stretched-link">Continue reading</a>
-                </div>
-              </div>
-            </div>
-     */
 
     for (let i=1; i<3; i++){
         if (recommendedBooks[i] != null){
