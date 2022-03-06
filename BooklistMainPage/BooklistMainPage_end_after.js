@@ -286,7 +286,7 @@ function displayAllBooklists(BooklistsList) {
 
         const spanLike = document.createElement('span')
         spanLike.className = "likeNum"
-        const likeNum = document.createTextNode("Liked: "+BooklistsList[i].likes)
+        const likeNum = document.createTextNode("Likes: "+BooklistsList[i].likes)
         spanLike.appendChild(likeNum)
         liLike.appendChild(spanLike)
 
@@ -326,16 +326,29 @@ function increaseLikeOrCollect(e){
         const allBooklists = document.querySelectorAll('.booklist')
         for (let i = 0; i < allBooklists.length; i++){
             const pageIndex = parseInt(allBooklists[i].children[0].children[0].innerHTML)
-            if (pageIndex === index && iconName == 'collectIcon'){
+            const type = e.target.parentElement.nextSibling.innerText
+            if (pageIndex === index && iconName == 'collectIcon' && type.includes("Collects")){ // haven't collected
                 selectedBookList[0].collect++
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
-            } else if (pageIndex === index && iconName == 'likeIcon'){
+            } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
                 selectedBookList[0].likes++
                 allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
+                allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/heart_icon.png"
+            } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
+                selectedBookList[0].collect--
+                allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
+                allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
+            } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
+                selectedBookList[0].likes--
+                allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
+                allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/like_icon.png"
             }
         }
     }
+    
 }
 
 function filpPage(pageNo, pageLimit) {

@@ -333,7 +333,7 @@ function increaseLikeOrCollect(e){
                 selectedBookList[0].likes++
                 allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
-                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "https://img.favpng.com/17/7/7/heart-icon-love-icon-png-favpng-fdEYx0u0j6vLbKTw6ptuPxCD2.jpg"
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/heart_icon.png"
             } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
                 selectedBookList[0].collect--
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
@@ -342,7 +342,7 @@ function increaseLikeOrCollect(e){
                 selectedBookList[0].likes--
                 allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
-                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/click-&-collect.png"
+                allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../static/like_icon.png"
             }
         }
     }
