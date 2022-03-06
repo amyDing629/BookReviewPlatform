@@ -31,7 +31,7 @@ function blinkHandlerinPost(bid){
     // handler for book Detail page link
         for (let i =0; i<posts.length; i++){
             if (posts[i].bookID == bid){
-                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
+                let result = '../BookDetail/'+posts[i].bookID+'/'+posts[i].bookID+'_admin_after.html'
                 return result;
             }
         } 
@@ -267,20 +267,38 @@ collectfield.addEventListener('click', collect);
 function collect(e){
     e.preventDefault(); // prevent default action
 
-    if (e.target.classList.contains('collect')) {
 	
 		const contentDiv = e.target.parentElement.parentElement
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
         for (let i=0; i<homeposts.length; i++){
             if(parseInt(homeposts[i].postID) == pid){
-                collectedPosts.push(homeposts[i])
-                const h5 = contentDiv.children[contentDiv.children.length-1]
-                h5.children[1].innerText='Collected!' // only collect and do nothing in phase1
+                if (e.target.classList.contains('collect')) {
+                    collectedPosts.push(homeposts[i])
+                    const h5 = contentDiv.children[contentDiv.children.length-1]
+                    h5.children[1].innerText='Collected!' // only collect and do nothing in phase1
+                    e.target.classList.remove('collect');
+                    e.target.classList.add('collected');
+                    break;
+                }
+                else if (e.target.classList.contains('collected')){
+                    //collectedPosts.remove(posts[i])
+                    for (let j=0; i<collectedPosts.length; i++){
+                        if (collectedPosts[j] == posts[i]){
+                            collectedPosts.splice(j, 1)
+                            break;
+                        }
+                    }
+                    const h5 = contentDiv.children[contentDiv.children.length-1]
+                    h5.children[1].innerText='Collect'
+                    e.target.classList.remove('collected');
+                    e.target.classList.add('collect');
+                    break;
+                }
+                
             }
         } 
 	}
-}
 
 displayPostManagerBar()
 
