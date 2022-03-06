@@ -903,6 +903,10 @@ function displayManageWindow() {
         ul.appendChild(li);
     }
     content.appendChild(ul);
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(pageFliper);
+    filpPage(1, 8);
 }
 
 function displayEditBooksWindow() {
