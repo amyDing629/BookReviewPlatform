@@ -1,4 +1,4 @@
-# BookLand
+## BookLand
 
 ## Overall Purpose
 The overall objective of the project is to build a website for readers to share their thoughts on readings with others. Through this platform, readers can view various kinds of book lists made by other readers, create their own book lists, and make friends that have similar reading tastes.
@@ -32,20 +32,21 @@ The overall objective of the project is to build a website for readers to share 
 - **user**
   - user.html (Regular user page)
   - admin.html (Admin user page)
-  - amy.html (A user that is empty in her profile, can be accessed from admin's manage user page)
+  - amy.html (A user that hasn't done anything in her account, can only be accessed from admin's manage user page)
 
 
-## User Details
-- **Regular User'**
-  - When logged in as regular user, the right corner of the top menu bar will show as user's name.
-  - When a regular user accesses to his own main profile page, user can edit signature and edit his own posts and booklists.
-  - When reviewing regular user's profile, the 'edit signature', 'add posts' and 'add booklists' buttons will be hidden.
-- **Admin User**
-  - The right corner of the top menu bar will show as 'Admin'.
-  - Has all feature as regular user.
-  - When accessing to admin's own main profile page, admin has two more buttons than regular user, where they can manage user's status, and direct to 'manage books' page.
-  - When reviewing admin user's profile, the two extra buttons will be hidden.
-  - When an admin review regular user's profile page, he can still delete their posts and booklists.
+## Page Details
+  ### User
+  - **Regular User**
+    - When logged in as regular user, the right corner of the top menu bar will show as user's name.
+    - When a regular user accesses to his own main profile page, user can edit signature and edit his own posts and booklists.
+    - When reviewing regular user's profile, the 'edit signature', 'add posts' and 'add booklists' buttons will be hidden.
+  - **Admin User**
+    - The right corner of the top menu bar will show as 'Admin'.
+    - Has all feature as regular user.
+    - When accessing to admin's own main profile page, admin has two more buttons than regular user, where they can manage user's status, and direct to 'manage books' page.
+    - When reviewing admin user's profile, the two extra buttons will be hidden.
+    - When an admin review regular user's profile page, he can still delete their posts and booklists.
 
  
   
