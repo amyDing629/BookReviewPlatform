@@ -50,7 +50,7 @@ class Post {
 }
 
 class Book {
-	constructor(name, author, year, coverURL, description) {
+	constructor(name, author, coverURL, description) {
 		this.name = name;
 		this.author = author;
 		this.coverURL = coverURL; 
@@ -85,12 +85,11 @@ function menuButtonsOnClick(e) {
     let user = null;
     for (user of users) {
         if (user.userID == userID) {
-            console.log(user);
             // Display contents depending on which button is clicked  
             if (e.target.innerHTML.indexOf('Posts') !== -1) {
                 displayUserPosts(user);
             }
-            else if (e.target.innerHTML.indexOf('Lists') !== -1) {
+            else if (e.target.innerHTML.indexOf('Booklists') !== -1) {
                 displayUserBooklists(user);
             }
             else if (e.target.innerHTML.indexOf('Post Collections') !== -1) {
@@ -256,8 +255,14 @@ function blinkHandler(bid){
     // handler for book Detail page
         for (let i =0; i<books.length; i++){
             if (books[i].bookId == bid){
-                let result = '../BookDetail/'+books[i].bookId+'/'+books[i].bookId+'_end_after.html'
-                return result;
+                let result;
+                if (window.location.href.indexOf('user.html') != -1) {
+                    return '../BookDetail/'+books[i].bookId+'/'+books[i].bookId+'_end_after.html'
+                } else if (window.location.href.indexOf('admin.html') != -1){
+                    return '../BookDetail/'+books[i].bookId+'/'+books[i].bookId+'_admin_after.html'
+                } else{
+                    return '../BookDetail/'+books[i].bookId+'/BookDetail-'+books[i].bookId+'.html';
+                }
             }
         }   
     }
@@ -289,6 +294,14 @@ function displaySearchbox(){
 }
 
 /********** Display functions ************ */
+function _getUserByName(userName) {
+    let user;
+    for (user of users) {
+        if (user.userName == userName) {
+            return user;
+        }
+    }
+}
 function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
@@ -297,7 +310,6 @@ function _createPostDiv(post) {
         let post;
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
         for (post of posts){
-            console.log(parseInt(post.postID));
             if (parseInt(post.postID) == pid){
                 if (e.target.classList.contains('like')){
                     post.likes ++;
@@ -355,8 +367,16 @@ function _createPostDiv(post) {
     let plink = post.posterlink;
     let pid = post.postID;
     let bid = post.bookID;
-
-    let blink = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
+    
+    let blink;
+    if (window.location.href.indexOf('user.html') != -1) {
+        blink = '../BookDetail/'+bid+'/'+bid+'_end_after.html';
+    }else if (window.location.href.indexOf('admin.html') != -1) {
+        blink = '../BookDetail/'+bid+'/'+bid+'_admin_after.html';
+    }else{
+        blink = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
+    }
+    
 
     let img1 = document.createElement('img');
     img1.className='userProfile';
@@ -367,11 +387,20 @@ function _createPostDiv(post) {
     let userh3 = document.createElement('h3');
     let a1 = document.createElement('a');
     a1.className = 'linkColor';
-    a1.setAttribute('href', plink);
     a1.innerText = userName;
     a1.onclick = function open(e){
         e.preventDefault();
-        window.location.href("login.html");
+        if (window.location.href.indexOf(userName+'.html') != -1){
+            window.location.href = userName + ".html";
+        }else{
+            if (window.location.href.indexOf('user.html') != -1) {
+                window.location.href = "user.html?visit=" + _getUserByName('admin').userID;
+            }else {
+                window.location.href = "admin.html?visit=" + _getUserByName('user').userID;
+            }
+            
+
+        }
     }
     let spanid2 = document.createElement('span');
     spanid2.className = 'postId';
@@ -390,7 +419,7 @@ function _createPostDiv(post) {
     a2.innerText = title;
     a2.onclick = function open(e){
         e.preventDefault();
-        window.location.href(a2.href);
+        window.location.href = a2.href;
     }
     span1.appendChild(a2);
     let span2 = document.createElement('span');
@@ -426,6 +455,7 @@ function _createPostDiv(post) {
     contentDiv.appendChild(br);
 
     let likeh5 = document.createElement('h5')
+    likeh5.className = 'likeBar'
     let icon = document.createElement('i')
     icon.className = 'fa fa-heart'
     icon.innerText = ' '+likes
@@ -578,7 +608,14 @@ function _createUserBooklists(booklist) {
     const span1 = document.createElement('span')
     const a1 = document.createElement('a')
     a1.className = "linkColor"
-    a1.href = ""
+    if (window.location.href.indexOf('user.html') != -1) {
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID + '&userID=0.html';
+    }else if (window.location.href.indexOf('admin.html') != -1){
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID + '&userID=1.html';
+    }else{
+        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID;
+    }
+    console.log(a1.href);
     const nameContent = document.createTextNode(booklist.listName)
     a1.appendChild(nameContent)
     span1.appendChild(a1)
@@ -595,7 +632,16 @@ function _createUserBooklists(booklist) {
     const span2 = document.createElement('span')
     const a2 = document.createElement('a')
     a2.className = "linkColor"
-    a2.href = ""
+    if (window.location.href.indexOf(booklist.creator + '.html') != -1){
+            a2.href = booklist.creator + ".html";
+    }else{
+        if (window.location.href.indexOf('user.html') != -1) {
+            a2.href = "user.html?visit=" + _getUserByName('admin').userID;
+        }else {
+            a2.href = "admin.html?visit=" + _getUserByName('user').userID;
+        }
+    }
+    
     const creatorContent = document.createTextNode(booklist.creator)
     a2.appendChild(creatorContent)
     span2.appendChild(a2)
@@ -659,8 +705,15 @@ function _createUserBooklists(booklist) {
         const newBookLink = document.createElement('th')
         const bookLink = document.createElement('a')
         bookLink.className = "book"
-        bookLink.href = "../BookDetail/BookDetail-" + book.name + ".html"
-        bookLink.onclick = function open(e){e.preventDefault(); window.location.replace(bookLink.href)}
+        let bid = book.bookID;
+        if (window.location.href.indexOf('user.html') != -1) {
+            bookLink.href = '../BookDetail/'+bid+'/'+bid+'_end_after.html';
+        }else if (window.location.href.indexOf('admin.html') != -1) {
+            bookLink.href = '../BookDetail/'+bid+'/'+bid+'_admin_after.html';
+        }else{
+            bookLink.href = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
+        }
+
         bookLink.appendChild(document.createTextNode(book.name))
         newBookLink.appendChild(bookLink)
         tr2.appendChild(newBookLink)
@@ -805,18 +858,6 @@ function displayManageWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
 
-    let sortWrap = document.createElement('div');
-    sortWrap.id = 'sortWrap';
-    let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortDefaultButton.innerHTML = 'Sort By ID number';
-    let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortByAtoZ.innerHTML = 'Sort from A to Z';
-    sortWrap.appendChild(sortDefaultButton);
-    sortWrap.appendChild(sortByAtoZ);
-    content.appendChild(sortWrap);
-
     let ul = document.createElement('ul');
     let user;
     for (user of _getRegularUserList()) {
@@ -922,8 +963,9 @@ books.push(
 let novelBooklist = new Booklist('novels', 'All novels liked.', 'admin', [books[0],books[1]]);
 let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [books[1]]);
 let before20list = new Booklist('Before 20th', 'Before 20 centuries', 'user', [books[0],books[1], books[3], books[4]]);
-regularUser.booklistList.push(novelBooklist);
+adminUser.booklistList.push(novelBooklist);
 adminUser.booklistList.push(spanishBooklist);
+regularUser.booklistList.push(before20list);
 booklists.push(novelBooklist);
 booklists.push(spanishBooklist);
 booklists.push(before20list);
@@ -984,11 +1026,17 @@ searchArea1.addEventListener('click', searchBook)
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
-        console.log("here")
         const select = document.getElementById('search-book');
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BookDetail/'+value+'/'+value+'_end_after.html'
+            let link;
+            if (window.location.href.indexOf('user') != -1) {
+                link = '../BookDetail/'+value+'/'+value+'_end_after.html';
+            }else if (window.location.href.indexOf('admin') != -1) {
+                link = '../BookDetail/'+value+'/'+value+'_admin_after.html';
+            }else{
+                link = '../BookDetail/'+value+'/BookDetail-'+value+'.html';
+            }
             window.location.href = (link)
         }
         
@@ -1001,11 +1049,17 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html' // end userID: 0 'User'
+            let link;
+            if (window.location.href.indexOf('user.html') != -1) {
+                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html';
+            }else if (window.location.href.indexOf('admin.html') != -1) {
+                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html';
+            }else{
+                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value;
+            }
             window.location.href = (link)
         }
     }  
