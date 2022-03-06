@@ -494,7 +494,7 @@ function displayUserPosts(user) {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
     if (user.postList.length == 0){
-        content.innerHTML = "You don't have any post.";
+        content.innerHTML = "Don't have any post.";
         return
     }
 
@@ -777,7 +777,7 @@ function displayUserBooklists(user) {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
     if (user.booklistList.length == 0){
-        content.innerHTML = "You don't have any booklist.";
+        content.innerHTML = "Don't have any booklist.";
         return;
     }
     let ul = document.createElement('ul');
@@ -800,7 +800,7 @@ function displayCollectedPost(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
     if (user.postCollectionList.length == 0) {
-        content.innerHTML = "You don't have any post collection.";
+        content.innerHTML = "Don't have any post collection.";
         return;
     }
 
@@ -822,7 +822,7 @@ function displayCollectedBooklist(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
     if (user.booklistCollectionList.length == 0) {
-        content.innerHTML = "You don't have any booklist collection.";
+        content.innerHTML = "Don't have any booklist collection.";
         return;
     }
 
