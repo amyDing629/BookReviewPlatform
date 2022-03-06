@@ -18,7 +18,8 @@ class User {
         this.profilePhoto = null;
         this.postList = [];
         this.booklistList = [];
-        this.collectionList = [];
+        this.postCollectionList = [];
+        this.booklistCollectionList = []
         this.userID = numberOfUsers;
         this.isAdmin = false;
 		numberOfUsers++;
@@ -92,8 +93,11 @@ function menuButtonsOnClick(e) {
             else if (e.target.innerHTML.indexOf('Lists') !== -1) {
                 displayUserBooklists(user);
             }
-            else if (e.target.innerHTML.indexOf('Collections') !== -1) {
-                displayUserCollections(user);
+            else if (e.target.innerHTML.indexOf('Post Collections') !== -1) {
+                displayCollectedPost(user);
+            }
+            else if (e.target.innerHTML.indexOf('Booklist Collections') != -1) {
+                displayCollectedBooklist(user);
             }
             else if (e.target.innerHTML.indexOf('Manage') !== -1) {
                 displayManageWindow();
@@ -185,91 +189,68 @@ function changeButtonColor(target) {
     target.className = 'selected btn btn-dark';
 }
 
-function sortDefault(itemList, isByID, isPost) {
-    let sortHelperList = [];
-    let sortedList = [];
-    let item;
-    for (item of itemList){
-        if (isPost == true){
-            if (isByID == true) {
-                sortHelperList.push(item.postID);
-            }
-            else if (isByID == false) {
-                sortHelperList.push(item.bookTitle);
-            }
-        }
-        else if (isPost == false) {
-            if (isByID == true) {
-                sortHelperList.push(item.booklistID);
-            }
-            else if (isByID == false) {
-                sortHelperList.push(item.listName);
-            }
-        }
-    }
-    sortHelperList = sortHelperList.sort()
-    let ele;
-    for (ele of sortHelperList){
-        if (isPost == true) {
-            let post;
-            for (post of itemList) {
-                if (isByID == true) {
-                    if (post.postID == ele) {
-                        sortedList.push(post);
-                        break;
-                    }
-                }
-                else {
-                    if (post.bookTitle == ele) {
-                        sortedList.push(post);
-                        break;
-                    }
-                }
-            }
-        }
-        else {
-            let booklist;
-            for (booklist of itemList) {
-                if (isByID == true) {
-                    if (booklist.booklistID == ele) {
-                        sortedList.push(booklist);
-                        break;
-                    }
-                }
-                else {
-                    if (booklist.listName == ele) {
-                        sortedList.push(booklist);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    return sortedList;
-  }
-
-function sortByAtoZ(){
-    let nameArr = []
-    let sortedBooklistsList = []
-    for (let i=0; i<BooklistsNum; i++){
-        nameArr.push(BooklistsList[i].listName)
-    }
-    nameArr = nameArr.sort()
-    for (let i=0; i<BooklistsNum; i++) {
-        for (let j=0; j<BooklistsNum; j++){
-            if (nameArr[i] == BooklistsList[j].listName) {
-                sortedBooklistsList.push(BooklistsList[j])
-            }
-        }
-    }
-    const nowBooks = document.querySelector('#tableResultTBODY')
-    const allBooklists = document.querySelectorAll('.booklist')
-    for (each of allBooklists){
-        nowBooks.removeChild(each.parentElement)
-    }
-    displayAllBooklists(sortedBooklistsList)
-    filpPage(1,3)
-}
+// function _sortList(itemList, isByID, isPost) {
+//     let sortHelperList = [];
+//     let sortedList = [];
+//     let item;
+//     for (item of itemList){
+//         if (isPost == true){
+//             if (isByID == true) {
+//                 sortHelperList.push(item.postID);
+//             }
+//             else if (isByID == false) {
+//                 sortHelperList.push(item.bookTitle);
+//             }
+//         }
+//         else if (isPost == false) {
+//             if (isByID == true) {
+//                 sortHelperList.push(item.booklistID);
+//             }
+//             else if (isByID == false) {
+//                 sortHelperList.push(item.listName);
+//             }
+//         }
+//     }
+//     sortHelperList = sortHelperList.sort()
+//     let ele;
+//     for (ele of sortHelperList){
+//         if (isPost == true) {
+//             let post;
+//             for (post of itemList) {
+//                 if (isByID == true) {
+//                     if (post.postID == ele) {
+//                         sortedList.push(post);
+//                         break;
+//                     }
+//                 }
+//                 else {
+//                     if (post.bookTitle == ele) {
+//                         sortedList.push(post);
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//         else {
+//             let booklist;
+//             for (booklist of itemList) {
+//                 if (isByID == true) {
+//                     if (booklist.booklistID == ele) {
+//                         sortedList.push(booklist);
+//                         break;
+//                     }
+//                 }
+//                 else {
+//                     if (booklist.listName == ele) {
+//                         sortedList.push(booklist);
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     return sortedList;
+//   }
 
 function _createPostDiv(post) {
     function likeOnClick(e){
@@ -317,7 +298,7 @@ function _createPostDiv(post) {
 
     function deletePostButtonOnClick(e) {
         let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[2].removeChild(deletePostDiv);
+        document.getElementById('contents').children[0].removeChild(deletePostDiv);
     }
 
     let postDiv = document.createElement('div');
@@ -449,23 +430,10 @@ function displayUserPosts(user) {
         content.innerHTML = "You don't have any post.";
         return
     }
-    let sortWrap = document.createElement('div');
-    sortWrap.id = 'sortWrap';
-    let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortDefaultButton.innerHTML = 'Sort By ID number';
-    let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortByAtoZ.innerHTML = 'Sort from A to Z';
-    sortWrap.appendChild(sortDefaultButton);
-    sortWrap.appendChild(sortByAtoZ);
-    content.appendChild(sortWrap);
-    content.appendChild(document.createElement('br'));
 
     let ul = document.createElement('ul');
-    ul.id = 'posts';
+    //ul.id = 'posts';
     let post;
-    // TODO: flip page
     for (post of user.postList) {
         let li = document.createElement('li');
         li.appendChild(_createPostDiv(post));
@@ -529,7 +497,7 @@ function _createUserBooklists(booklist) {
 
     function deleteBooklistButtonOnClick(e) {
         let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[2].removeChild(booklistDiv);
+        document.getElementById('contents').children[0].removeChild(booklistDiv);
     }
 
     const div = document.createElement('div')
@@ -721,22 +689,9 @@ function displayUserBooklists(user) {
         content.innerHTML = "You don't have any booklist.";
         return;
     }
-    let sortWrap = document.createElement('div');
-    sortWrap.id = 'sortWrap';
-    let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortDefaultButton.innerHTML = 'Sort By ID number';
-    let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortByAtoZ.innerHTML = 'Sort from A to Z';
-    sortWrap.appendChild(sortDefaultButton);
-    sortWrap.appendChild(sortByAtoZ);
-    content.appendChild(sortWrap);
-    content.appendChild(document.createElement('br'));
     let ul = document.createElement('ul');
     let booklist;
     // TODO: flip page
-    console.log(user.booklistList);
     for (booklist of user.booklistList) {
         let li = document.createElement('li');
         li.appendChild(_createUserBooklists(booklist));
@@ -745,58 +700,43 @@ function displayUserBooklists(user) {
     content.appendChild(ul);
 
 }
-// function collection(isPost, isByID, collectionList) {
-//     if (isPost == true) {
-//         if (isByID == true) {
-//             pass;
-//         }
-//     }
-// }
 
-function displayUserCollections(user){
+function displayCollectedPost(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    if (user.collectionList.length == 0) {
-        content.innerHTML = "You don't have any collection.";
+    if (user.postCollectionList.length == 0) {
+        content.innerHTML = "You don't have any post collection.";
         return;
     }
 
-    let sortWrap = document.createElement('div');
-    sortWrap.id = 'sortWrap';
-    let sortDefaultButton = document.createElement('button');
-    sortDefaultButton.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortDefaultButton.innerHTML = 'Sort By ID number';
-    let sortByAtoZ = document.createElement('button');
-    sortByAtoZ.className = 'sortButton btn btn-outline-secondary btn-sm';
-    sortByAtoZ.innerHTML = 'Sort from A to Z';
-    let filterPosts = document.createElement('button');
-    filterPosts.className = 'sortButton btn btn-outline-secondary btn-sm';
-    filterPosts.innerHTML = 'Collected posts';
-    let filterBooklists = document.createElement('button');
-    filterBooklists.className = 'sortButton btn btn-outline-secondary btn-sm';
-    filterBooklists.innerHTML = 'Collected booklists';
-
-    sortWrap.appendChild(sortDefaultButton);
-    sortWrap.appendChild(sortByAtoZ);
-    sortWrap.appendChild(filterPosts);
-    sortWrap.appendChild(filterBooklists);
-    content.appendChild(sortWrap);
-    content.appendChild(document.createElement('br'));
-
     let ul = document.createElement('ul');
-    let collection;
-    // Default post by ID.
-    for (collection of user.collectionList) {
+    let postCollection;
+    for (postCollection of user.postCollectionList) {
         let li = document.createElement('li');
-        if (collection.constructor.name == 'Post') {
-            li.appendChild(_createPostDiv(collection));
-        }else {
-            li.appendChild(_createUserBooklists(collection));
-        }
+        li.appendChild(_createPostDiv(postCollection));
         ul.appendChild(li);
     }
     content.appendChild(ul); 
 }
+
+function displayCollectedBooklist(user){
+    let content = document.getElementById('contents');
+    content.innerHTML = ''; // Clean up contents
+    if (user.booklistCollectionList.length == 0) {
+        content.innerHTML = "You don't have any booklist collection.";
+        return;
+    }
+
+    let ul = document.createElement('ul');
+    let booklistCollection;
+    for (booklistCollection of user.booklistCollectionList) {
+        let li = document.createElement('li');
+        li.appendChild(_createUserBooklists(booklistCollection));
+        ul.appendChild(li);
+    }
+    content.appendChild(ul); 
+}
+
 
 function _getRegularUserList() {
     let user;
@@ -931,10 +871,10 @@ adminUser.booklistList.push(spanishBooklist);
 booklists.push(novelBooklist);
 booklists.push(spanishBooklist);
 
-regularUser.collectionList.push(postSolarisWithoutImg);
-regularUser.collectionList.push(spanishBooklist);
-adminUser.collectionList.push(postSolarisWithImg);
-adminUser.collectionList.push(novelBooklist);
+regularUser.postCollectionList.push(postSolarisWithoutImg);
+regularUser.booklistCollectionList.push(spanishBooklist);
+adminUser.postCollectionList.push(postSolarisWithImg);
+adminUser.booklistCollectionList.push(novelBooklist);
 
 users.push(adminUser);
 users.push(regularUser);
@@ -974,3 +914,4 @@ menuButtonSelected.addEventListener('click', menuButtonsOnClick);
 if (profileButtons != null) {
     profileButtons.addEventListener('click', profileButtonsOnClick);
 }
+
