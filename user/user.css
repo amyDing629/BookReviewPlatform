@@ -52,8 +52,6 @@
 }
 
 
-
-
 #menu {
 	padding: 5px;
 	display: inline-block;
@@ -137,7 +135,16 @@
 }
 .manageButton {
 	display: inline-block;
-	
+}
+#userManage {
+	margin-left: 100px;
+}
+
+/** Edit Signature **/
+#sigForm {
+	height: 200px;;
+	width: 350px;
+	font-size: 18px;
 }
 
 /** Some font color classes for you to use. **/
