@@ -75,12 +75,20 @@
 	display: inline-block;	
 }
 
+#contents {
+	margin-top: 40px;
+}
+
 #contents ul {
 	list-style: none; 
 }
 
 #contents ul li {
 	margin-bottom: 20px;
+}
+
+.likeBar {
+	margin-top: 20px;
 }
 
 /** Display lists **/
