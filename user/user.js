@@ -1052,8 +1052,12 @@ booklists.push(before20list);
 
 regularUser.postCollectionList.push(postSolarisWithoutImg);
 regularUser.booklistCollectionList.push(spanishBooklist);
+regularUser.booklistCollectionList.push(novelBooklist);
 adminUser.postCollectionList.push(postSolarisWithImg);
+adminUser.postCollectionList.push(postSongOfSolomon);
+adminUser.postCollectionList.push(postWarAndPeace);
 adminUser.booklistCollectionList.push(novelBooklist);
+adminUser.booklistCollectionList.push(before20list);
 
 users.push(adminUser);
 users.push(regularUser);
