@@ -4,9 +4,12 @@
  <head>
  	<meta charset="UTF-8">
     <title> BookLand</title>
+    <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="../BookDetail.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
-    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> <!-- For bootstrap -->
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+    <!-- For bootstrap -->
+    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> 
  </head>
 
 <body>
@@ -34,7 +37,6 @@
             <li class="search-list">
                 <select class="form-select form-select-sm" id="search-list" disabled>
                     <option selected>Search for BookLists...</option>
-                    <!-- 改这里 -->
                     <option value="0">Solaris</option>
                     <option value="1"><span>Tres Tristes Tigres</span></option>
                     <option value="2"><span>The Story of the Lost Child</span></option>
@@ -50,14 +52,14 @@
  	</div>
 
 
-     <div class="bookInfo" id="bookInfo">
-     </div>
+    <!-- Book Cover, book basic infor includes author, publish time and book ID -->
+    <div class="bookInfo" id="bookInfo"></div>
 
-     <div class="bookDescription" id="bookDescription">
-        
-     </div>
+    <div class="title"><strong class="des">Description:</strong></div>
+    <!-- brief description of book -->
+    <div class="bookDescription" id="bookDescription"></div>
 
-     
+    <!-- Post section -->
     <div id="posts">
         <div class="row g-5">
             <!--Left part -->
@@ -66,7 +68,7 @@
                     People in BookLand
                   </h3>
               <ul id="post-body">
-                <!-- Max 5 posts -->
+                <!-- Max 3 posts per page -->
              </ul>
             </div> 
             
@@ -76,7 +78,9 @@
 
     <script type="text/javascript" src="BookDetail-1.js"></script>
     <script type="text/javascript" src="Post-1.js"></script>
-    <!-- NEW ADDED -->	
+    <script type="text/javascript" src="../Functionality.js"></script>
+    <script type="text/javascript" src="../../HomeAndLogin/topmenu.js"></script>
+    <!-- Footer -->	
     <footer class="blog-footer">
         <p><i>&copy; BookLand built by team10</i></p>
         <p>

@@ -136,14 +136,6 @@ displayPosts()
 
 // clean all before display
 function cleanPosts(){
-    // const lis = postul.children;
-    // log(lis)
-    // for (let i=0; i<5; i++){
-    //     if (lis[i] != null){
-    //         lis[i].remove();
-    //     }
-    // }
-    // log(lis[0])
     postul.innerHTML = ''
 }
 

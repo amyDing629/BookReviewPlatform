@@ -4,9 +4,12 @@
  <head>
  	<meta charset="UTF-8">
     <title>BookLand</title>
+    <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="../BookDetail.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- For icons -->
-    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet"> <!-- For bootstrap -->
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- For bootstrap -->
+    <link href="../../bootstrap-dist/css/bootstrap.min.css" rel="stylesheet">
  </head>
 
 <body>
@@ -15,83 +18,90 @@
         <ul>
             <li>
                 <div class="logoContainer">
-                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
+                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="icon">
                 </div>
             </li>
+            <li><a class="active" href="../../HomeAndLogin/index_admin_after.html">Home</a></li>
+            <li><a class="addUserIdToLink" href="../../BookMainPage/BookMainPage_admin_after.html">Books</a></li>
+            <li><a class="addUserIdToLink" href="../../BooklistMainPage/BooklistMainPage_admin_after.html">Booklists</a></li>
             <!-- New -->
-            <li><a class="active" href="index.html">Home</a></li>
-            <li><a href="../BookMainPage/BookMainPage.html">Books</a></li>
-            <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a></li>
             <li class="search-book">
-                <select class="form-select form-select-sm" id="search-book" disabled>
-                    <option selected>Search for Books...</option>
+                <select class="form-select form-select-sm" id="search-book">
+                    <option selected disabled>Search for Books...</option> <!--modified -->
                     <!--Dom -->
                 </select>     
             </li>
             <li>
-                <button type="submit" class="btn btn-dark" id="search-button1" disabled><i class="fa fa-search"></i> Books</button>
+                <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
             </li>
             <li class="search-list">
-                <select class="form-select form-select-sm" id="search-list" disabled>
-                    <option selected>Search for BookLists...</option>
-                    <!-- 改这里 -->
-                    <option value="0">Solaris</option>
-                    <option value="1"><span>Tres Tristes Tigres</span></option>
-                    <option value="2"><span>The Story of the Lost Child</span></option>
+                <select class="form-select form-select-sm" id="search-list">
+                    <option selected disabled>Search for BookLists...</option> <!--modified -->
+                    <!--Dom search booklist-->
                 </select> 
             </li>
             <li>
-                <button type="submit" class="btn btn-dark" id="search-button2" disabled><i class="fa fa-search"></i> Booklists</button>
+                <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
+            </li>
+            <li class="quit">
+                <a href="../../HomeAndLogin/index.html">QUIT</a>
             </li>
             <li>
-                <a href="login.html">Login/Register</a>
+                <a id="userLoginInfo" class="addUserIdToLink" href="../../user/admin.html">User</a>
             </li>
           </ul>
  	</div>
 
 
-     <div class="bookInfo" id="bookInfo">
-        <!-- <div class="coverContainer">
-            <img class="cover" src="https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg" alt="book picture">
-        </div>
+    <!-- Book Cover, book basic infor includes author, publish time and book ID -->
+    <div class="bookInfo" id="bookInfo"></div>
 
-        <div class="bookIntro">
-            <span class="bookAuthor">Author: Stanisław Lem</span><br><br>
-            <span class="bookId">BookID: 0 </span><br><br>
-            <span class="publish">Publish Time: 1961</span>
-        </div> -->
-     </div>
 
-     <div class="title"><strong class="des">Description:</strong></div>
+    <div class="title"><strong class="des">Description:</strong></div>
 
-     <div class="bookDescription" id="bookDescription">
-         
-        <!-- Solaris is a 1961 science fiction novel by Polish writer Stanisław Lem. 
-        It follows a crew of scientists on a research station as they attempt to understand 
-        an extraterrestrial intelligence, which takes the form of a vast ocean on the titular 
-        alien planet. The novel is among Lem's best-known works.The book has been adapted numerous times for film,
-        radio, and theater. Prominent film adaptations include Andrei Tarkovsky's 1972 version and Steven Soderbergh's 
-        2002 version, although Lem later remarked that none of these films reflected the book's thematic
-        emphasis on the limitations of human rationality.
-         -->
-     </div>
+    <!-- brief description of book -->
+    <div class="bookDescription" id="bookDescription"> </div>
 
     <button class="btn btn-light"  id="DesButton">Edit Description</button>
      
     <!-- Post section -->
     <div id="posts">
-        <h1 class="textDecoration">  Comments: </h1>
-        <ul>
+        <div class="row g-5">
+            <!--Left part -->
+            <div class="col-md-8">
+                <h3 class="pb-4 mb-4 fst-italic border-bottom, textDecoration2">
+                    People in BookLand
+                  </h3>
+              <ul id="post-body">
+                <!-- Max 3 posts per page -->
+             </ul>
+             <div id="pageFliper"></div>
+            </div> 
 
-        </ul>
+             <!--Right part, add post area -->
+             <div class="col-md-4">
+                <div class="position-sticky" style="top: 2rem;">
+                  <div class="p-4 mb-3 bg-light rounded">
+                    <h4 class="fst-italic">Add Post</h4>
+                    <p class="mb-0, justify">
+                        Thoughts: <input id="postContent" type="text" placeholder="thoughts...*"required>
+                        <br>
+                        Picture URL: <input id="picInput" type="url" placeholder="Picture URL (OPT)">
+                        <br>
+                        <input class="addSubmit, btn btn-outline-dark" type = "submit" value="Add">
+                    </p>
+            </div>
+            
+        </div>   
     </div> 
-    <script type="text/javascript" src="BookDetail-5.js"></script>
 
+
+    <script type="text/javascript" src="BookDetail-5.js"></script>
+    <script type="text/javascript" src="../Functionality.js"></script>
  	<script type="text/javascript" src="../General.js"></script>
-     <!-- <script type="text/javascript" src="../HomeAndLogin/index_admin_after_book.js"></script> -->
-    <!-- <script type="text/javascript" src="../../HomeAndLogin/index_admin_after_post.js"></script> -->
     <script type="text/javascript" src="../../HomeAndLogin/topmenu.js"></script>
-    <!-- NEW ADDED -->	
+
+    <!-- Footer -->	
     <footer class="blog-footer">
         <p><i>&copy; BookLand built by team10</i></p>
         <p>
