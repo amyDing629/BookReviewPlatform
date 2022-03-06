@@ -116,9 +116,9 @@ function profileButtonsOnClick(e) {
     let profileButton = document.getElementById('profileButton');
     if (e.target.innerHTML == 'Edit Signature') {
         userInfo.removeChild(document.getElementById('signature'));
-        let sigForm = document.createElement('input');
-        sigForm.type = 'text';
+        let sigForm = document.createElement('textarea');
         sigForm.id = 'sigForm';
+        sigForm.innerHTML = "Enter signature here..";
         userInfo.insertBefore(sigForm, profileButton);
         profileButton.innerHTML = 'Submit';
     }
@@ -872,6 +872,7 @@ function displayManageWindow() {
     content.innerHTML = ''; // Clean up contents
 
     let ul = document.createElement('ul');
+    ul.id = 'userManage';
     let user;
     for (user of _getRegularUserList()) {
         let li = document.createElement('li');
