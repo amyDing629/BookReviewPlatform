@@ -53,7 +53,7 @@ a {
 .logoContainer {
 	position: relative;
 	width: 80px;
-    height: 20px;
+    height: 27px;
 	float:left;
 }
 
@@ -69,7 +69,8 @@ a {
 #topMenu {
     padding-bottom: 10px;
 	background-color: white;
-    overflow:hidden; /*new added*/
+    width:100%;
+    height:auto;
 }
 
 #topMenu ul{
@@ -79,12 +80,15 @@ a {
     overflow: hidden;
     background-color: white;
     border-bottom: 2px solid black;
-    /*position:fixed;*/
     width: 100%;
+    height: auto;
+    margin: auto;
+    white-space: nowrap;
 }
 
 #topMenu li {
-    float:left;
+    display: inline-block;
+    max-width: 10%;
 }
 
 #topMenu li a{
@@ -105,7 +109,6 @@ a {
     float:right;
 }
 
-
 #topMenu li a:hover {
     background-color: #ccc;
   }
@@ -116,41 +119,22 @@ a {
 
 /*new added*/
 #search-button1{
-    margin-top:5px;
     margin-left:5px;
     margin-right:20px;
 }
 
 #search-button2{
-    margin-top:5px;
     margin-left:5px;
     margin-right:10px;
 }
 
 #topMenu li.search-book{
-
-    margin-top:9px;
     margin-left:5px;
 }
 #topMenu li.search-list{
-
-    margin-top:9px;
     margin-left:5px;
 }
 
-/* #topMenu input[type=text] {
-    width: 500px;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: white;
-    padding: 12px 20px 12px 40px;
-    background-image: url(https://cdn.pixabay.com/photo/2017/11/10/05/24/magnifying-glass-2935435__340.png);
-    background-position: 5px 8px;
-    background-size: 6.5%;
-    background-repeat: no-repeat;
-  }   */
 
 
 /********** welcome **********/
@@ -239,6 +223,7 @@ a {
     font-family: 'Noto Serif Display', serif;
     border-bottom: 2px solid rgb(199, 196, 196);
 }
+
 
 #posts ul li{
     list-style-type: none;
@@ -348,7 +333,7 @@ a {
     color: #727272;
     text-align: center;
     background-color: #f9f9f9;
-    border-top: .05rem solid #e5e5e5;   
+    border-top: .05rem solid #e5e5e5; 
   }
   .blog-footer p:last-child {
     margin-bottom: 0;
