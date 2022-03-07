@@ -106,7 +106,7 @@ function searchBook(e){
         // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BookDetail/'+value+'/'+value+'_admin_after.html'
+            const link = '../'+value+'/'+value+'_admin_after.html'
             window.location.href = (link)
         }
     }  
@@ -123,7 +123,7 @@ function searchList(e){
         // new
         if (select.selectedIndex!=0){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
+            const link = '../../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html' // admin userID: 1
             window.location.href = (link)
         }
     }  
