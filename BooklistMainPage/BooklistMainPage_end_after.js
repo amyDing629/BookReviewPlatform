@@ -502,12 +502,13 @@ function addNewBooklist(e){
         let ids = BooksList.map((book) =>  book.bookID)
         for (each of names){ listString = listString + each }
         let result = prompt(listString + "\n\n Please enter book ID list and using ; to seperate", "0;1;4")
-        const books = result.split("")
+        const books = result.split(";")
         // check id validation
         let validInputs = []
         for (item of books) {
-            if (item.match(/^\d+$/)){
-                validInputs.push(item.input)
+            const valid = ids.filter((each) => parseInt(item.trim()) === each)
+            if (valid.length === 1) {
+                validInputs.push(valid[0])
             }
         }
         if (validInputs.length === books.length){
