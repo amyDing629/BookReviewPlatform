@@ -27,17 +27,17 @@ The overall objective of the project is to build a website for readers to share 
   - index_admin_after.html (Home page for admin users)
   - login.html
   - register.html
+  
+- **user**
+  - user.html (Regular user page)
+  - admin.html (Admin user page)
+  - amy.html (A user that hasn't done anything in her account, can only be accessed from admin's manage user page)
 
 - **BookDetail**
   - 6 folders(0-5), each folder name represents the book ID   
   - BookDetail-ID.html (book detail page for guest）
   - ID_end_after.html (book detail page for end users）
   - ID_admin_after.html (book detail page for admin users)
-
-- **user**
-  - user.html (Regular user page)
-  - admin.html (Admin user page)
-  - amy.html (A user that hasn't done anything in her account, can only be accessed from admin's manage user page)
 
 - **BooklistDetail**
   - BooklistDetail.html (All users pages for all booklists. Different booklistID and userID regulates the page displaying and functionalities. Guests don't have userID, they only have booklistID as the path variable.)
