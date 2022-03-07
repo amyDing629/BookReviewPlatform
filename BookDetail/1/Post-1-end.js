@@ -86,7 +86,7 @@ function cleanPosts(){
 function displayPosts(){
     cleanPosts();
 
-    for (let i=0; i<5; i++){
+    for (let i=0; i<1000; i++){
         if (posts[i] != null){
             let li = document.createElement('li')
 
