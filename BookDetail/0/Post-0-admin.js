@@ -65,7 +65,7 @@ function displayPosts(){
     cleanPosts();
     // log(posts)
 
-    for (let i=0; i<5; i++){
+    for (let i=0; i<1000; i++){
         if (posts[i] != null){
             let li = document.createElement('li')
 
@@ -181,8 +181,8 @@ function displayPosts(){
             let button3 = document.createElement('button')
             button3.innerText = 'Delete'
             button3.className = 'btn btn-outline-danger'
-            button3.id = 'delete'
-            button3.classList.add('delete')
+            button3.id = 'delete3'
+            // button3.classList.add('delete')
 
             likeh5.appendChild(icon)
             likeh5.appendChild(button3)
@@ -205,9 +205,13 @@ const likefield = document.querySelector('#posts')
 likefield.addEventListener('click', like)
 
 function like(e){
+    log(11111111)
     e.preventDefault(); // prevent default action
     let contentDiv = e.target.parentElement.parentElement
-    let pid = contentDiv.getElementsByClassName('postId')[0].innerHTML
+    log(contentDiv)
+    let pid = contentDiv.getElementsByClassName('postId')[0].innerText
+    log(100000)
+    log(pid)
     let post;
     let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
     for (post of posts) {
@@ -240,10 +244,9 @@ deletefield.addEventListener('click', delete_post)
 function delete_post(e){
     e.preventDefault(); // prevent default action
     log('delete post')
-
-    if (e.target.classList.contains('delete')) {
+    if (e.target.className == 'btn btn-outline-danger') {
         const contentDiv = e.target.parentElement.parentElement
-        log(contentDiv)
+        log(100)
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
         log(pid)
