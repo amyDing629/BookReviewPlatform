@@ -52,17 +52,22 @@ if (window.location.href.indexOf('register.html') !== -1) {
 function change_page(){
     const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;
-    const sameName = users.filter(User => User.userName != username);
-    log(sameName)
-
-    if (sameName.length == users.length){
-        users.push(new User(username, password))
-        window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
+    if (username!='' && password!=''){
+        const sameName = users.filter(User => User.userName != username);
+        log(sameName)
+        if (sameName.length == users.length){
+            users.push(new User(username, password))
+            //window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
+            }
+        else{
+            const p = document.querySelector('p')
+            p.innerText = 'username already been used, please try again'
         }
+    }
     else{
         const p = document.querySelector('p')
-        p.innerText = 'username already been used, please try again'
-}
-    
+            p.innerText = 'username and password cannot be empty'
+    }   
+   
 }
     
