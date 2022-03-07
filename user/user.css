@@ -147,6 +147,10 @@
 	font-size: 18px;
 }
 
+.pagelink{
+	text-decoration: dashed;
+   }
+
 /** Some font color classes for you to use. **/
 .linkColor {
 	color: #5088e9;
