@@ -54,6 +54,25 @@ The overall objective of the project is to build a website for readers to share 
 
 
 ## Page Details
+  ### HomeAndLogin
+  - **Guest**
+    - The home page for guests is index.html. They can view recommended books and posts demostrated in home page. They can also use top menu to visit other pages and login/register.
+    - Three books appears most frequently among users' created booklists will become recommended books displayed in the home page (including homepage for end users & admin uses)
+    - There should be maximum of 5 posts demostrated in home page.
+    - Guests cannot visit profiles of users whose posts are demostrated in this home page. Guests have to login/register first.
+    - For **login/register**, the default users are two: 
+      - End user( username: user, password: user )
+      - Admin user ( username: admin, password: admin )
+      - Guests can also create an account to become a new end user. The required username or password has max length of 10
+  - **Regular User**
+    - The home page for regular users is index_end_after.html. The main differences between this html and index.html are:
+        - There is a welcome header in index_end_after.html (Hello [username], what would you like to read today), the username will be replaced to the corresponding user's username in phase 2. We use 'user' temporarily for phase 1.
+        - End users can now visit profiles of users whose posts are demostrated in this home page. They can also like/dislike and collect/uncollect posts
+        - They can visit their own profile by go to the 'User' block in the top menu.
+  - **Admin User**
+  - The home page for admin users is index_admin_after.html. The main differences between this html and index_end_after.html is:
+  - Admin user can manage posts demostrated in the home page. They can choose which post needs to be replaced in the first select box, and the replacement in the second select box.
+    
   ### User
   - **Regular User**
     - When logged in as regular user, the right corner of the top menu bar will show as user's name.
