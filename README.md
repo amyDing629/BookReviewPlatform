@@ -76,8 +76,8 @@ The overall objective of the project is to build a website for readers to share 
   ### User
   - **Regular User**
     - When logged in as regular user, the right corner of the top menu bar will show as user's name.
-    - When a regular user accesses to his own main profile page, user can edit signature and edit his own posts and booklists.
-    - When reviewing regular user's profile, the 'edit signature', 'add posts' and 'add booklists' buttons will be hidden.
+    - When a regular user accesses to his own main profile page, user can edit signature and delete his own posts and booklists.
+    - When reviewing regular user's profile, the 'edit signature' buttons will be hidden.
   - **Admin User**
     - The right corner of the top menu bar will show as 'Admin'.
     - Has all feature as regular user.
