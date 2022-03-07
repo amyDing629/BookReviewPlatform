@@ -144,7 +144,7 @@ function displayAllBooklists(BooklistsList) {
 
         // end user: delete button only for lists created by self
         const userInfo = document.querySelector('#userLoginInfo').innerText
-        if (userInfo === 'Hello, '+ BooklistsList[i].creator) {
+        if (userInfo === BooklistsList[i].creator) {
             const div1 = document.createElement('div')
             div1.className = 'delete'
             const button3 = document.createElement('button')
