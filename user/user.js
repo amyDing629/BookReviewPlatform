@@ -619,7 +619,6 @@ function _createUserBooklists(booklist) {
     }else{
         a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID;
     }
-    console.log(a1.href);
     const nameContent = document.createTextNode(booklist.listName)
     a1.appendChild(nameContent)
     span1.appendChild(a1)
