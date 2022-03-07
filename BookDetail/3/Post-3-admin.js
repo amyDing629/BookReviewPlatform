@@ -262,13 +262,18 @@ function collect(e){
         log(100)
         for (let i=0; i<posts.length; i++){
             if(parseInt(posts[i].postID) == pid){
-                collectedPosts.push(posts[i])
-                const h5 = contentDiv.children[contentDiv.children.length-1]
-                h5.children[2].innerText='Collected!'
+                e.target.classList.remove('collect');
+                e.target.classList.add('collected');
+                e.target.innerText = 'Collected!';
 
             }
         } 
 	}
+    else if (e.target.classList.contains('collected')){
+            e.target.classList.remove('collected');
+            e.target.classList.add('collect');
+            e.target.innerText = 'Collect';
+    }
 }
 
 
