@@ -74,6 +74,7 @@ const postul = document.querySelector('#posts ul');
 postCallBack()
 homepostsCreate()
 displayPosts()
+displayPostManagerBar()
 
 function homepostsCreate(){
     for (let i=0; i<posts.length; i++){
@@ -82,7 +83,6 @@ function homepostsCreate(){
 }
 
 function displayPosts(){
-
     for (let i=0; i<5; i++){
         if (homeposts[i] != null){
             let li = postul.children[i]
@@ -218,12 +218,77 @@ function displayPosts(){
     }
 }
 
-const likefield = document.querySelector('#posts')
+
+function displayPostManagerBar(){
+    const t = document.querySelector('#modify_post1')
+    for (let i=0; i<homeposts.length; i++){
+        if (homeposts[i] != null){
+            const postid = homeposts[i].postID
+            const option = document.createElement('option')
+            option.value = postid
+            option.innerText = 'Modify post number: '+postid+'th'
+            t.appendChild(option)
+        }
+    }
+
+    const t2 = document.querySelector('#modify_post2')
+    for (let j=0; j<posts.length; j++){
+        if (posts[j] != null){
+            const postid = posts[j].postID
+            const option = document.createElement('option')
+            option.value = postid
+            option.innerText = 'To postID: '+postid
+            t2.appendChild(option)
+        }
+    }
+}  
+
+
+
+// Modify
+const modifyArea = document.querySelector('.adminManage')
+modifyArea.addEventListener('click', modifypost)
+function modifypost(e){
+    e.preventDefault();
+    if (e.target.id == 'modify_post_button'){
+        log('hi')
+        const toreplace = document.getElementById('modify_post1')
+        const replacedwith = document.getElementById('modify_post2')
+        // new
+        if (toreplace.selectedIndex!=0 && replacedwith.selectedIndex!=0){
+            const value1 = toreplace.options[toreplace.selectedIndex].value; 
+            const value2 = replacedwith.options[replacedwith.selectedIndex].value;   
+            const targetpost = posts[value2]
+            homeposts[value1] = targetpost  
+            displayPosts()
+        }       
+        
+    }  
+}
+    
+
+// const postsManage = document.querySelector('.postsManage')
+// postsManage.addEventListener('click', addPost)
+// function addbooks(e){
+//     e.preventDefault();
+//     if (e.target.className == 'modify'){
+//         console.log("here")
+//         const postID1 = document.getElementById('postIDInput1').value
+//         const postID2 = document.getElementById('postIDInput2').value
+//         const postID3 = document.getElementById('postIDInput3').value
+        
+//         displayPosts()
+//     }
+        
+// }
+
+const likefield = document.querySelector('#posts ul')
 likefield.addEventListener('click', like)
 
 function like(e){
     e.preventDefault(); // prevent default action
 
+    if (e.target.classList.contains('like')|| e.target.classList.contains('dislike')){
     const contentDiv = e.target.parentElement.parentElement
     const h3 = contentDiv.children[0]
     const pid = h3.children[1].innerText
@@ -257,109 +322,47 @@ function like(e){
             }
             
         }
+    }
     } 
 	
 }
 
-const collectfield = document.querySelector('#posts')
+const collectfield = document.querySelector('#posts ul')
 collectfield.addEventListener('click', collect);
 
 function collect(e){
     e.preventDefault(); // prevent default action
 
-	
-		const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<homeposts.length; i++){
-            if(parseInt(homeposts[i].postID) == pid){
-                if (e.target.classList.contains('collect')) {
-                    collectedPosts.push(homeposts[i])
-                    const h5 = contentDiv.children[contentDiv.children.length-1]
-                    h5.children[1].innerText='Collected!' // only collect and do nothing in phase1
-                    e.target.classList.remove('collect');
-                    e.target.classList.add('collected');
-                    break;
-                }
-                else if (e.target.classList.contains('collected')){
-                    //collectedPosts.remove(posts[i])
-                    for (let j=0; i<collectedPosts.length; i++){
-                        if (collectedPosts[j] == posts[i]){
-                            collectedPosts.splice(j, 1)
-                            break;
-                        }
-                    }
-                    const h5 = contentDiv.children[contentDiv.children.length-1]
-                    h5.children[1].innerText='Collect'
-                    e.target.classList.remove('collected');
-                    e.target.classList.add('collect');
-                    break;
-                }
-                
-            }
-        } 
-	}
-
-displayPostManagerBar()
-
-function displayPostManagerBar(){
-    const t = document.querySelector('#modify_post1')
+    if (e.target.classList.contains('collect') ||e.target.classList.contains('collected') ) {
+    const contentDiv = e.target.parentElement.parentElement
+    const h3 = contentDiv.children[0]
+    const pid = h3.children[1].innerText
     for (let i=0; i<homeposts.length; i++){
-        if (homeposts[i] != null){
-            const postid = homeposts[i].postID
-            const option = document.createElement('option')
-            option.value = postid
-            option.innerText = 'post number: '+postid+'th'
-            t.appendChild(option)
+        if(parseInt(homeposts[i].postID) == pid){
+            if (e.target.classList.contains('collect')) {
+                collectedPosts.push(homeposts[i])
+                const h5 = contentDiv.children[contentDiv.children.length-1]
+                h5.children[1].innerText='Collected!' // only collect and do nothing in phase1
+                e.target.classList.remove('collect');
+                e.target.classList.add('collected');
+                break;
+            }
+            else if (e.target.classList.contains('collected')){
+                //collectedPosts.remove(posts[i])
+                for (let j=0; i<collectedPosts.length; i++){
+                    if (collectedPosts[j] == posts[i]){
+                        collectedPosts.splice(j, 1)
+                        break;
+                    }
+                }
+                const h5 = contentDiv.children[contentDiv.children.length-1]
+                h5.children[1].innerText='Collect'
+                e.target.classList.remove('collected');
+                e.target.classList.add('collect');
+                break;
+            }
+            
         }
-    }
-
-    const t2 = document.querySelector('#modify_post2')
-    for (let j=0; j<posts.length; j++){
-        if (posts[j] != null){
-            const postid = posts[j].postID
-            const option = document.createElement('option')
-            option.value = postid
-            option.innerText = 'To postID: '+postid
-            t2.appendChild(option)
-        }
-    }
-}  
-
-// Modify
-const modifyArea = document.querySelector('#modify_post_button')
-modifyArea.addEventListener('click', searchBook)
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'modify_post_button'){
-        const toreplace = document.getElementById('modify_post1')
-        const replacedwith = document.getElementById('modify_post2')
-        // new
-        if (toreplace.selectedIndex!=0 && replacedwith.selectedIndex!=0){
-            const value1 = toreplace.options[toreplace.selectedIndex].value; 
-            const value2 = replacedwith.options[replacedwith.selectedIndex].value;   
-            const targetpost = homeposts[value2]
-            homeposts[value1] = targetpost  
-            displayPosts()
-        }       
-        
-    }  
+    } 
 }
-    
-
-// const postsManage = document.querySelector('.postsManage')
-// postsManage.addEventListener('click', addPost)
-// function addbooks(e){
-//     e.preventDefault();
-//     if (e.target.className == 'modify'){
-//         console.log("here")
-//         const postID1 = document.getElementById('postIDInput1').value
-//         const postID2 = document.getElementById('postIDInput2').value
-//         const postID3 = document.getElementById('postIDInput3').value
-        
-//         displayPosts()
-//     }
-        
-// }
-
- 
+}
