@@ -25,6 +25,8 @@ The overall objective of the project is to build a website for readers to share 
   - index.html (Home page for guest）
   - index_end_after.html (Home page for end users）
   - index_admin_after.html (Home page for admin users)
+  - login.html
+  - register.html
 
 - **BookDetail**
   - 6 folders(0-5), each folder name represents the book ID   
