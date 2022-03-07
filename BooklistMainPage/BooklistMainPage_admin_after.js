@@ -183,7 +183,7 @@ function displayAllBooklists(BooklistsList) {
         const span2 = document.createElement('span')
         const a2 = document.createElement('a')
         a2.className = "linkColor"
-        a2.href = "../user/user.html" // need modify
+        a2.href = "../user/admin.html" // need modify
         if (BooklistsList[i].creator === 'Admin'){// need more dynamically fix on phase 2
             a2.href = "../user/admin.html"
         } else { // user
