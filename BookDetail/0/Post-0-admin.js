@@ -290,11 +290,11 @@ function addNewPost(e){
 
         if(picUrl.length > 0){
             log(3)
-            posts.push(new Post(posts.length, 0, 'Solaris', null, 0, 'user', null,
+            posts.push(new Post(posts.length, 0, 'Solaris', null, 'user',
             'https://avatars.githubusercontent.com/u/71192401?v=4', picUrl, postContent, date, 0))
         }else{
-            posts.push(new Post(posts.length, 0, 'Solaris', null, 0, 'user', null,
-            'https://avatars.githubusercontent.com/u/71192401?v=4', null, postContent, date, 0))
+            posts.push(new Post(posts.length, 0, 'Solaris', null, 'user',
+            'https://avatars.githubusercontent.com/u/71192401?v=4',null, postContent, date, 0))
         }
 
         displayPosts();
