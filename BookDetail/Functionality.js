@@ -128,3 +128,96 @@ function filpPage(pageNo, pageLimit) {
     }
     document.getElementById("pageFliper").innerHTML = strHolder;
 }
+
+const likefield = document.querySelector('#posts')
+likefield.addEventListener('click', like)
+
+function like(e){
+    e.preventDefault(); // prevent default action
+    let contentDiv = e.target.parentElement.parentElement
+    // log(contentDiv)
+    let pid = contentDiv.getElementsByClassName('postId')[0].innerText
+    // log(100000)
+    // log(pid)
+    let post;
+    let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
+    for (post of posts) {
+        if (parseInt(post.postID) == pid) {
+            if (e.target.classList.contains('like')) {
+                post.likes++;
+                icon.innerText = ' ' + post.likes;
+                e.target.classList.remove('like');
+                e.target.classList.add('dislike');
+                e.target.innerText = 'Dislike';
+                break;
+            }
+            else if (e.target.classList.contains('dislike')) {
+                post.likes--;
+                icon.innerText = ' ' + post.likes;
+                e.target.classList.remove('dislike');
+                e.target.classList.add('like');
+                e.target.innerText = 'Like';
+                break;
+            }
+        }
+    }
+}
+
+const collectfield = document.querySelector('#posts')
+collectfield.addEventListener('click', collect);
+
+function collect(e){
+    e.preventDefault(); // prevent default action
+
+    if (e.target.classList.contains('collect')) {
+	
+		const contentDiv = e.target.parentElement.parentElement
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                e.target.classList.remove('collect');
+                e.target.classList.add('collected');
+                e.target.innerText = 'Collected!';
+
+            }
+        } 
+	}
+    else if (e.target.classList.contains('collected')){
+            e.target.classList.remove('collected');
+            e.target.classList.add('collect');
+            e.target.innerText = 'Collect';
+    }
+}
+
+const deletefield = document.querySelector('#posts')
+deletefield.addEventListener('click', delete_post)
+// log(posts)
+function delete_post(e){
+    e.preventDefault(); // prevent default action
+    log('delete post')
+    if (e.target.className == 'btn btn-outline-danger') {
+        const contentDiv = e.target.parentElement.parentElement
+        log(100)
+        const h3 = contentDiv.children[0]
+        const pid = h3.children[1].innerText
+        log(pid)
+        for (let i=0; i<posts.length; i++){
+            if(parseInt(posts[i].postID) == pid){
+                posts.splice(i, 1) // start from index=i, remove 1 item
+
+                const ul = contentDiv.parentElement.parentElement.parentElement
+                log(ul)
+                const li = contentDiv.parentElement.parentElement
+                // log(li)
+                ul.removeChild(li)
+                log(ul)
+                log(posts)
+                displayPosts()
+                break;
+            }
+        }
+
+    }
+
+}
