@@ -1,21 +1,5 @@
 const log = console.log;
 
-function blinkHandlerinPost(bid){
-    // handler for book Detail page link
-        for (let i =0; i<posts.length; i++){
-            if (posts[i].bookID == bid){
-                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
-                return result;
-            }
-        } 
-         // OR other actions...     
-    }
-
-
-const postul = document.querySelector('#posts ul');
-postCallBack()
-displayPosts()
-
 const addArea = document.querySelector('.col-md-4');
 log(addArea)
 

@@ -145,6 +145,11 @@ function searchList(e){
     }  
 }
 
+const postul = document.querySelector('#posts ul');
+postCallBack()
+displayPosts()
+filpPage(1,3)
+
 function displayPosts(){
     // clean all before display
     postul.innerHTML = ''

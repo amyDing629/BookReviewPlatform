@@ -1,10 +1,5 @@
 const log = console.log;
 
-
-const postul = document.querySelector('#posts ul');
-postCallBack()
-displayPosts()
-
 const addArea = document.querySelector('.col-md-4');
 log(addArea)
 
