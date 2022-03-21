@@ -1,3 +1,4 @@
+const log = console.log;
 let BooksNum = 4; 
 const BooksList = [] 
 

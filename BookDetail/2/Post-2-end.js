@@ -1,10 +1,3 @@
-const log = console.log;
-
-
-const addArea = document.querySelector('.col-md-4');
-
-addArea.addEventListener('click', addNewPost)
-
 function addNewPost(e){
     e.preventDefault();
     log(1)

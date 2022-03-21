@@ -221,3 +221,8 @@ function delete_post(e){
     }
 
 }
+
+const addArea = document.querySelector('.col-md-4');
+log(addArea)
+
+addArea.addEventListener('click', addNewPost)
