@@ -263,6 +263,7 @@ function displayAllBooklists(BooklistsList) {
         }
         tbody.appendChild(tr1)
         tbody.appendChild(tr2)
+        
         table.appendChild(tbody)
         div.appendChild(table)
 
@@ -484,22 +485,45 @@ function renewPage() {
   }
 
 // all user action: create new booklist
+function openForm() {
+    document.getElementById("myForm").style.display = "block";
+}
+  
+function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+}
+
+function changeBooks(){
+    const ul = document.querySelector('#randomBooks')
+    ul.innerHTML=''
+    const random3 = []
+    while (random3.length<3){
+        const idx = Math.floor(Math.random() * BooksNum)// BooksNum might be change when db is ready
+        if (!random3.includes(idx)){
+            random3.push(idx)
+        }
+    }
+    const ids = random3.map((idx)=>BooksList[idx].bookID)
+    const names = random3.map((idx)=>BooksList[idx].name)
+    for (let i=0;i<3;i++){
+        const li = document.createElement('li')
+        li.innerText = "[ID:" + ids[i] + "]--" + names[i]
+        ul.appendChild(li)
+    }
+}
 const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
 endUserActionsWrap.addEventListener('click', addNewBooklist)
 function addNewBooklist(e){
     e.preventDefault();
-    if (e.target.className == 'addSubmit, btn btn-primary'){
+    if (e.target.className == 'addSubmit, btn'){
         const listName = document.getElementById('booklistNameInput').value
         if (listName.length === 0){
             alert("No list name, your booklist name cannot be empty.")
             return;
         }
-        const description = document.getElementById('description').value
-        let listString = "Books: \n"
-        let names = BooksList.map((book) =>  '[ID: '+ book.bookID + ']--' + book.name + '\n')
+        const description = document.getElementById('descriptionInput').value
+        let result = document.getElementById('booklists').value
         let ids = BooksList.map((book) =>  book.bookID)
-        for (each of names){ listString = listString + each }
-        let result = prompt(listString + "\n\n Please enter book ID list and using ; to seperate", "0;1;4")
         const books = result.split(";")
         // check id validation
         let validInputs = []
@@ -515,10 +539,12 @@ function addNewBooklist(e){
             const addedBooks = uniqueInput.map((book)=> BooksList[book])
             BooklistsList.push(new Booklist(listName, description, 'Admin', addedBooks)) // phase 2 need implement user
             document.getElementById('booklistNameInput').value =""
-            document.getElementById('description').value = ""
+            document.getElementById('descriptionInput').value = ""
             renewPage()
+            closeForm()
         } else {
             alert("Invalid input! Please re-check all your book IDs.")
+            return
         }
     }
 }
@@ -529,21 +555,106 @@ booklistTable.addEventListener('click', deleteBooklist)
 function deleteBooklist(e){
     e.preventDefault();
     if (e.target.className == 'deleteButton, btn btn-danger'){
-        const listElement = e.target.parentElement.parentElement.parentElement.parentElement
-        const tableResultTBODY = document.querySelector('#tableResultTBODY')
-        tableResultTBODY.removeChild(listElement)
-        const ID = parseInt(listElement.children[0].children[0].children[0].innerText)
-        for (let i=0; i<BooklistsNum; i++){
-            if (BooklistsList[i].booklistID == ID){
-                BooklistsList.splice(i, 1)
-                BooklistsNum--
-            }
-        }
-        renewPage()
+        const ID = e.target.parentElement.parentElement.children[0].innerText
+        const form = document.getElementById("deleteForm")
+        form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
+        form.style.display="block"
     }
+}
+// admin only action: remove book---form for confirming delete
+function addFormForDelete(){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='deleteForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit_delete'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit_delete'){
+            /* const listElement = e.target.parentElement.parentElement.parentElement.parentElement
+            const tableResultTBODY = document.querySelector('#tableResultTBODY')
+            tableResultTBODY.removeChild(listElement) */
+            const ID =parseInt(document.getElementById("deleteForm").children[0].children[0].innerText.split(': ')[1]);
+            for (let i=0; i<BooklistsNum; i++){
+                if (BooklistsList[i].booklistID == ID){
+                    BooklistsList.splice(i, 1)
+                    BooklistsNum--
+                }
+            }
+            renewPage()
+            document.getElementById("deleteForm").style.display="none"
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("deleteForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
+}
+
+//helper, haven't used yet
+function createForm(){
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+    const form = document.createElement('form')
+    const div = document.createElement('div')
+    div.className='form-group'
+    const label1 = document.createElement('label')
+    label1.innerHTML = 'for=\"booknameInput\"'
+    label1.innerText ='booklist name'
+    div.appendChild(label1)
+    const input1 = document.createElement('input')
+    input1.innerHTML = "type=\"text\"; class=\"form-control\"; id=\"booknameInput\"; aria-describedby=\"emailHelp\"; placeholder=\"Enter booklist name\""
+    div.appendChild(input1)
+    const small = document.createElement('small')
+    small.id='emailHelp'
+    small.className='form-text text-muted'
+    small.innerText='i.e. fa'
+    div.appendChild(small)
+    form.appendChild(div)
+
+    const div1 = document.createElement('div')
+    div1.className='form-group'
+    const label2 = document.createElement('label')
+    label2.innerHTML = 'for=\"descriptionInput\"'
+    label2.innerText ='description'
+    div1.appendChild(label2)
+    const input2 = document.createElement('input')
+    input2.innerHTML = "type=\"text\"; class=\"form-control\"; id=\"descriptionInput\"; placeholder=\"description...(optional)\""
+    div1.appendChild(input2)
+    form.appendChild(div1)
+
+    const button = document.createElement('button')
+    button.className = 'btn btn-primary'
+    button.type = 'submit'
+    button.innerText='Submit'
+    form.appendChild(button)
+    wrapper.appendChild(form)
+    document.querySelector('#endUserActionsWrap').append(wrapper)
 }
 
 // load main list
 displaySearchbox() // for navi bar search function
 displayAllBooklists(BooklistsList)
+addFormForDelete()
 filpPage(1,3)

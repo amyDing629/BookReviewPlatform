@@ -275,28 +275,77 @@ function selectNarviBarUser(user){
 
 // edit booklist
 function editBooklist(user){
+    // get self info (for booklist exist reference)
+    let entireBooklist = document.querySelectorAll('.bookli')
+    const listID = BooklistsList.filter((booklist) => 
+    booklist.booklistID === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+    )
+    let currList = ''
+    const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList += (book.bookID+";"))
     const creator = document.querySelector('.creator').innerHTML.split(': ')[1]
     const description = document.querySelector('#descriptionText')
     const bookUL = document.querySelector('#bookUL')
-    const button1 = addEditElement('editDescription')
-    const button2 = addEditElement('editBooks')
+    const button1 = addEditElement('editDescription','Modify the description:', document.querySelector('#descriptionText').innerText)
+    const button2 = addEditElement('editBooks','Modify the booklist content:', currList)
     if (creator === user){ // creator only 
         const div1 = document.createElement('div')
         div1.className = 'editDiv'
+        div1.id ='edit_description'
         div1.appendChild(button1)
+
         description.before(div1)
         const div2 = document.createElement('div')
         div2.className = 'editDiv'
+        div2.id='edit_books'
         div2.appendChild(button2)
         bookUL.before(div2)
     } 
 }
 
-function addEditElement(id){
+function addEditElement(id, text, inner){
+    const outter = document.createElement('div')
     const button = document.createElement('button')
     button.className = id + ', btn btn-outline-info'
     button.appendChild(document.createTextNode('Edit'))
-    return button
+    outter.appendChild(button)
+    //pop up element
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm_'+id
+    wrapper.className='form-popup'
+
+
+    const form = document.createElement('form')
+    form.className='form-container'
+    form.action = '/action_page.php'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= text
+    form.appendChild(h5)
+
+    const input = document.createElement('input')
+    input.type ='text'
+    input.id = id+'_input'
+    input.value = inner
+    input.name =id+'_input'
+    form.appendChild(input)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit_'+id
+    submit.innerText='Save'
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel_"+id
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+
+    outter.appendChild(wrapper)
+    return outter
 }
 
 // DOM modifying functions:
@@ -304,22 +353,38 @@ function addEditElement(id){
 // creator only: edit description
 const description = document.querySelector('#description')
 description.addEventListener("click", editDescription)
+description.addEventListener('click', saveDescription)
+description.addEventListener('click', cancelEditDescription)
 
+function saveDescription(e){
+    e.preventDefault()
+    if (e.target.className =='editDescription, btn btn-outline-info'){
+        document.getElementById("myForm_editDescription").style.display="block";
+    }
+}
+function cancelEditDescription(e){
+    if (e.target.id =='cancel_editDescription'){
+        document.getElementById("myForm_editDescription").style.display="none";
+    }
+}
 function editDescription(e){
     e.preventDefault()
-    if (e.target.className === 'editDescription, btn btn-outline-info'){
+    if (e.target.id ==='submit_editDescription'){
         let textSpan = document.querySelector('#descriptionText')
-        let request = prompt("Please edit the new description:",textSpan.innerText)
-        let curr = textSpan.innerText
+        let request = document.querySelector('#editDescription_input').value
+        //let request = prompt("Please edit the new description:",textSpan.innerText)
+        let curr = document.querySelector('#descriptionText').innerText
         while (request == null || request.length === 0 || request === curr){
             if (request == null) {
                 return;
             } else if (request === curr){
                 alert('Failed, the description is still same. Please re-enter.')
-                request = prompt("Please edit the new description:",textSpan.innerText)
+                //request = prompt("Please edit the new description:",textSpan.innerText)
+                return
             } else {
                 alert('Failed, the new description cannot be empty. Please re-enter.')
-                request = prompt("Please edit the new description:",textSpan.innerText)
+                //request = prompt("Please edit the new description:",textSpan.innerText)
+                return
             }
         }
         textSpan.innerText = request
@@ -327,16 +392,29 @@ function editDescription(e){
         booklist.listId === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
         )
         self.description = request
+        document.getElementById("myForm_editDescription").style.display="none";
     }
 }
 
 // creator only: edit books in the booklist
 const books = document.querySelector('#books')
-books.addEventListener("click", editBooksContent)
-
-function editBooksContent(e){
+books.addEventListener("click", saveEditBooksContent)
+books.addEventListener('click', clickEditBooks)
+books.addEventListener('click', cancelEdit)
+function clickEditBooks(e){
     e.preventDefault()
-    if (e.target.className === 'editBooks, btn btn-outline-info'){
+    if (e.target.className =='editBooks, btn btn-outline-info'){
+        document.getElementById("myForm_editBooks").style.display="block";
+    }
+}
+function cancelEdit(e){
+    if (e.target.id =='cancel_editBooks'){
+        document.getElementById("myForm_editBooks").style.display="none";
+    }
+}
+function saveEditBooksContent(e){
+    e.preventDefault()
+    if (e.target.id ==='submit_editBooks'){
         // get self info
         let entireBooklist = document.querySelectorAll('.bookli')
         const listID = BooklistsList.filter((booklist) => 
@@ -355,7 +433,7 @@ function editBooksContent(e){
         const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList.push(book.bookID))
         
         
-        let request = prompt(listString, currList)
+        let request = document.querySelector('#editBooks_input').value
         let uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
         
         // error check for input format and repeatness 
@@ -364,12 +442,14 @@ function editBooksContent(e){
                 return;
             } else if (JSON.stringify(uniqueCurrInput) === JSON.stringify(currList.sort())){
                 alert('Failed, all books are still same. Please re-enter.')
-                request = prompt(listString,currList)
+                //request = prompt(listString,currList)
                 uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
+                return
             } else {
                 alert('Failed, booklist cannot be empty. Please re-enter.')
-                request = prompt(listString,currList)
+                //request = prompt(listString,currList)
                 uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
+                return
             }
         }
 
@@ -391,6 +471,7 @@ function editBooksContent(e){
             // display on page
             const table = document.querySelector('#bookUL').innerHTML=''
             fillBooklistBooks(BooklistsList[listID[0].booklistID], document.querySelector('.creator').innerHTML.split(': ')[1])
+            document.getElementById("myForm_editBooks").style.display="none";
         }
     }
 }
@@ -406,6 +487,53 @@ function uniqueSortedIDsArrayGenerator(str){
         }
     })
     return Array.from(new Set(valids.sort()))
+}
+
+//helper: for edit button pop up form
+function createForm(){
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const div1 = document.createElement('div')
+    div1.className = 'div_form'
+    const form = document.createElement('form')
+    form.className='form-container'
+    form.action = '/action_page.php'
+
+    const h5 = document.createElement('h5')
+    h5.innerText='Please edit the new description:'
+    form.appendChild(h5)
+
+
+    const label1 = document.createElement('label')
+    label1.for = 'new_input'
+    const b = document.createElement('b')
+    b.innerText='New description: '
+    form.appendChild(label1)
+
+    const input = document.createElement('input')
+    input.type ='text'
+    input.id = 'new_input'
+    input.placeholder = '<new description...>'
+    input.name ='new_input'
+    form.appendChild(input)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.innerText='Submit'
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.innerText='Cancel'
+    cancel.onclick = 'closeForm()'
+    form.appendChild(cancel)
+    div1.appendChild(form)
+    wrapper.appendChild(div1)
+    document.querySelector('#edit_description').append(wrapper)
 }
 
 displaySearchbox() // for navi bar search function

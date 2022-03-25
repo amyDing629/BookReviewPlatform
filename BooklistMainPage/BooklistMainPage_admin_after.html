@@ -56,12 +56,40 @@
         </div>
         <br>
         <br><div id="endUserActionsWrap">
-            <form id="addBooklist" class="addBooklist">
+            <!-- <form id="addBooklist" class="addBooklist">
                 <span>Add new booklist</span>
                 <input id="booklistNameInput" type="text" placeholder="List Name*" required>
                 <input id="description" type="text" placeholder="Description... (OPT)">
                 <input class="addSubmit, btn btn-primary" type = "submit" value="Create and select books">
-            </form>
+            </form> -->
+            <h4>Actions:</h4>
+            <button class="open-button btn btn-primary" onclick="openForm()">Create new booklist</button>
+            <div class="form-popup" id="myForm">
+                <div class="div_form">
+                <form action="/action_page.php" class="form-container">
+                  <h5>Create your collections...</h5>
+              
+                  <label for="listname"><b>List Name</b></label>
+                  <input type="text" id='booklistNameInput' placeholder="i.e. favorite collection" name="listname" required>
+              
+                  <label for="descriptionInput"><b>Description</b></label>
+                  <input type="text" id='descriptionInput' placeholder="(OPT)" name="descriptionInput">
+
+                  <label for="booklists"><b>Booklist IDs</b></label>
+                  <input type="text" id='booklists' placeholder="i.e. 0;1;4" name="booklists" required>
+                  <small id="bookInputHelp" class="form-text text-muted">Please enter book ID list and using ; to seperate</small>
+              
+                  <button type="submit" class="addSubmit, btn">Create</button>
+                  <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                </form>
+                </div>
+                <div class="div_form" id="youmaylike">
+                    <h5>You may like:</h5> 
+                    <ul id='randomBooks'>
+                    </ul>
+                    <button id='bookButton' type="submit" class="btn btn-secondary" onclick="changeBooks()">Browser some books</button>
+                </div>
+            </div>
         </div>
         <br>
         <div class="divideLine"></div>
@@ -76,7 +104,6 @@
             <ul id='pageFliperUL' class="pagination"></ul>
             </nav> 
         </div>
-        
     </div>
 
     <!-- footer-->
