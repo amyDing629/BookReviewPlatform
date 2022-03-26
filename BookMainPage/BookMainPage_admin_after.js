@@ -139,8 +139,13 @@ function displayAllBooks(BooksList) {
         div1.className = 'delete'
         const button = document.createElement('button')
         button.className = "deleteButton, btn btn-danger" 
+        button.setAttribute('data-toggle','model')
+        button.setAttribute('data-target','#exampleModalCenter')
+
         button.appendChild(document.createTextNode("Delete the book"))
         div1.appendChild(button)
+
+
         div.appendChild(div1)
 
         // book name 
@@ -301,6 +306,8 @@ function renewBooklist(){
     filpPage(1,3)
 }
 
+
+
 // admin only action: add new book to booklist
 bookTable.addEventListener('click', addNewBook)
 function addNewBook(e){
@@ -310,6 +317,7 @@ function addNewBook(e){
         const author = document.getElementById('bookAuthorInput').value
         const year = parseInt(document.getElementById('publishYearInput').value)
         const description = document.getElementById('descriptionInput').value
+        let cover=document.getElementById("coverInput").value
 
         //check validation
         const all = Array(bookname, author, year, description)
@@ -318,9 +326,8 @@ function addNewBook(e){
             alert('Missing required input, please re-enter information.')
         } else {
             // cover is not required
-            const cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
-            if (document.getElementById('coverInput').value.length > 0){
-                cover = document.getElementById('coverInput').value.length
+            if (!cover){
+                cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
             }
             BooksList.push(new Book(bookname,author,year,cover,description))
             //clear input boxes:
@@ -333,8 +340,41 @@ function addNewBook(e){
             renewBooklist()
         }
     }
-        
 }
+document.querySelector("#coverInput").addEventListener('change',uploadPicture)
+function uploadPicture(e){
+    e.preventDefault();
+    if (e.target.id == 'coverInput'){
+        /* const file = e.target.files[0]; 
+
+        // setting up the reader
+        const reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+     
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+           const content = readerEvent.target.result; // this is the content!
+           console.log( content );
+        } */
+        
+    }
+}
+/* var file = document.getElementById('coverInput');
+file.onchange = function() {
+    var fileData = this.files[0];//这是我们上传的文件
+} */
+
+
+/* function changepic() {
+    $("#prompt3").css("display", "none");
+    var reads = new FileReader();
+    f = document.getElementById('file').files[0];
+    reads.readAsDataURL(f);
+    reads.onload = function(e) {
+    document.getElementById('img3').src = this.result;
+    $("#img3").css("display", "block");
+    };
+   } */
 
 // admin only action: remove book
 bookTable.addEventListener('click', deleteBook)
@@ -343,17 +383,61 @@ function deleteBook(e){
     if (e.target.className == 'deleteButton, btn btn-danger'){
         const bookElement = e.target.parentElement.parentElement.parentElement
         const ID = parseInt(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
-        for (let i=0; i<BooksNum; i++){
-            if (BooksList[i].bookID == ID){
-                BooksList.splice(i, 1)
-                BooksNum--
-            }
-        }
-        renewBooklist()
+        const form = document.getElementById("myForm")
+        form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
+        form.style.display="block"
     }
+}
+
+// admin only action: remove book---form for confirming delete
+function addFormForDelete(){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit'){
+            const ID = parseInt(document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1]);
+            for (let i=0; i<BooksNum; i++){
+                if (BooksList[i].bookID == ID){
+                    BooksList.splice(i, 1);
+                    BooksNum--;
+                }
+            }
+            renewBooklist();
+            document.getElementById("myForm").style.display="none";
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("myForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
 }
 
 
 displaySearchbox() // for search bar function
 displayAllBooks(BooksList)
-window.onload = filpPage(1,3)
+addFormForDelete()
+filpPage(1,3)

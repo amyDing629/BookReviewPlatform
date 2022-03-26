@@ -52,13 +52,17 @@
     <div id="bookTable">
         <h2 class="textDecoration"> All Books:</h2>
         <div id="adminActionsWrap">
+            <h4>Admin Actions:</h4>
             <form id="addBook" class="addBook">
-                <span>Admin action - add new book</span>
+                <span>Add new book</span>
                 <input id="bookNameInput" type="text" placeholder="Book Name*" required>
                 <input id="bookAuthorInput" type="text" placeholder="Author*" required>
                 <input id="publishYearInput" type="number" min="0000" max="2022" placeholder="Pub.*" required>
                 <input id="descriptionInput" type="text" placeholder="Description...*"required>
-                <input id="coverInput" type="url" placeholder="Cover URL (OPT)">
+                <label for="exampleFormControlFile1">Cover(OPT):</label>
+                <input id="coverInput" type="file"  accept="image/*" multiple>
+                
+                
                 <input class="addSubmit, btn btn-primary" type = "submit" value="Add">
             </form>
         </div>
