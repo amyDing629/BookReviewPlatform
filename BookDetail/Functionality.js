@@ -1,3 +1,39 @@
+function myFunction(){
+    var x = document.getElementById("myFile");
+    var txt = "";
+    if ('files' in x) {
+      if (x.files.length == 0) {
+        txt = "Select one or more files.";
+      } else {
+        for (var i = 0; i < x.files.length; i++) {
+          txt += "<br><strong>" + (i+1) + ". file</strong><br>";
+          var file = x.files[i];
+          if ('name' in file) {
+            txt += "name: " + file.name + "<br>";
+          }
+          if ('size' in file) {
+            txt += "size: " + file.size + " bytes <br>";
+          }
+        }
+      }
+    } 
+    else {
+      if (x.value == "") {
+        txt += "Select one or more files.";
+      } else {
+        txt += "The files property is not supported by your browser!";
+        txt  += "<br>The path of the selected file: " + x.value; // If the browser does not support the files property, it will return the path of the selected file instead. 
+      }
+    }
+    document.getElementById("demo").innerHTML = txt;
+    // log(x.files[0])
+    // log(URL.createObjectURL(x.files[0]))
+    // const img = document.createElement("img");
+    // img.src = URL.createObjectURL(x.files[0]);
+    
+  }
+
+  
 const desButton = document.querySelector('#DesButton');
 if(desButton){
     desButton.addEventListener('click', profileButtonsOnClick);
@@ -29,8 +65,8 @@ if(desButton){
 }
 
 
-// display the book information like book cover, author...
-window.onload = function displayAllBooks() {
+// // display the book information like book cover, author...
+function displayAllBooks() {
     const bookInfo = document.querySelector('#bookInfo');
 
     const coverContainer = document.createElement('div');
@@ -70,6 +106,7 @@ window.onload = function displayAllBooks() {
     const descriContent = document.createTextNode(BooksList[0].description)
     bookDescription.appendChild(descriContent)
 }
+displayAllBooks();
 
 
 // page flip
@@ -129,41 +166,46 @@ function filpPage(pageNo, pageLimit) {
     document.getElementById("pageFliper").innerHTML = strHolder;
 }
 
-const likefield = document.querySelector('#posts')
+const likefield = document.querySelector('#left-part')
 likefield.addEventListener('click', like)
 
 function like(e){
     e.preventDefault(); // prevent default action
-    let contentDiv = e.target.parentElement.parentElement
-    // log(contentDiv)
-    let pid = contentDiv.getElementsByClassName('postId')[0].innerText
-    // log(100000)
-    // log(pid)
-    let post;
-    let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
-    for (post of posts) {
-        if (parseInt(post.postID) == pid) {
+    let contentDiv
+    if(e.target.parentElement){
+        contentDiv = e.target.parentElement.parentElement
+    }
+    let pid
+    if(contentDiv && contentDiv.getElementsByClassName('postId')[0]){
+        pid = contentDiv.getElementsByClassName('postId')[0].innerText
+    }
+    // let post;
+    let icon
+    if(e.target.parentElement){
+        icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
+    }
+    for(var i = 0; i < posts.length; i++){
+        if (parseInt(posts[i].postID) == pid) {
             if (e.target.classList.contains('like')) {
-                post.likes++;
-                icon.innerText = ' ' + post.likes;
+                posts[i].likes++;
+                icon.innerText = ' ' + posts[i].likes;
                 e.target.classList.remove('like');
                 e.target.classList.add('dislike');
                 e.target.innerText = 'Dislike';
-                break;
             }
             else if (e.target.classList.contains('dislike')) {
-                post.likes--;
-                icon.innerText = ' ' + post.likes;
+                posts[i].likes--;
+                icon.innerText = ' ' + posts[i].likes;
                 e.target.classList.remove('dislike');
                 e.target.classList.add('like');
                 e.target.innerText = 'Like';
-                break;
             }
         }
     }
 }
 
-const collectfield = document.querySelector('#posts')
+
+const collectfield = document.querySelector('#left-part')
 collectfield.addEventListener('click', collect);
 
 function collect(e){
@@ -190,12 +232,11 @@ function collect(e){
     }
 }
 
-const deletefield = document.querySelector('#posts')
+const deletefield = document.querySelector('#left-part')
 deletefield.addEventListener('click', delete_post)
-// log(posts)
+// // log(posts)
 function delete_post(e){
     e.preventDefault(); // prevent default action
-    log('delete post')
     if (e.target.className == 'btn btn-outline-danger') {
         const contentDiv = e.target.parentElement.parentElement
         log(100)
@@ -222,7 +263,7 @@ function delete_post(e){
 
 }
 
-const addArea = document.querySelector('.col-md-4');
-log(addArea)
+const addArea = document.querySelector('#addPost');
+// log(addArea)
 
 addArea.addEventListener('click', addNewPost)

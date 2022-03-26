@@ -56,13 +56,13 @@ function postCallBack() {
 
     posts.push(new Post(1, 0, 'Solaris',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+    null,
     'I really like this book! I really like this book! I really like this book! I really like this book!',
     '2022-03-01 18:05', 1));
 
     posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',
     'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
+    null,
     'I have to read it every day otherwise I cannot sleep',
     '2022-03-05 00:05', 5));
 

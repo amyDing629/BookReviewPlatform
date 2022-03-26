@@ -67,7 +67,7 @@
     <div id="posts">
         <div class="row g-5">
             <!--Left part -->
-            <div class="col-md-8">
+            <div class="col-md-8" id="left-part">
                 <h3 class="pb-4 mb-4 fst-italic border-bottom, textDecoration2">
                     People in BookLand
                   </h3>
@@ -80,18 +80,19 @@
             <!--Right part, add post area -->
             <div class="col-md-4">
                 <div class="position-sticky" style="top: 2rem;">
-                  <div class="p-4 mb-3 bg-light rounded">
-                    <h4 class="fst-italic">Add Post</h4>
-                    <p class="mb-0, justify">
-                        Thoughts: <input id="postContent" type="text" placeholder="thoughts...*"required>
-                        <br><br>
-                        Picture URL: <input id="picInput" type="url" placeholder="Picture URL (OPT)">
-                        <br><br>
-                        <input class="addSubmit, btn btn-outline-dark" type = "submit" value="Add">
-                    </p>
+                    <div class="p-4 mb-3 bg-light rounded">
+                        <h4 class="fst-italic">Add Post</h4>
+                        <p class="mb-0, justify">
+                            Thoughts: <input id="postContent" type="text" placeholder="thoughts...*" required>
+                            <br>
+                            Picture: <input type="file" id="myFile" multiple size="50" onchange="myFunction()">
+                            <p id="demo"></p>       
+                        <br>
+                        <input id="addPost" class="addSubmit, btn btn-outline-dark" type="submit" value="Add">
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>   
-    </div> 
 
     <script type="text/javascript" src="BookDetail-0.js"></script>
     <script type="text/javascript" src="Post-0-end.js"></script>

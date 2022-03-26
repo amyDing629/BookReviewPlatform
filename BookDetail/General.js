@@ -233,11 +233,12 @@ function displayPosts(){
             contentDiv.appendChild(p)
 
             if (pic != null){
-                let img2 = document.createElement('img')
-                img2.className='postContentPicture'
-                img2.setAttribute('src', pic)
-                img2.setAttribute('alt', 'pic')
-                contentDiv.appendChild(img2)
+                // let img2 = document.createElement('img')
+                // img2.className='postContentPicture'
+                // img2.setAttribute('src', pic)
+                // img2.setAttribute('alt', 'pic')
+                log(pic)
+                contentDiv.appendChild(pic)
             }
 
             let br = document.createElement('br')
