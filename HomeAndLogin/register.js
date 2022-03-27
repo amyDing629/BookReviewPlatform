@@ -1,5 +1,6 @@
 const log = console.log;
 /****** Back ******/
+/*
 const backTohome = document.querySelector('.back')
 backTohome.addEventListener('click', back)
 function back(e){
@@ -9,6 +10,7 @@ function back(e){
         window.location.href=('login.html')
     }  
 }
+*/
 
 /****** User signUP ******/
 let numberOfUsers = 0;

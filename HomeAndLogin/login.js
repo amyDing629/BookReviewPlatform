@@ -1,5 +1,6 @@
 const log = console.log;
 /****** Back ******/
+/*
 const backTohome = document.querySelector('.back')
 backTohome.addEventListener('click', back)
 function back(e){
@@ -9,8 +10,10 @@ function back(e){
         window.location.href=('index.html')
     }  
 }
+*/
 
 /****** Register ******/
+/*
 const register = document.querySelector('.register')
 register.addEventListener('click', benewacc)
 function benewacc(e){
@@ -20,6 +23,7 @@ function benewacc(e){
         window.location.href=('register.html')
     }  
 }
+*/
 
 /****** User signin ******/
 let numberOfUsers = 0;
