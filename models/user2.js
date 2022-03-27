@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const BooklistSchema = require("./book").default.BooklistSchema;
-const PostSchema = require("./post").default.PostSchema;
+const Post = mongoose.model('Post').schema
+const BookList = mongoose.model('Booklist').schema;
 
 const UserObject = {
     userName: {
@@ -21,10 +21,10 @@ const UserObject = {
         type: String,
         required: false,
     },
-    postist: [PostSchema],
-    booklistList: [BooklistSchema],
-    postColectionList: [PostSchema],
-    booklistCollectionList: [BooklistSchema],
+    postist: [Post],
+    booklistList: [BookList],
+    postColectionList: [Post],
+    booklistCollectionList: [BookList],
     userID: {
         type: Number,
         required: true,

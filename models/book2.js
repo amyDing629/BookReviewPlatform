@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const PostSchema = require("./post").default.PostSchema;
+const PostSchema = mongoose.model('Post').schema
 
 const BookSchema = new mongoose.Schema({
     name: {
@@ -62,5 +62,5 @@ const BooklistSchema = new mongoose.Schema({
 const Book = mongoose.model("Book", BookSchema);
 const BookList = mongoose.model("Booklist", BooklistSchema);
 
-module.exports ={ Book, BookList};
+module.exports ={Book, BookList};
 
