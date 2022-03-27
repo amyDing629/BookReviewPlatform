@@ -85,65 +85,71 @@ for (let i=0; i<allBooks.length; i++){
 }
 
 function displaySearchbox(){
-    const searchbookArea = document.querySelector('.search-book')
-    const t = searchbookArea.children[0]
+    const bookoptionfield = document.querySelector(".search-book #myDropdown")
     for (let i=0; i<allBooks.length; i++){
         if (allBooks[i] != null){
-            const id = allBooks[i].bookId
-            const name = allBooks[i].title
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            t.appendChild(option)
+            const id1 = allBooks[i].bookId
+            const name1 = allBooks[i].title
+            const a1 = document.createElement("a")
+            const link1 = '../BookDetail/'+id1+'/BookDetail-'+id1+'.html'
+            a1.setAttribute("href", link1)
+            a1.innerText = id1+": "+name1
+            bookoptionfield.appendChild(a1)
         }
     }
-    
-    const searchlistArea = document.querySelector('.search-list')
-    const column = searchlistArea.children[0]
+
+    const listoptionfield = document.querySelector('.search-list #myDropdown')
     for (let i=0; i<BooklistsNum; i++){
         if (BooklistsList[i] != null){
-            const id = BooklistsList[i].booklistID
-            const name = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            column.appendChild(option)
+            const id2 = BooklistsList[i].booklistID
+            const name2 = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
+            const a2 = document.createElement("a")
+            const link2 = '../BooklistDetail/BooklistDetail.html?booklistID='+id2+'.html' // guest
+            a2.setAttribute("href", link2)
+            a2.innerText = id2+": "+name2
+            listoptionfield.appendChild(a2)
         }
     }
 }
 
-// Search Book 
-const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        console.log("here")
-        const select = document.getElementById('search-book');
-        // new
-        if (select.selectedIndex!=0){
-            const value = select.options[select.selectedIndex].value;
-            const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
-            window.location.href = (link)
-        }
+function bookFunction() {
+    const bookdropdown = document.querySelector(".search-book #myDropdown")
+    if (bookdropdown.classList.contains("hide")){
+        bookdropdown.classList.remove("hide")
+        bookdropdown.classList.add("dropdown-content")
+    }
+    else{
+        bookdropdown.classList.remove("dropdown-content")
+        bookdropdown.classList.add("hide")
     }  
 }
 
-// Search List 
-const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        console.log("here")
-        const select = document.getElementById('search-list');
-        // new
-        if (select.selectedIndex!=0){
-            const value = select.options[select.selectedIndex].value;
-            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
-            window.location.href = (link)
+function listFunction() {
+    const listdropdown = document.querySelector(".search-list #myDropdown")
+    if (listdropdown.classList.contains("hide")){
+        listdropdown.classList.remove("hide")
+        listdropdown.classList.add("dropdown-content")
+    }
+    else{
+        listdropdown.classList.remove("dropdown-content")
+        listdropdown.classList.add("hide")
+    } 
+}
+
+function filterFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        a[i].style.display = "";
+        } else {
+        a[i].style.display = "none";
         }
-    }  
+    }
 }
 
 

@@ -218,69 +218,99 @@ function displayPosts(){
     }
 }
 
+function post1Function() {
+    const bookdropdown = document.querySelector("#modify_post1 #myDropdown")
+    if (bookdropdown.classList.contains("hide")){
+        bookdropdown.classList.remove("hide")
+        bookdropdown.classList.add("postdropdown-content")
+    }
+    else{
+        bookdropdown.classList.remove("postdropdown-content")
+        bookdropdown.classList.add("hide")
+    }  
+}
+
+function post2Function() {
+    const listdropdown = document.querySelector("#modify_post2 #myDropdown")
+    if (listdropdown.classList.contains("hide")){
+        listdropdown.classList.remove("hide")
+        listdropdown.classList.add("postdropdown-content")
+    }
+    else{
+        listdropdown.classList.remove("postdropdown-content")
+        listdropdown.classList.add("hide")
+    } 
+}
+
+function filterFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    option = div.getElementsByTagName("option");
+    for (i = 0; i < option.length; i++) {
+        txtValue = option[i].textContent || option[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        option[i].style.display = "";
+        } else {
+        option[i].style.display = "none";
+        }
+    }
+}
+
 
 function displayPostManagerBar(){
-    const t = document.querySelector('#modify_post1')
+    const t = document.querySelector('#modify_post1 #myDropdown')
     for (let i=0; i<homeposts.length; i++){
         if (homeposts[i] != null){
             const postid = homeposts[i].postID
-            const option = document.createElement('option')
-            option.value = postid
-            option.innerText = 'Modify post number: '+postid+'th'
-            t.appendChild(option)
+            const option1 = document.createElement("option")
+            option1.value = postid;
+            option1.innerText = postid
+            option1.addEventListener('click', function(){
+                const input = document.querySelector('#modify_post1 #myInput')
+                input.value = option1.innerText;
+            })
+            t.appendChild(option1)
         }
     }
 
-    const t2 = document.querySelector('#modify_post2')
+    const t2 = document.querySelector('#modify_post2 #myDropdown')
     for (let j=0; j<posts.length; j++){
         if (posts[j] != null){
             const postid = posts[j].postID
-            const option = document.createElement('option')
-            option.value = postid
-            option.innerText = 'To postID: '+postid
-            t2.appendChild(option)
+            const option2 = document.createElement("option")
+            option2.value = postid;
+            option2.innerText = postid
+            option2.addEventListener('click', function(){
+                const input = document.querySelector('#modify_post2 #myInput')
+                input.value = option2.innerText;
+            })
+            t2.appendChild(option2)
         }
     }
 }  
 
 
-
 // Modify
-const modifyArea = document.querySelector('.adminManage')
+const modifyArea = document.querySelector('.adminManage #modify_post_button')
 modifyArea.addEventListener('click', modifypost)
 function modifypost(e){
     e.preventDefault();
     if (e.target.id == 'modify_post_button'){
         log('hi')
-        const toreplace = document.getElementById('modify_post1')
-        const replacedwith = document.getElementById('modify_post2')
+        const toreplace = document.querySelector('#modify_post1 #myInput')
+        const replacedwith = document.querySelector('#modify_post2 #myInput')
         // new
-        if (toreplace.selectedIndex!=0 && replacedwith.selectedIndex!=0){
-            const value1 = toreplace.options[toreplace.selectedIndex].value; 
-            const value2 = replacedwith.options[replacedwith.selectedIndex].value;   
-            const targetpost = posts[value2]
-            homeposts[value1] = targetpost  
-            displayPosts()
-        }       
+        const value1 = toreplace.value
+        const value2 = replacedwith.value
+        const targetpost = posts[value2]
+        homeposts[value1] = targetpost  
+        displayPosts()
         
     }  
 }
     
-
-// const postsManage = document.querySelector('.postsManage')
-// postsManage.addEventListener('click', addPost)
-// function addbooks(e){
-//     e.preventDefault();
-//     if (e.target.className == 'modify'){
-//         console.log("here")
-//         const postID1 = document.getElementById('postIDInput1').value
-//         const postID2 = document.getElementById('postIDInput2').value
-//         const postID3 = document.getElementById('postIDInput3').value
-        
-//         displayPosts()
-//     }
-        
-// }
 
 const likefield = document.querySelector('#posts ul')
 likefield.addEventListener('click', like)

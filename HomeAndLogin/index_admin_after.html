@@ -18,6 +18,8 @@
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
   </head>
  <body>
+     <!-- for back to top-->
+    <a id="tips"></a>
  	<!-- The Top Menu -->
  	<div id="topMenu">
         <ul>
@@ -99,16 +101,22 @@
                   </h3>
                 <div class="adminManage">
                 <h5>Admin Only: modify Posts listed here </h5>
-                <h5>For phase1: we only have 4 posts hence...</h5>
-                <select class="form-select" id="modify_post1">
-                    <option selected disabled="disabled">Modify post ID...</option>
-                    <!--Dom -->
-                </select> 
-                <select class="form-select" id="modify_post2">
-                    <option selected disabled="disabled">TO post ID...</option>
-                    <!--Dom -->
-                </select> 
-                <button type="submit" class="btn btn-danger" id="modify_post_button"> Modify</button>
+                <div id="modify_post1" class="postdropdown">
+                    <button onclick="post1Function()" class="dropbtn">Modify Post#...</button>
+                    <div id="myDropdown" class="hide">
+                      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                      <!--<a href="#about">About</a>-->
+                    </div>
+                </div>
+                <div id="modify_post2" class="postdropdown">
+                    <button onclick="post2Function()" class="dropbtn">TO post ID...</button>
+                    <div id="myDropdown" class="hide">
+                      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                      <!--<a href="#about">About</a>-->
+                    </div>
+                  </div>
+
+                  <button id='modify_post_button' class="btn btn-dark">modify</button>
             </div>
               <ul>
                 <!-- Max 5 posts -->
@@ -134,11 +142,11 @@
     <script type="text/javascript" src="index_admin_after_book.js"></script>
     <script type="text/javascript" src="index_admin_after_post.js"></script>
     <script type="text/javascript" src="topmenu.js"></script>
-    <!-- NEW ADDED -->	
    <footer class="blog-footer">
     <p><i>&copy; BookLand built by team10</i></p>
     <p>
-      <a href="" class="linkColor">Back to top</a>
+      <!-- NEW ADDED -->	
+      <a href="#tips" class="linkColor">Back to top</a>
     </p>
   </footer>  
  </body>

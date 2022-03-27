@@ -54,15 +54,33 @@ function UserCallBack() {
     users.push(new AdminUser('admin', 'admin'));
  }
 
+// button trigger
 if (window.location.href.indexOf('login.html') !== -1) {
     UserCallBack();
     const signin = document.querySelector('#signin');
     signin.addEventListener('click', change_page);
 }
 
-function change_page(){
+// press key enter trigger
+const usernamefield = document.querySelector('#username')
+usernamefield.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        change_page();
+    }
+});
+const passwordfield = document.querySelector('#password')
+passwordfield.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        change_page();
+    }
+});
+
+
+function change_page(){ 
     const username = document.querySelector('#username').value;
-    const password = document.querySelector('#password').value;
+    const password = document.querySelector('#password').value;     
     for (let i=0; i<users.length; i++){
         let user = users[i].userName;
         let pass = users[i].password;

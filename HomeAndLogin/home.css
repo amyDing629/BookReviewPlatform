@@ -117,7 +117,7 @@ a {
     background-color: grey;
 }
 
-/*new added*/
+/*trash*/
 #search-button1{
     margin-left:5px;
     margin-right:20px;
@@ -127,14 +127,103 @@ a {
     margin-left:5px;
     margin-right:10px;
 }
+/**/
 
+/*phase2*/
 #topMenu li.search-book{
     margin-left:5px;
+    max-width: none;
 }
 #topMenu li.search-list{
-    margin-left:5px;
+    margin-left:8%;
+    max-width: none;
 }
 
+/* Dropdown Button */
+.dropbtn {
+    background-color: black;
+    color: white;
+    padding: 13.5px;
+    font-size: medium;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  /* Dropdown button on hover & focus */
+.dropbtn:focus {
+    background-color: #ccc
+  }
+  
+  /* The search field */
+  #myInput {
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 14px 12px 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* The search field when it gets focus/clicked on */
+  #myInput:focus {outline: 3px solid #ddd;}
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: block;
+    position: fixed;
+    background-color: #f6f6f6;
+    border: 1px solid #ddd;
+  }
+  
+  /* Links inside the dropdown */
+  #topMenu li .dropdown-content a {
+    color: black;
+    padding: 12px 12px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #f1f1f1}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .hide {
+    display:none;
+}
+
+ 
+/*For admins manage posts*/
+  .postdropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .postdropdown-content {
+    display: block;
+    background-color: #f6f6f6;
+    border: 1px solid #ddd;
+  }
+  
+  /* Links inside the dropdown */
+  .postdropdown-content option {
+    color: black;
+    padding: 12px 12px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .postdropdown-content option:hover {
+      background-color: #ccc;
+      cursor: pointer;
+    }
 
 
 /********** welcome **********/
