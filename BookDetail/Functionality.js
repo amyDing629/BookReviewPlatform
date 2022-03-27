@@ -239,28 +239,36 @@ function delete_post(e){
     e.preventDefault(); // prevent default action
     if (e.target.className == 'btn btn-outline-danger') {
         const contentDiv = e.target.parentElement.parentElement
-        log(100)
+        // log(100)
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
-        log(pid)
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                posts.splice(i, 1) // start from index=i, remove 1 item
-
-                const ul = contentDiv.parentElement.parentElement.parentElement
-                log(ul)
-                const li = contentDiv.parentElement.parentElement
-                // log(li)
-                ul.removeChild(li)
-                log(ul)
-                log(posts)
-                displayPosts()
-                break;
-            }
+        // log(pid)
+        if(e.target.innerText == 'Delete'){
+            e.target.innerText = 'Confirm?'
+            setTimeout(()=>{
+                e.target.innerText = 'Delete';
+            }, 7 * 1000)
         }
-
+        else if(e.target.innerText == 'Confirm?'){
+            setTimeout(()=>{
+                for (let i=0; i<posts.length; i++){
+                    if(parseInt(posts[i].postID) == pid){
+                        posts.splice(i, 1) // start from index=i, remove 1 item
+        
+                        const ul = contentDiv.parentElement.parentElement.parentElement
+                        log(ul)
+                        const li = contentDiv.parentElement.parentElement
+                        // log(li)
+                        ul.removeChild(li)
+                        // log(ul)
+                        // log(posts)
+                        displayPosts()
+                        break;
+                    }
+                }
+            }, 3 * 1000)
+        }
     }
-
 }
 
 const addArea = document.querySelector('#addPost');
