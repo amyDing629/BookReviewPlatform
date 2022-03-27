@@ -1,7 +1,8 @@
-import { Schema, model } from "mongoose";
-const PostSchema = require("./post").default.PostSchema;
+const mongoose = require('mongoose');
+const PostSchema = mongoose.model('Post').schema
 
-const BookSchema = new Schema({
+
+const BookSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -27,7 +28,7 @@ const BookSchema = new Schema({
     },
 });
 
-const BooklistSchema = new Schema({
+const BooklistSchema = new mongoose.Schema({
     listName: {
         type: String,
         required: true,
@@ -59,8 +60,9 @@ const BooklistSchema = new Schema({
     }
 });
 
-const Book = model("Book", BookSchema);
-const Booklist = model("Booklist", BooklistSchema);
 
-export default { Book, BookSchema, BookList, BooklistSchema };
+const Book = mongoose.model("Book", BookSchema);
+const BookList = mongoose.model("Booklist", BooklistSchema);
+
+module.exports ={Book, BookList};
 

@@ -1,6 +1,5 @@
 /* server.js - user & resource authentication */
 // Modular version, with express routes imported separately.
-
 'use strict';
 const log = console.log
 const path = require('path')
@@ -16,7 +15,6 @@ const { mongoose } = require('./db/mongoose');
 const { Post } = require('./models/post')
 const { Book, BookList } = require('./models/book')
 const { User } = require('./models/user')
-
 
 /*** handlebars: server-side templating engine ***/
 const hbs = require('hbs')
@@ -57,8 +55,6 @@ app.use(session({
 // app.use("/img", express.static(path.join(__dirname, '/static')))
 
 
-
-
 /** Import the various routes **/
 // Webpage routes
 // app.use(require('./routes/webpage'))
@@ -67,26 +63,21 @@ app.use(session({
 // Student API routes
 // app.use(require('./routes/student'))
 
+/*******************************************************************/
+
+
+
+
+
+
 
 
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
-  res.status(404).send("404 Error: We cannot find the page you are looking for.");
-  // you could also send back a fancy 404 webpage here.
-});
-
-app.get('/', (req, res) => {
-    res.render('main');
-});
-
-
-
-
-
-
-
-
+    res.status(404).send("404 Error: We cannot find the page you are looking for.");
+    // you could also send back a fancy 404 webpage here.
+  });
 
 
 /*************************************************/

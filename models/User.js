@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
-const BooklistSchema = require("./book").default.BooklistSchema;
-const PostSchema = require("./post").default.PostSchema;
+const mongoose = require('mongoose');
+const Post = mongoose.model('Post').schema
+const BookList = mongoose.model('Booklist').schema;
 
 const UserObject = {
     userName: {
@@ -21,10 +21,10 @@ const UserObject = {
         type: String,
         required: false,
     },
-    postist: [PostSchema],
-    booklistList: [BooklistSchema],
-    postColectionList: [PostSchema],
-    booklistCollectionList: [BooklistSchema],
+    postist: [Post],
+    booklistList: [BookList],
+    postColectionList: [Post],
+    booklistCollectionList: [BookList],
     userID: {
         type: Number,
         required: true,
@@ -39,10 +39,9 @@ const UserObject = {
 // const AdminObject = Object.create(UserObject);
 // AdminObject.isAdmin = 'true';
 
-const UserSchema = new Schema(UserObject);
+const UserSchema = new mongoose.Schema(UserObject);
 // const AdminSchema = new Schema(AdminObject);
 
-const User  = model('User', UserSchema);
+const User  = mongoose.model('User', UserSchema);
 // const AdminUser = model('AdminUser', AdminSchema)
-
-export default { User, UserSchema };
+module.exports = { User };
