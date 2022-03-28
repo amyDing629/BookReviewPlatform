@@ -10,16 +10,17 @@
     <body>
 
     <!-- The top menu -->
-    <div id="topMenu">
+     <!-- The top menu -->
+     <div id="topMenu">
         <ul>
             <li>
                 <div class="logoContainer">
                     <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
                 </div>
             </li>
-            <li><a href="../HomeAndLogin/index.html">Home</a ></li>
-            <li><a class="active" href="BookMainPage.html">Books</a ></li>
-            <li><a href="../BooklistMainPage/BooklistMainPage.html">Booklists</a ></li>
+            <li><a id="home" class="addUserIdToLink" href="../HomeAndLogin/index.html">Home</a ></li>
+                <li><a id="bookmain" class="active addUserIdToLink" href="./BookMainPage.html">Books</a ></li>
+                <li><a id="booklistmain" class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage.html">Booklists</a ></li>
             <!-- New -->
             <li class="search-book">
                 <select class="form-select form-select-sm" id="search-book">
@@ -39,8 +40,11 @@
             <li>
                 <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
             </li>
+            <li class="quit">
+                <a href="../HomeAndLogin/index.html">QUIT</a>
+            </li>
             <li>
-                <a href="../HomeAndLogin/login.html">Login/Register</a>
+                <a id="userLoginInfo" class="addUserIdToLink" href="../HomeAndLogin/login.html">Login/Register</a>
             </li>
         </ul>
     </div>
@@ -48,13 +52,28 @@
     <!-- books-->
     <div id="bookTable">
         <h2 class="textDecoration"> All Books:</h2>
+        <div id="adminActionsWrap">
+            <h4>Admin Actions:</h4>
+            <form id="addBook" class="addBook">
+                <span>    Add book</span>
+                <input id="bookNameInput" type="text" placeholder="Book Name*" required>
+                <input id="bookAuthorInput" type="text" placeholder="Author*" required>
+                <input id="publishYearInput" type="number" min="0000" max="2022" placeholder="Pub.*" required>
+                <input id="descriptionInput" type="text" placeholder="Description...*"required>
+                <label id='coverButton' for="coverInput">Cover(OPT):</label>
+                <input id="coverInput" type="file" accept="image/*" multiple><span id="coverUploaded"></span>   
+                <input id="addButton" class="addSubmit, btn btn-primary" type = "submit" value="Add">
+            </form>
+            <div id="addMessage">
+                <span id='reflect' ></span>
+            </div>
+        </div>
         <br>
         <div class="divideLine"></div>
         <table id="tableResult">
             <tbody id="tableResultTBODY">
             </tbody>
         </table>
-        
         <!-- pages -->
         <div id='pageFliper'>
             <nav aria-label="pageFliperAL">

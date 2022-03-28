@@ -96,20 +96,15 @@ searchArea2.addEventListener('click', searchList)
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
-        console.log("here")
         const select = document.getElementById('search-list');
         if (select.selectedIndex!=0 ){
             const value = select.options[select.selectedIndex].value;
-        const user = document.querySelector('.right').innerText
-        let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
-        if (user.length === 1){ // ['Login/Register']
-            link += ".html"
-        } else if (user === 'Admin'){
-            link += "&userID=1.html"
-        } else if (user === 'User'){
-            link += "&userID=0.html"
-        }
-        window.location.href = (link)
+            const user = getUserID()
+            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
+            if (!isNaN(user)){
+                link += ("&userID="+user)
+            }
+            window.location.href = (link)
         }
     }  
 }
@@ -223,28 +218,24 @@ function selectBooklistToPlay(){
         displayBooklistDetail(list[0], 'guest')
         selectNarviBarUser('guest')
     } else { // admin & user
-        const currentListID = parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
-        const currentUser = parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        const currentListID = getBooklistID()
+        const currentUser = getUserID()
+
         const list = BooklistsList.filter((list) => list.booklistID === currentListID)
         if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
             window.location.assign("./UnderConstruction.html")
         } else {
-            if (currentUser === 0){ //end user, need more dynamiclly fix on phase 2
-                displayBooklistDetail(list[0], 'User')
-                selectNarviBarUser('User')
-                editBooklist('User')
-            } else if (currentUser === 1) {// admin
-                displayBooklistDetail(list[0], 'Admin')
-                selectNarviBarUser('Admin')
-                editBooklist('Admin')
-            }
+            const userType = checkUserType(currentUser)
+            displayBooklistDetail(list[0], userType)
+            selectNarviBarUser(userType)
+            editBooklist(userType)
         }
     }
 }
 
-function selectNarviBarUser(user){
+function selectNarviBarUser(userType){
     const userColumn = document.querySelector('.right')
-    if (user === 'User'){//end user, need more dynamiclly fix on phase 2
+    if (userType === 'User'){//end user
         userColumn.innerHTML =''
         const newLI = document.createElement('li')
         newLI.className = "quit"
@@ -252,12 +243,16 @@ function selectNarviBarUser(user){
         const a = document.createElement('a')
         a.id = 'userLoginInfo'
         a.className = 'addUserIdToLink'
-        a.href = "../user/user.html"
+        a.href = "../user/user.html" // need more dynamiclly link fix on phase 2
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('User'))
+        a.appendChild(document.createTextNode('User')) // need more dynamiclly get username
         userColumn.appendChild(a)
         userColumn.before(newLI)
-    } else if (user === 'Admin'){ // admin
+        document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+getUserID()
+        document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+getUserID()
+        document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+getUserID()
+        document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+getUserID() // need check
+    } else if (userType === 'Admin'){ // admin
         userColumn.innerHTML =''
         const newLI = document.createElement('li')
         newLI.className = "quit"
@@ -265,11 +260,15 @@ function selectNarviBarUser(user){
         const a = document.createElement('a')
         a.id = 'userLoginInfo'
         a.className = 'addUserIdToLink'
-        a.href = "../user/admin.html"
+        a.href = "../user/admin.html" // need more dynamiclly link fix on phase 2
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('Admin'))
+        a.appendChild(document.createTextNode('Admin')) // need more dynamiclly get username
         userColumn.appendChild(a)
         userColumn.before(newLI)
+        document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+getUserID()
+        document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+getUserID()
+        document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+getUserID()
+        document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+getUserID() // need check
     } //else guest
 }
 
@@ -329,6 +328,12 @@ function addEditElement(id, text, inner){
     input.name =id+'_input'
     form.appendChild(input)
 
+    const small = document.createElement('small')
+    small.id="message_"+id
+    form.appendChild(small)
+
+    form.appendChild(document.createElement('br'))
+
     const submit = document.createElement('button')
     submit.type = "submit"
     submit.className='addSubmit, btn'
@@ -372,18 +377,15 @@ function editDescription(e){
     if (e.target.id ==='submit_editDescription'){
         let textSpan = document.querySelector('#descriptionText')
         let request = document.querySelector('#editDescription_input').value
-        //let request = prompt("Please edit the new description:",textSpan.innerText)
         let curr = document.querySelector('#descriptionText').innerText
         while (request == null || request.length === 0 || request === curr){
             if (request == null) {
                 return;
             } else if (request === curr){
-                alert('Failed, the description is still same. Please re-enter.')
-                //request = prompt("Please edit the new description:",textSpan.innerText)
+                document.querySelector('#message_editDescription').innerHTML = 'Failed, the description is still same. Please re-enter.'
                 return
             } else {
-                alert('Failed, the new description cannot be empty. Please re-enter.')
-                //request = prompt("Please edit the new description:",textSpan.innerText)
+                document.querySelector('#message_editDescription').innerHTML = 'Failed, the new description cannot be empty. Please re-enter.'
                 return
             }
         }
@@ -441,13 +443,11 @@ function saveEditBooksContent(e){
             if (uniqueCurrInput === "null") {
                 return;
             } else if (JSON.stringify(uniqueCurrInput) === JSON.stringify(currList.sort())){
-                alert('Failed, all books are still same. Please re-enter.')
-                //request = prompt(listString,currList)
+                document.querySelector('#message_editBooks').innerHTML = 'Failed, all books are still same. Please re-enter.'
                 uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
                 return
             } else {
-                alert('Failed, booklist cannot be empty. Please re-enter.')
-                //request = prompt(listString,currList)
+                document.querySelector('#message_editBooks').innerHTML = 'Failed, booklist cannot be empty. Please re-enter.'
                 uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
                 return
             }
@@ -457,7 +457,7 @@ function saveEditBooksContent(e){
         const idCollection = BooksList.map((book)=>book.bookID)
         const Invalid = uniqueCurrInput.filter(inputID => !idCollection.includes(inputID))
         if(Invalid.length > 0){
-            alert('Failed, you have invalid ID input. Please check the above reference table and re-enter.')
+            document.querySelector('#message_editBooks').innerHTML = 'Failed, you have invalid ID input.'
                 return;
         } else { // valid
             // modify books in object
@@ -489,7 +489,7 @@ function uniqueSortedIDsArrayGenerator(str){
     return Array.from(new Set(valids.sort()))
 }
 
-//helper: for edit button pop up form
+//back up. not used yet
 function createForm(){
     const wrapper = document.createElement('div')
     wrapper.id ='myForm'
@@ -519,6 +519,11 @@ function createForm(){
     input.name ='new_input'
     form.appendChild(input)
 
+    const small = document.createElement('SMALL')
+    small.id="inputMessage" 
+    small.className="form-text text-muted"
+    form.appendChild(small)
+
     const submit = document.createElement('button')
     submit.type = "submit"
     submit.className='addSubmit, btn'
@@ -534,6 +539,34 @@ function createForm(){
     div1.appendChild(form)
     wrapper.appendChild(div1)
     document.querySelector('#edit_description').append(wrapper)
+}
+
+// helper: get user id
+function getUserID(){
+    try { 
+        return parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+    } catch { 
+        return 'guest'
+    }
+}
+
+// helper: get booklist id
+function getBooklistID(){
+    return parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+}
+
+// helper: check the user type, return 'User' or 'Admin'?
+function checkUserType(userID){
+    // need more dynamic way to search user database, check type
+    // phase 2 task
+
+    if (userID === 0){ 
+        return('User')
+    } else if (userID === 1) {
+        return('Admin')
+    } else {
+        return 'guest'
+    }
 }
 
 displaySearchbox() // for navi bar search function

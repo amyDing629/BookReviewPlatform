@@ -81,6 +81,7 @@ body {
 
 #adminActionsWrap{
     font-family: "Helvetica Neue", Helvetica, sans-serif;
+    margin-left: 0 !important;
 }
 
 .divideLine{
@@ -174,4 +175,22 @@ body {
   /* Add some hover effects to buttons */
   .form-container .btn:hover, .open-button:hover {
     opacity: 1;
+  }
+
+  #addBook{
+      background-color: rgb(235, 235, 235);
+      border-bottom: 1px solid rgb(116, 116, 116);
+      border-top: 1px solid rgb(116, 116, 116);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 10%;
+  }
+  .success{
+      color: #04AA6D;
+      font-size: medium;
+  }
+
+  .fail{
+      color:red;
+      font-size: medium;
   }

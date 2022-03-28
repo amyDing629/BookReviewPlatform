@@ -117,7 +117,11 @@ function searchList(e){
         const select = document.getElementById('search-list');
         if (select.selectedIndex!=0 ){
             const value = select.options[select.selectedIndex].value;
-            const link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'.html' // guest
+            const user = getUserID()
+            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
+            if (!isNaN(user)){
+                link += ("&userID="+user)
+            }
             window.location.href = (link)
         }
     }  
@@ -126,12 +130,47 @@ function searchList(e){
 
 
 // Display all books in the book main page
-function displayAllBooks() {
+function displayAllBooks(BooksList, userID) {
+    const userType = checkUserType(userID)
+    if (userType === 'Admin' | userType === 'User'){
+        // change navi bar username
+        const userName = getUserName(userID)
+        document.querySelector('#userLoginInfo').innerText = userName
+
+        // set navi bar link
+        document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
+        document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+userID
+        document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+userID
+        document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
+        if(userType === 'Admin'){
+            document.querySelector('#tableResult').addEventListener('click', deleteBook)
+            document.querySelector('#addButton').addEventListener('click', addNewBook)
+            document.getElementById('coverButton').addEventListener('change', uploadPicture)
+        } else {
+            document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
+        }
+    } else {
+        document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
+        document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+    }
     const tableResultTBODY = document.querySelector('#tableResultTBODY')
 	for(let i = 0; i < BooksNum; i++) {
         const tr = document.createElement('tr')
 		const div = document.createElement('div')
         div.className = 'book'
+
+        if (userType === 'Admin'){// admin only: admin delete button
+        const div1 = document.createElement('div')
+        div1.className = 'delete'
+        const button = document.createElement('button')
+        button.className = "deleteButton, btn btn-danger" 
+        button.setAttribute('data-toggle','model')
+        button.setAttribute('data-target','#exampleModalCenter')
+
+        button.appendChild(document.createTextNode("Delete the book"))
+        div1.appendChild(button)
+        div.appendChild(div1)
+        }
         
         // book name 
         const p1 = document.createElement('p')
@@ -145,6 +184,14 @@ function displayAllBooks() {
         const a = document.createElement('a')
         a.className = "linkColor"
         a.href = "../BookDetail/"+BooksList[i].bookID +"/BookDetail-" + BooksList[i].bookID + ".html"
+        if (userType === 'Admin'){
+            a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_admin_after.html" // need new link
+        } else if (userType === 'User'){
+            a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_end_after.html" // need new link
+        } else {
+            a.href = "../BookDetail/"+ BooksList[i].bookID+"/BookDetail-" + BooksList[i].bookID + ".html"
+        }
+        a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
         const nameContent = document.createTextNode(BooksList[i].name)
         a.appendChild(nameContent)
         span1.appendChild(a)
@@ -279,7 +326,187 @@ function filpPage(pageNo, pageLimit) {
         }
     }
 }
-    
+
+// update display
+function renewBooklist(){
+    const nowBooks = document.querySelector('#tableResultTBODY')
+    const allBook = document.querySelectorAll('.book')
+    for (each of allBook){
+        nowBooks.removeChild(each.parentElement)
+    }
+    displayAllBooks(BooksList,getUserID())
+    filpPage(1,3)
+}
+
+// admin only: add book
+function addNewBook(e){
+    e.preventDefault();
+    if (e.target.className == 'addSubmit, btn btn-primary'){
+        const bookname = document.getElementById('bookNameInput').value
+        const author = document.getElementById('bookAuthorInput').value
+        const year = parseInt(document.getElementById('publishYearInput').value)
+        const description = document.getElementById('descriptionInput').value
+        // cover is not required
+        try {cover=URL.createObjectURL(document.getElementById("coverInput").files[0])
+        } catch {
+            cover = 'https://www.freeiconspng.com/uploads/violet-book-icon--somebooks-icons--softiconsm-11.png'
+        }
+
+        //check validation
+        const all = Array(bookname, author, year, description)
+        const required = all.filter((each) => each.length === 0)
+        if (required.length > 0 ){
+            document.querySelector('#reflect').innerText=('Missing required input, please re-enter information.')
+            document.querySelector('#reflect').className = 'fail'
+        } else {
+            BooksList.push(new Book(bookname,author,year,cover,description))
+            //clear input boxes:
+            document.getElementById('bookNameInput').value = ""
+            document.getElementById('bookAuthorInput').value = ""
+            document.getElementById('publishYearInput').value = null
+            document.getElementById('descriptionInput').value = ""
+            document.getElementById('coverInput').value = ""
+            document.querySelector('#reflect').innerText=("Added successfully.")
+            document.querySelector('#reflect').className = 'success'
+            setTimeout(()=>{
+                document.querySelector('#reflect').innerText=""
+            }, 2 * 1000)
+            renewBooklist()
+        }
+    }
+}
+
+// admin only: delete book
+function deleteBook(e){
+    e.preventDefault();
+    if (e.target.className == 'deleteButton, btn btn-danger'){
+        const bookElement = e.target.parentElement.parentElement.parentElement
+        const ID = parseInt(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
+        const form = document.getElementById("myForm")
+        form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
+        form.style.display="block"
+    }
+}
+
+// admin only action: remove book---form for confirming delete
+function addFormForDelete(){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit'){
+            const ID = parseInt(document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1]);
+            for (let i=0; i<BooksNum; i++){
+                if (BooksList[i].bookID == ID){
+                    BooksList.splice(i, 1);
+                    BooksNum--;
+                }
+            }
+            renewBooklist();
+            document.getElementById("myForm").style.display="none";
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("myForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
+}
+
+// helper: get user id
+function getUserID(){
+    try{
+        return parseInt(window.location.href.split('?')[1].split('userID=')[1])
+    } catch{
+        return 'guest'
+    }
+}
+
+// helper: check the user type, return 'User' or 'Admin'?
+function checkUserType(userID){
+    // need more dynamic way to search user database, check type
+    // phase 2 task
+
+    if (userID === 0){ 
+        return('User')
+    } else if (userID === 1) {
+        return('Admin')
+    } else {
+        return ('guest')
+    }
+}
+
+//helper: get user name by user id
+function getUserName(userID){
+    // need more dynamic way to search user database, check type
+    if (userID === 0){ 
+        return('User')
+    } else if (userID === 1) {
+        return('Admin')
+    } 
+}
+
+// helper: upload img
+function uploadPicture(e){
+    e.preventDefault
+    if (e.target.id == 'coverInput'){
+        let x = document.getElementById('coverInput')
+        let txt = "";
+        if ('files' in x) {
+          if (x.files.length == 0) {
+            txt = "Select one or more files.";
+          } else {
+            for (let i = 0; i < x.files.length; i++) {
+              txt += "<br><strong>" + (i+1) + ". file</strong><br>";
+              let file = x.files[i];
+              if ('name' in file) {
+                txt += "name: " + file.name + "<br>";
+              }
+              if ('size' in file) {
+                txt += "size: " + file.size + " bytes <br>";
+              }
+            }
+          }
+        } 
+        else {
+          if (x.value == "") {
+            txt += "Select one or more files.";
+          } else {
+            txt += "The files property is not supported by your browser!";
+            txt  += "<br>The path of the selected file: " + x.value;
+          }
+        }
+        document.getElementById("coverUploaded").innerHTML = txt;
+    }
+  }
+
+
+  
 displaySearchbox()//for search bar function
-displayAllBooks()
+if(checkUserType(getUserID()) == 'Admin'){
+    addFormForDelete()
+}
+displayAllBooks(BooksList,getUserID())
 window.onload = filpPage(1,3)

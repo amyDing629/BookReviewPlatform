@@ -17,9 +17,9 @@
                     <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
                 </div>
             </li>
-            <li><a href="../HomeAndLogin/index.html">Home</a ></li>
-                <li><a href="../BookMainPage/BookMainPage.html">Books</a ></li>
-                <li><a class="active"  href="./BooklistMainPage.html">Booklists</a ></li>
+            <li><a id="home" class="addUserIdToLink" href="../HomeAndLogin/index.html">Home</a ></li>
+                <li><a id="bookmain" class="addUserIdToLink" href="../BookMainPage/BookMainPage.html">Books</a ></li>
+                <li><a id="booklistmain" class="active addUserIdToLink" href="./BooklistMainPage.html">Booklists</a ></li>
             <!-- New -->
             <li class="search-book">
                 <select class="form-select form-select-sm" id="search-book">
@@ -39,8 +39,11 @@
             <li>
                 <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
             </li>
+            <li class="quit">
+                <a href="../HomeAndLogin/index.html">QUIT</a>
+            </li>
             <li>
-                <a href="../HomeAndLogin/login.html">Login/Register</a>
+                <a id="userLoginInfo" class="addUserIdToLink" href="../HomeAndLogin/login.html">Login/Register</a>
             </li>
         </ul>
     </div>
@@ -51,6 +54,36 @@
         <div id="sortWrap" class="btn-group btn-group-toggle">
             <button id="sort_default" class="btn btn-secondary active" onclick="sortDefault()">Sort by ID number</button>
             <button id="sort_a_z" class="btn btn-secondary" onclick="sortByAtoZ()">Sort from A to Z</button>
+        </div>
+        <br><div id="endUserActionsWrap">
+            <h4>Actions:</h4>
+            <button class="open-button btn btn-primary" onclick="openForm()">Create new booklist</button>
+            <div class="form-popup" id="myForm">
+                <div class="div_form">
+                <form action="/action_page.php" class="form-container">
+                  <h5>Create your collections...</h5>
+              
+                  <label for="listname"><b>List Name</b></label>
+                  <input type="text" id='booklistNameInput' placeholder="i.e. favorite collection" name="listname" required>
+              
+                  <label for="descriptionInput"><b>Description</b></label>
+                  <input type="text" id='descriptionInput' placeholder="(OPT)" name="descriptionInput">
+
+                  <label for="booklists"><b>Booklist IDs</b></label>
+                  <input type="text" id='booklists' placeholder="i.e. 0;1;4" name="booklists" required>
+                  <small id="bookInputHelp" class="form-text text-muted">Please enter book ID list and using ; to seperate</small>
+              
+                  <button type="submit" class="addSubmit, btn">Create</button>
+                  <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                </form>
+                </div>
+                <div class="div_form" id="youmaylike">
+                    <h5>You may like:</h5> 
+                    <ul id='randomBooks'>
+                    </ul>
+                    <button id='bookButton' type="submit" class="btn btn-secondary" onclick="changeBooks()">Browser some books</button>
+                </div>
+            </div>
         </div>
         <br>
         <div class="divideLine"></div>
