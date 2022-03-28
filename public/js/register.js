@@ -1,16 +1,4 @@
 const log = console.log;
-/****** Back ******/
-/*
-const backTohome = document.querySelector('.back')
-backTohome.addEventListener('click', back)
-function back(e){
-    e.preventDefault();
-    if (e.target.className == 'btn btn-dark'){
-        log('hi')
-        window.location.href=('login.html')
-    }  
-}
-*/
 
 /****** User signUP ******/
 let numberOfUsers = 0;
@@ -45,7 +33,7 @@ function UserCallBack() {
     users.push(new AdminUser('admin', 'admin'));
  }
 
-if (window.location.href.indexOf('register.html') !== -1) {
+if (window.location.href.indexOf('../public/html/register.html') !== -1) {
     UserCallBack();
     const signup = document.querySelector('#signup');
     signup.addEventListener('click', change_page);
@@ -68,7 +56,8 @@ function change_page(){
         log(sameName)
         if (sameName.length == users.length){
             users.push(new User(username, password))
-            window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
+            //window.location.href = "index_end_after.html?userID=" + users[users.length-1].userID;
+            window.location.href = "../public/index.html?userID=" + users[users.length-1].userID;
             }
         else{
             const p = document.querySelector('p')

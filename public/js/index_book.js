@@ -1,5 +1,111 @@
-const log = console.log;
-/****************************** Default index js ******************************/
+/******************* Index Book *******************/
+
+// helper for index.html & index.html?userID=0 & index.html?userID=0
+function getUserID(){
+    try { 
+        return parseInt(window.location.href.split('?')[1].split('=')[1])
+    } catch { 
+        return 'guest'
+    }
+}
+
+// helper: check the user type, return 'User' or 'Admin'?
+function checkUserType(userID){
+    // need more dynamic way to search user database, check type
+    // phase 2 task
+
+    if (userID === 0){ 
+        return('user')
+    } else if (userID === 1) {
+        return('admin')
+    } else {
+        return 'guest'
+    }
+}
+
+let id = getUserID()
+let user = checkUserType(id)
+
+
+displayMenu(user)
+
+/*************** Menu Handler ********************/
+function displayMenu(user){
+    const ul = document.querySelector("#topMenu").children[0]
+    const lis = ul.children
+    const homea = lis[1].firstChild
+    const booksa = lis[2].firstChild
+    const booklistsa = lis[3].firstChild
+    const li = document.createElement("li")
+    const a = document.createElement("a")   
+    const li2 = document.createElement("li")
+    li2.className = 'addUserIdToLink'
+    li2.id = 'userLoginInfo'
+    const a2 = document.createElement("a")   
+    if (user == 'guest'){
+        homea.setAttribute('href', 'index2.html')
+        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html') // here
+        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage.html') // here
+        a.setAttribute("href", "login.html")
+        a.innerText = 'Login/Register'
+        li.appendChild(a)
+        ul.appendChild(li)
+    }
+    else if(user == 'user'){
+        homea.setAttribute('href', 'index2.html?userID=0') // here 
+        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html?userID=0') // here
+        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage.html?userID=0') // here
+        
+        a.setAttribute("href", "index.html")
+        a.innerText = 'QUIT'
+        li.append(a)
+        li.className = 'quit'
+        a2.setAttribute("href", "../user/user.html") // user link?
+        a2.innerText = 'User' // dynamic? id?
+        li2.append(a2)
+        ul.appendChild(li)
+        ul.appendChild(li2)
+    }
+    else{
+        homea.setAttribute('href', 'index2.html?userID=1') // here
+        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html?userID=1') // here
+        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage_admin_after.html?userID=1') // here
+        
+        a.setAttribute("href", "index.html")
+        a.innerText = 'QUIT'
+        li.append(a)
+        li.className = 'quit'
+        a2.setAttribute("href", "../user/admin.html") // user link?
+        a2.innerText = 'Admin' // dynamic? id?
+        li2.append(a2)
+        ul.appendChild(li)
+        ul.appendChild(li2)
+    }
+}
+/*************** Welcome Section ********************/
+if (user != "guest"){
+    const div = document.createElement("div")
+    div.className = 'welcome'
+    const h2 = document.createElement("h2")
+    h2.className = "fancychar2"
+    h2.innerText = 'Hello '
+    const span = document.createElement("span")
+    const b = document.createElement("b")
+    b.innerText = 'username'+ ',' // dynamic!!!!!!
+    span.appendChild(b)
+    h2.appendChild(span)
+
+    const h4 = document.createElement("h4")
+    h4.className = "fancychar2"
+    h4.innerText = 'what would you like to read today?'
+    div.appendChild(h2)
+    div.appendChild(h4)
+
+    const top = document.querySelector("#topMenu")
+    top.parentElement.insertBefore(div, top.nextElementSibling)
+}
+
+
 /*************** Books & Booklists Data ********************/
 const allBooks = [];
 
@@ -27,30 +133,44 @@ class DataBooklist {
 	}
 }
 
-BooksCallBack()
+BooksCallBack(user)
 BookListsCallBack()
 displaySearchbox()
 
-function blinkHandler(bid){
-    // handler for book Detail page link
-    for (let i =0; i<allBooks.length; i++){
-        if (allBooks[i].bookId == bid){
-            let result = '../BookDetail/'+allBooks[i].bookId+'/BookDetail-'+allBooks[i].bookId+'.html'
-            return result;
-        }
-    }   
+function blinkHandler(bid, user){
+    // handler for book *Detail* page link
+    let result;
+    if (user == 'guest'){
+        result = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html'
+    }
+    else if (user == 'user'){
+        result = '../BookDetail/'+bid+'/'+bid+'_end_after.html'
+    }
+    else{
+        result = '../BookDetail/'+bid+'/'+bid+'_admin_after.html'
+    }
+    return result; 
+}  
+
+function llinkHandler(lid, user){
+    // handler for book *list* page link
+    let result;
+    if (user == 'guest'){
+        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'.html' // guest
+    }
+    else if (user == 'user'){
+        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'&userID=0.html' // end userID: 0 'User'
+    }
+    else{
+        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'&userID=1.html' // admin userID: 1
+    }
+    return result;
+
 }    
 
 
-function BookListsCallBack(){
-// Load default booklist data
-BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
-BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
-BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
-}
-
-
-function BooksCallBack(){
+function BooksCallBack(user){
+    // HERE!!
 // Get all books in database
 allBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 
 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
@@ -79,9 +199,16 @@ new Book(4, 'Song of Solomon', 'Toni Morrison',
 
 // handle links
 for (let i=0; i<allBooks.length; i++){
-    allBooks[i].link = blinkHandler(allBooks[i].bookId)
+    allBooks[i].link = blinkHandler(allBooks[i].bookId, user)
 }
 }
+
+function BookListsCallBack(){
+    // Load default booklist data
+    BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
+    BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
+    BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
+    }
 
 function displaySearchbox(){
     const bookoptionfield = document.querySelector(".search-book #myDropdown")
@@ -90,7 +217,9 @@ function displaySearchbox(){
             const id1 = allBooks[i].bookId
             const name1 = allBooks[i].title
             const a1 = document.createElement("a")
-            const link1 = '../BookDetail/'+id1+'/BookDetail-'+id1+'.html'
+            // HERE!
+            let link1 = blinkHandler(id1, user)
+
             a1.setAttribute("href", link1)
             a1.innerText = id1+": "+name1
             bookoptionfield.appendChild(a1)
@@ -103,7 +232,8 @@ function displaySearchbox(){
             const id2 = BooklistsList[i].booklistID
             const name2 = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
             const a2 = document.createElement("a")
-            const link2 = '../BooklistDetail/BooklistDetail.html?booklistID='+id2+'.html' // guest
+            // HERE!
+            let link2 = llinkHandler(id2, user)
             a2.setAttribute("href", link2)
             a2.innerText = id2+": "+name2
             listoptionfield.appendChild(a2)
@@ -240,7 +370,6 @@ function displayRecommendations(){
     for (let i=1; i<3; i++){
         if (recommendedBooks[i] != null){
         const area = document.getElementsByClassName('row mb-2')
-        log(area)
 
         const bookName = recommendedBooks[i].title;
         const bookAuthor = recommendedBooks[i].author;
@@ -304,191 +433,5 @@ function displayRecommendations(){
         }
     }
 }
-
-
-/********** Posts display **********/
-const posts = [];
-
-
-class Post {
-	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
-		this.postID = postID;
-        this.bookID = bookID;
-        this.booktitle = booktitle;
-        this.booklink = booklink;
-		this.poster = poster;
-        this.posterProfile = posterProfile;
-        this.pic = pic;
-        this.content = content; 
-        this.time = time;
-        this.likes = likes; 
-    }
-}
-
-function blinkHandlerinPost(bid){
-    // handler for book Detail page link
-        for (let i =0; i<posts.length; i++){
-            if (posts[i].bookID == bid){
-                let result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
-                return result;
-            }
-        }  
-    }
-
-
-function postCallBack() {
-    /// Get post from server
-    // code below requires server call
-    // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris',null, 'admin',
-    "https://avatars.githubusercontent.com/u/73209681?v=4", 
-    null,
-    'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0));
-
-    posts.push(new Post(1, 0, 'Solaris',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-    'I really like this book! I really like this book! I really like this book! I really like this book!',
-    '2022-03-01 18:05', 1));
-
-    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
-    'I have to read it every day otherwise I cannot sleep',
-    '2022-03-05 00:05', 5));
-
-    posts.push(new Post(3, 3, 'War and Peace',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
-    '2022-03-05 16:00', 0));
-  }
-
-
-
-const postul = document.querySelector('#posts ul');
-postCallBack()
-displayPosts()
-
-
-// clean all before display
-function cleanPosts(){
-    const lis = postul.children;
-    for (let i=0; i<5; i++){
-        if (lis[i] != null){
-            lis[i].remove();
-        }
-    }
-}
-
-
-function displayPosts(){
-    cleanPosts();
-
-    for (let i=0; i<5; i++){
-        if (posts[i] != null){
-            let li = document.createElement('li')
-
-            let postDiv = document.createElement('div')
-            postDiv.className = 'post'
-            let userDiv = document.createElement('div')
-            userDiv.className = 'userProfileContainer'
-            let contentDiv = document.createElement('div')
-            contentDiv.className ='postContent'
-
-            let title = posts[i].booktitle
-            let userName = posts[i].poster
-            let userProfile = posts[i].posterProfile
-            let pic = posts[i].pic
-            let content = posts[i].content
-            let time = posts[i].time
-            let likes = posts[i].likes
-            let plink = posts[i].posterlink
-            let pid = posts[i].postID
-            let bid = posts[i].bookID
-
-            let blink = blinkHandlerinPost(bid)
-
-            let img1 = document.createElement('img')
-            img1.className='userProfile'
-            img1.setAttribute('src', userProfile)
-            img1.setAttribute('alt', 'profile')
-            userDiv.appendChild(img1)
-
-            let userh3 = document.createElement('h3')
-            let a1 = document.createElement('a')
-            a1.className = 'linkColor'
-            a1.setAttribute('href', plink)
-            a1.innerText = userName
-            a1.onclick = function open(e){
-                e.preventDefault();
-                window.location.href=("login.html")
-            }
-            let spanid2 = document.createElement('span')
-            spanid2.className = 'postId'
-            spanid2.innerText = pid
-            userh3.appendChild(a1)
-            userh3.appendChild(spanid2) // Post id is here
-
-            contentDiv.appendChild(userh3)
-
-            let pbook = document.createElement('p')
-            pbook.innerText = 'Book Name: '
-            let span1 = document.createElement('span')
-            let a2 = document.createElement('a')
-            a2.className = 'linkColor'
-            a2.setAttribute('href', blink)
-            a2.innerText = title
-            a2.onclick = function open(e){
-                e.preventDefault();
-                window.location.href=(a2.href)
-            }
-            span1.appendChild(a2)
-            let span2 = document.createElement('span')
-            span2.className = 'postTime'
-            span2.innerText = time
-
-            let spanid3 = document.createElement('span')
-            spanid3.className = 'bookId'
-            spanid3.innerText = ' bookID: '
-            let spanid4 = document.createElement('span')
-            spanid4.className = 'bookId'
-            spanid4.innerText = bid
-
-            pbook.appendChild(span1)
-            pbook.appendChild(span2)
-            pbook.appendChild(spanid3) 
-            pbook.appendChild(spanid4) // Book id is here
-            contentDiv.appendChild(pbook)
-
-            let p = document.createElement('p')
-            p.innerText = content
-            contentDiv.appendChild(p)
-
-            if (pic != null){
-                let img2 = document.createElement('img')
-                img2.className='postContentPicture'
-                img2.setAttribute('src', pic)
-                img2.setAttribute('alt', 'pic')
-                contentDiv.appendChild(img2)
-            }
-
-            let br = document.createElement('br')
-            contentDiv.appendChild(br)
-
-            postDiv.appendChild(userDiv)
-            postDiv.appendChild(contentDiv)
-
-            li.appendChild(postDiv)
-            postul.appendChild(li)
-        }
-    }
-}
-
-
-
-
-
 
 

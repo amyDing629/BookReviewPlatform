@@ -1,29 +1,4 @@
 const log = console.log;
-/****** Back ******/
-/*
-const backTohome = document.querySelector('.back')
-backTohome.addEventListener('click', back)
-function back(e){
-    e.preventDefault();
-    if (e.target.className == 'btn btn-dark'){
-        log('hi')
-        window.location.href=('index.html')
-    }  
-}
-*/
-
-/****** Register ******/
-/*
-const register = document.querySelector('.register')
-register.addEventListener('click', benewacc)
-function benewacc(e){
-    e.preventDefault();
-    if (e.target.className == 'btn btn-dark'){
-        log('hi')
-        window.location.href=('register.html')
-    }  
-}
-*/
 
 /****** User signin ******/
 let numberOfUsers = 0;
@@ -59,7 +34,7 @@ function UserCallBack() {
  }
 
 // button trigger
-if (window.location.href.indexOf('login.html') !== -1) {
+if (window.location.href.indexOf('../public/html/login.html') !== -1) {
     UserCallBack();
     const signin = document.querySelector('#signin');
     signin.addEventListener('click', change_page);
@@ -90,12 +65,7 @@ function change_page(){
         let pass = users[i].password;
         console.log(user, pass);
         if (user == username && password == pass){
-            if (users[i].isAdmin == true) {
-                window.location.href = "index_admin_after.html?userID=" + users[i].userID;
-            }
-            else{
-                window.location.href = "index_end_after.html?userID=" + users[i].userID;
-            } 
+            window.location.href = "../public/index.html?userID=" + users[i].userID;
             return;
         }
     }

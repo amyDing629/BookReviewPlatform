@@ -148,6 +148,7 @@ a {
     border: none;
     cursor: pointer;
     text-decoration: underline;
+    margin-left: 5px;
   }
   
   /* Dropdown button on hover & focus */

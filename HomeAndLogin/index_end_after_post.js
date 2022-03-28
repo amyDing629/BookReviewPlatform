@@ -23,7 +23,6 @@ class Post {
         this.content = content; 
         this.time = time;
         this.likes = likes; 
-
     }
 }
 
