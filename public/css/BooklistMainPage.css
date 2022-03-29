@@ -1,4 +1,4 @@
-@import "../public/css/home.css"; 
+@import "./home.css"; 
 
 #booklistTable {
     top: 60px;
@@ -92,7 +92,7 @@
 }
 
 .bookshelf{
-    background: url("../static/bookshelf.png");
+    background: url("../img/static/bookshelf.png");
     background-position:bottom;
     background-repeat: no-repeat;
     background-size: 400px;

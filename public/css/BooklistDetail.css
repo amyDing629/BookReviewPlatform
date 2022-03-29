@@ -1,4 +1,4 @@
-@import "../public/css/home.css"; 
+@import "./home.css"; 
 
 .title{
     text-decoration: underline;

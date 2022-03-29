@@ -65,12 +65,36 @@ app.use(session({
 
 /*******************************************************************/
 
+app.use("/", express.static(__dirname + '/public'));
+app.use("/public/html", express.static(__dirname + '/public/html'));
+app.use('/public/css', express.static(__dirname + '/public/css'));
+app.use('/public/js', express.static(__dirname + '/public/js'));
+app.use('/public/img/static', express.static(__dirname + '/public/img/static'));
 
 
+app.get('/', (req, res) => {
+	res.sendFile(__dirname + '/public/index.html')
+})
 
+app.get('/login', (req, res) => {
+    /* if (req.session.user) {
+        res.sendFile(__dirname + '/public/index.html?userID='+req.session.user._id) // not sure
+    } else { */
+        res.sendFile(__dirname + '/public/html/login.html')
+    //}
+})
 
+app.get('/register', (req, res) => {
+	res.sendFile(__dirname + '/public/html/register.html')
+})
 
-
+app.get('/BookMain', (req, res) => {
+    //if (req.session.user){
+    //    res.sendFile(__dirname + '/public/html/BookMainPage.html?userID='+req.session.user._id) // not sure
+    //} else { // guest
+	    res.sendFile(__dirname + '/public/html/BookMainPage.html')
+    //}
+})
 
 
 // 404 route at the bottom for anything not found.
@@ -82,7 +106,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 50001
+const port = process.env.PORT || 5001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 
