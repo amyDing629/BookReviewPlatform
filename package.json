@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
     "express-handlebars": "^6.0.3",
@@ -24,5 +25,6 @@
   "bugs": {
     "url": "https://github.com/csc309-winter-2022/team10/issues"
   },
-  "homepage": "https://github.com/csc309-winter-2022/team10#readme"
+  "homepage": "https://github.com/csc309-winter-2022/team10#readme",
+  "devDependencies": {}
 }
