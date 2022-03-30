@@ -31,7 +31,9 @@ function displaySearchbox(){
 
 /********** Search Book **********/
 const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
+if(searchArea1){
+    searchArea1.addEventListener('click', searchBook)
+}
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
@@ -54,7 +56,9 @@ function searchBook(e){
 
 /********** Search List **********/
 const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
+if(searchArea2){
+    searchArea2.addEventListener('click', searchList)
+}
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
@@ -670,7 +674,9 @@ function delete_post(e){
 }
 
 const addArea = document.querySelector('#addPost');
-addArea.addEventListener('click', addNewPost)
+if(addArea){
+    addArea.addEventListener('click', addNewPost)
+}
 
 function addNewPost(e){
     e.preventDefault();
