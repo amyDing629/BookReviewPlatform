@@ -13,6 +13,10 @@ const BookSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
+    year:{
+        type: Number,
+        required: true,
+    },
     coverURL: {
         type: String,
         required: false,
@@ -21,11 +25,10 @@ const BookSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    postCollection: [PostSchema],
-    bookID: {
-        type: Number,
-        required: true
-    },
+    postCollection: {
+        type: [PostSchema],
+        default: []
+    }
 });
 
 const BooklistSchema = new mongoose.Schema({
@@ -43,7 +46,10 @@ const BooklistSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    books: [BookSchema],
+    books: {
+        type: [BookSchema],
+        default: []
+    },
     booklistID: {
         type: Number,
         required: true
@@ -64,5 +70,5 @@ const BooklistSchema = new mongoose.Schema({
 const Book = mongoose.model("Book", BookSchema);
 const BookList = mongoose.model("Booklist", BooklistSchema);
 
-module.exports ={Book, BookList};
+module.exports ={ Book, BookList };
 

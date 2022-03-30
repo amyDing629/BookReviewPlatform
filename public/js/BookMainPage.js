@@ -1,24 +1,25 @@
+const log = console.log
 // global variables
-var BooksNum = 0; 
-var BooksList = [] 
+let BooksNum = 0; 
+let BooksList = [] 
 
 class Book {
-	constructor(name, author, year, coverURL, description) {
+	constructor(name, author, year, coverURL, description,id) {
 		this.name = name;
 		this.author = author;
 		this.year = year;
 		this.coverURL = coverURL; 
         this.description = description;
         this.postCollection = [] // collection of post ids associated with the book
-		this.bookID = BooksNum;
+		this.bookID = id;
 		BooksNum++;
 	}
 }
 
-const bookTable = document.querySelector('#bookTable')
+
 
 // Load default book data
-BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
+/* BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
 'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
 'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
 
@@ -37,7 +38,7 @@ BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
 BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
 'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
 'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
-
+ */
 /************** temp for search bar ******************/
 
 // temp booklist data
@@ -67,6 +68,12 @@ BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksLi
 // temp booklist data [END]
 
 function displaySearchbox(){
+    //new 
+    const searchArea1 = document.querySelector('#search-button1')
+    searchArea1.addEventListener('click', searchBook)
+    const searchArea2 = document.querySelector('#search-button2')
+    searchArea2.addEventListener('click', searchList)
+    //end
     const searchbookArea = document.querySelector('.search-book')
     const t = searchbookArea.children[0]
     for (let i=0; i<BooksNum; i++){
@@ -94,8 +101,7 @@ function displaySearchbox(){
 }
 
 /********** Search Book **********/
-const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
+
 function searchBook(e){
     e.preventDefault();
     if (e.target.id == 'search-button1'){
@@ -109,8 +115,7 @@ function searchBook(e){
 }
 
 /********** Search List **********/
-const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
+
 function searchList(e){
     e.preventDefault();
     if (e.target.id == 'search-button2'){
@@ -129,8 +134,76 @@ function searchList(e){
 /************** temp for search bar [END] ******************/
 
 
+// get all books 
+function getBooks(){
+    const url = '/books'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+
+        for (each of books){
+            BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
+        }
+        displaySearchbox()//for search bar function
+        ifNeedDeleteForm()
+        displayAllBooks(BooksList,getUserID())
+        filpPage(1,3)
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+function deleteBookFromAdminUser(id){
+    log(id)
+    const book = BooksList.filter((book)=> book.bookID == id )
+    log(book)
+    const url = '/deleteBook/'+id
+
+    let data = {
+        _id: book[0].bookID
+    }
+    log(url)
+    const request = new Request(url, {
+        method: 'delete', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+
+    fetch(request)
+    .then(function(res) {
+
+        // Handle response we get from the API.
+        // Usually check the error codes to see what happened.
+        
+        if (res.status === 200) {
+            // If student was added successfully, tell the user.
+            console.log('delete book')
+            
+           
+        } else {
+            // If server couldn't add the student, tell the user.
+            // Here we are adding a generic message, but you could be more specific in your app.
+            message.innerText = 'Could not add student'
+            message.setAttribute("style", "color: red")
+     
+        }
+        log(res)  // log the result in the console for development purposes,
+                          //  users are not expected to see this.
+    }).catch((error) => {
+        log(error)
+    })
+}
 // Display all books in the book main page
 function displayAllBooks(BooksList, userID) {
+    const bookTable = document.querySelector('#bookTable')
     const userType = checkUserType(userID)
     if (userType === 'Admin' | userType === 'User'){
         // change navi bar username
@@ -329,13 +402,8 @@ function filpPage(pageNo, pageLimit) {
 
 // update display
 function renewBooklist(){
-    const nowBooks = document.querySelector('#tableResultTBODY')
-    const allBook = document.querySelectorAll('.book')
-    for (each of allBook){
-        nowBooks.removeChild(each.parentElement)
-    }
-    displayAllBooks(BooksList,getUserID())
-    filpPage(1,3)
+    BooksList = []
+    getBooks()
 }
 
 // admin only: add book
@@ -381,7 +449,7 @@ function deleteBook(e){
     e.preventDefault();
     if (e.target.className == 'deleteButton, btn btn-danger'){
         const bookElement = e.target.parentElement.parentElement.parentElement
-        const ID = parseInt(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
+        const ID = /* parseInt */(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
         const form = document.getElementById("myForm")
         form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
         form.style.display="block"
@@ -410,15 +478,11 @@ function addFormForDelete(){
     submit.onclick = function confirmDelete(e){
         e.preventDefault();
         if (e.target.id == 'submit'){
-            const ID = parseInt(document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1]);
-            for (let i=0; i<BooksNum; i++){
-                if (BooksList[i].bookID == ID){
-                    BooksList.splice(i, 1);
-                    BooksNum--;
-                }
-            }
+            const ID = (document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1])
+            deleteBookFromAdminUser(ID)
             renewBooklist();
             document.getElementById("myForm").style.display="none";
+            location.reload();
         }
     }
     form.appendChild(submit)
@@ -502,11 +566,15 @@ function uploadPicture(e){
     }
   }
 
+function ifNeedDeleteForm(){
+    if(checkUserType(getUserID()) == 'Admin'){
+        addFormForDelete()
+    }
+}
 
   
-displaySearchbox()//for search bar function
-if(checkUserType(getUserID()) == 'Admin'){
-    addFormForDelete()
-}
+/* displaySearchbox()//for search bar function
+ifNeedDeleteForm()
 displayAllBooks(BooksList,getUserID())
-window.onload = filpPage(1,3)
+window.onload = filpPage(1,3) */
+getBooks()

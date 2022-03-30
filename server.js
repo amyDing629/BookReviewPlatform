@@ -10,7 +10,7 @@ const exphbs = require('express-handlebars');
 const app = express();
 
 // mongoose and mongo connection
-const { ObjectID, ObjectId } = require('mongodb')
+const { ObjectID } = require('mongodb')
 const { mongoose } = require('./db/mongoose');
 const { Post } = require('./models/post')
 const { Book, BookList } = require('./models/book')
@@ -46,7 +46,25 @@ app.use(session({
     resave: false, // don't resave an session that hasn't been modified.
 }));
 
-
+// helper: check mongo connection error
+const mongoChecker = (req, res, next) => {
+	// check mongoose connection established.
+	if (mongoose.connection.readyState != 1) {
+		log('Issue with mongoose connection')
+		res.status(500).send('Internal server error')
+		return;
+	} else {
+		next()	
+	}	
+}
+//helper: check session cookies
+const sessionChecker = (req, res, next) => {
+    if (req.session.user) {
+        res.redirect('/index.html?userID='+req.session.user._id); // not sure
+    } else {
+        next(); // next() moves on to the route.
+    }    
+};
 
 /** Static directories **/
 // static js directory
@@ -65,15 +83,44 @@ app.use(session({
 
 /*******************************************************************/
 
-app.use("/", express.static(__dirname + '/public'));
-app.use("/public/html", express.static(__dirname + '/public/html'));
-app.use('/public/css', express.static(__dirname + '/public/css'));
-app.use('/public/js', express.static(__dirname + '/public/js'));
-app.use('/public/img/static', express.static(__dirname + '/public/img/static'));
+app.use("/", express.static(path.join(__dirname + '/public')));
+app.use("/public/html", express.static(path.join(__dirname + '/public/html')));
+app.use('/public/css', express.static(path.join(__dirname + '/public/css')));
+app.use('/public/js', express.static(path.join(__dirname + '/public/js')));
+app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/static')));
 
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html')
+})
+
+app.post('/login', mongoChecker, async (req, res) => {
+	const username = req.body.username
+    const password = req.body.password
+
+    try {
+    	// Use the static method on the User model to find a user
+	    // by their email and password.
+		const user = await User.findByEmailPassword(email, password);
+		if (!user) {
+            res.redirect('/login');
+        } else {
+            // Add the user's id and email to the session.
+            // We can check later if the session exists to ensure we are logged in.
+            req.session.user = user._id;
+            req.session.email = user.email
+            res.redirect('/dashboard');
+        }
+    } catch (error) {
+    	// redirect to login if can't login for any reason
+    	if (isMongoError(error)) { 
+			res.status(500).redirect('/login');
+		} else {
+			log(error)
+			res.status(400).redirect('/login');
+		}
+    }
+
 })
 
 app.get('/login', (req, res) => {
@@ -88,12 +135,74 @@ app.get('/register', (req, res) => {
 	res.sendFile(__dirname + '/public/html/register.html')
 })
 
+// get all books 
+app.get('/books', mongoChecker, async (req, res)=>{
+	try {
+		const books = await Book.find()
+		res.send({ books })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+// get all booklists
+app.get('/booklists', mongoChecker, async (req, res)=>{
+	try {
+		const lists = await BookList.find()
+		res.send({ lists })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+// display book main page
 app.get('/BookMain', (req, res) => {
-    //if (req.session.user){
-    //    res.sendFile(__dirname + '/public/html/BookMainPage.html?userID='+req.session.user._id) // not sure
-    //} else { // guest
-	    res.sendFile(__dirname + '/public/html/BookMainPage.html')
-    //}
+    try{
+        const user = req.query.userID
+        if (!user){
+            res.sendFile(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+user)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')    
+    }
+	
+	
+    /* try{
+        const userID = req.body._id
+        if(!userID){
+            res.redirect(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+userID)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')   
+    }  */
+
+})
+
+app.delete('/deleteBook/:bookID', async (req, res)=>{ // not sure the config for book id
+    const book = req.params.bookID
+
+    // if user is type admin check
+
+	// Delete a student by their id
+	try {
+		const deleteBook = await Book.findOneAndRemove({_id: book})
+		if (!deleteBook) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(deleteBook)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on delete book") // server error, could not delete.
+	}
 })
 
 
