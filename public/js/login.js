@@ -1,37 +1,62 @@
 const log = console.log;
 
 /****** User signin ******/
-let numberOfUsers = 0;
+//let numberOfUsers = 0;
 const users = [];
 
 class User {
-	constructor(userName, password) {
+	constructor(userName, password, signature, profilePhoto, postList, booklistList, postColectionList, booklistCollectionList, isAdmin, id) {
 		this.userName = userName;
         this.password = password;
-        this.signature = null;
-        this.profilePhoto = null;
-        this.postList = [];
-        this.booklistList = [];
-        this.collectionList = [];
-        this.userID = numberOfUsers;
-        this.isAdmin = false;
-		numberOfUsers++;
+        this.signature = signature;
+        this.profilePhoto = profilePhoto;
+        this.postList = postList;
+        this.booklistList = booklistList;
+        this.postColectionList = postColectionList;
+        this.booklistCollectionList = booklistCollectionList;
+        this.isAdmin = isAdmin;
+        this.userid = id
+        //this.userID = numberOfUsers;
+        //this.isAdmin = false;
+		//numberOfUsers++;
     }
 }
 
-class AdminUser extends User {
-    constructor(userName, password) {
-        super(userName, password);
-        this.isAdmin = true;
-    }
-}
+ // class AdminUser extends User {
+//     constructor(userName, password) {
+//         super(userName, password);
+//         this.isAdmin = true;
+//     }
+// }
 
-function UserCallBack() {
-    /// Get users from server
-    // code below requires server call
-    users.push(new User('user', 'user'));
-    users.push(new AdminUser('admin', 'admin'));
- }
+// function UserCallBack() {
+//     /// Get users from server
+//     // code below requires server call
+//     users.push(new User('user', 'user'));
+//     users.push(new AdminUser('admin', 'admin'));
+//  }
+
+// get all users 
+function getUsers(){
+    const url = '/api/users'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const users = json.users
+        for (each of users){
+            users.push(
+                new User(each.username, each.password, each.signature, 
+                    each.profilePhoto, each.postlist, each.booklistList,
+                    each.postColectionList, each.booklistCollectionList, each.isAdmin, each._id))
+        }
+    }).catch((error) => {
+        log(error)
+    })
+}
 
 // button trigger
 if (window.location.href.indexOf('../public/html/login.html') !== -1) {
