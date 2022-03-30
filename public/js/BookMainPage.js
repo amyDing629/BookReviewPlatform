@@ -16,29 +16,6 @@ class Book {
 	}
 }
 
-
-
-// Load default book data
-/* BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
-
-BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
-'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
-'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
-
-BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014,
-'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg',
-'The fourth of Elena Ferrante\'s celebrated Neapolitan novels, has a lot to deliver on.'))
-
-BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
-'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg',
-'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.'))
-
-BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
-'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
-'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
- */
 /************** temp for search bar ******************/
 
 // temp booklist data
@@ -159,15 +136,12 @@ function getBooks(){
 }
 
 function deleteBookFromAdminUser(id){
-    log(id)
     const book = BooksList.filter((book)=> book.bookID == id )
-    log(book)
     const url = '/deleteBook/'+id
 
     let data = {
         _id: book[0].bookID
     }
-    log(url)
     const request = new Request(url, {
         method: 'delete', 
         body: JSON.stringify(data),
@@ -176,31 +150,19 @@ function deleteBookFromAdminUser(id){
             'Content-Type': 'application/json'
         },
     });
-
     fetch(request)
     .then(function(res) {
-
-        // Handle response we get from the API.
-        // Usually check the error codes to see what happened.
-        
         if (res.status === 200) {
-            // If student was added successfully, tell the user.
-            console.log('delete book')
-            
-           
+            console.log('delete book')    
         } else {
-            // If server couldn't add the student, tell the user.
-            // Here we are adding a generic message, but you could be more specific in your app.
-            message.innerText = 'Could not add student'
-            message.setAttribute("style", "color: red")
-     
+            console.log('Failed to delete')
         }
-        log(res)  // log the result in the console for development purposes,
-                          //  users are not expected to see this.
+        log(res)
     }).catch((error) => {
         log(error)
     })
 }
+
 // Display all books in the book main page
 function displayAllBooks(BooksList, userID) {
     const bookTable = document.querySelector('#bookTable')
@@ -427,7 +389,34 @@ function addNewBook(e){
             document.querySelector('#reflect').innerText=('Missing required input, please re-enter information.')
             document.querySelector('#reflect').className = 'fail'
         } else {
-            BooksList.push(new Book(bookname,author,year,cover,description))
+            const url = '/addBook'
+            let data = {
+                name: bookname,
+                author: author,
+                year: year,
+                description: description,
+                coverURL: cover,
+                postCollection:[]
+            }
+            const request = new Request(url, {
+                method: 'post', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            fetch(request)
+            .then(function(res) {
+                if (res.status === 200) {
+                    console.log('added book')    
+                } else {
+                    console.log('Failed to add')
+                }
+                log(res)
+            }).catch((error) => {
+                log(error)
+            })
             //clear input boxes:
             document.getElementById('bookNameInput').value = ""
             document.getElementById('bookAuthorInput').value = ""
@@ -439,7 +428,7 @@ function addNewBook(e){
             setTimeout(()=>{
                 document.querySelector('#reflect').innerText=""
             }, 2 * 1000)
-            renewBooklist()
+            location.reload();
         }
     }
 }
@@ -449,9 +438,10 @@ function deleteBook(e){
     e.preventDefault();
     if (e.target.className == 'deleteButton, btn btn-danger'){
         const bookElement = e.target.parentElement.parentElement.parentElement
-        const ID = /* parseInt */(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
+        const ID =(bookElement.children[0].children[4].children[0].children[1].children[0].innerText)
         const form = document.getElementById("myForm")
-        form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
+        form.children[0].children[0].innerText="Confirm to delete this book?"
+        form.name = ID
         form.style.display="block"
     }
 }
@@ -478,7 +468,8 @@ function addFormForDelete(){
     submit.onclick = function confirmDelete(e){
         e.preventDefault();
         if (e.target.id == 'submit'){
-            const ID = (document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1])
+            //const ID = (document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1])
+            const ID = document.getElementById("myForm").name
             deleteBookFromAdminUser(ID)
             renewBooklist();
             document.getElementById("myForm").style.display="none";
@@ -573,8 +564,4 @@ function ifNeedDeleteForm(){
 }
 
   
-/* displaySearchbox()//for search bar function
-ifNeedDeleteForm()
-displayAllBooks(BooksList,getUserID())
-window.onload = filpPage(1,3) */
 getBooks()

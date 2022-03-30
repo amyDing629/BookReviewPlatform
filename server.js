@@ -158,8 +158,8 @@ app.get('/booklists', mongoChecker, async (req, res)=>{
 })
 
 // display book main page
-app.get('/BookMain', (req, res) => {
-    try{
+app.get('/BookMain/:userID?', (req, res) => {
+    /* try{
         const user = req.query.userID
         if (!user){
             res.sendFile(__dirname + '/public/html/BookMainPage.html')
@@ -169,9 +169,9 @@ app.get('/BookMain', (req, res) => {
     } catch(error){
         log(error)
         res.status(400).redirect('/public/index.html')    
-    }
+    } */
 	
-	
+	res.sendFile(__dirname + '/public/html/BookMainPage.html')
     /* try{
         const userID = req.body._id
         if(!userID){
@@ -202,6 +202,29 @@ app.delete('/deleteBook/:bookID', async (req, res)=>{ // not sure the config for
 	} catch(error) {
 		log(error)
 		res.status(500).send("server error on delete book") // server error, could not delete.
+	}
+})
+
+app.post('/addBook', async (req, res)=>{ // not sure the config for book id
+
+    const newBook = new Book({
+		name: req.body.name,
+        author: req.body.author,
+		year: req.body.year,
+		coverURL: req.body.coverURL,
+        description: req.body.description,
+        postCollection: []
+	})
+    try {
+		const result = await newBook.save()	
+		res.send(result)
+	} catch(error) {
+		log(error) // log server error to the console, not to the client.
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+		}
 	}
 })
 
