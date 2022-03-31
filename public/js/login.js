@@ -45,11 +45,11 @@ function change_page(){
     const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;  
     const url = '/login/'+username+'/'+password
-    log(url)
     fetch(url).then((res) => { 
         if (res.status === 200) {
            return res.json() 
-       } else {
+       } 
+       else {
             const p = document.querySelector('p')
             p.innerText = 'username or password not correct, please try again'
             log("invalid input")

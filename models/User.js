@@ -49,6 +49,7 @@ const UserSchema = new mongoose.Schema({
     type:{
         type: String,
         required: true
+        // user or admin (lower case)
     }
     // isAdmin: {
     //     type: Boolean,
