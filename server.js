@@ -449,7 +449,18 @@ app.get('/BooklistMain', (req, res) => {
 
 })
 
-
+/*************************************************/
+// get all book and lists
+app.get('/api/booksAndlists', mongoChecker, async (req, res)=>{
+	try {
+		const books = await Book.find()
+		const lists = await BookList.find()
+		res.send({ books, lists })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
@@ -460,7 +471,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 50001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 
