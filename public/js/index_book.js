@@ -245,7 +245,7 @@ function welcome(username){
     div.appendChild(h2)
     div.appendChild(h4)
 
-    const top = document.querySelector("#topMenu")
+    const top = document.querySelector(".search-list")
     top.parentElement.insertBefore(div, top.nextElementSibling)
 }
 
@@ -256,17 +256,14 @@ function welcome(username){
 // BookListsCallBack(user)
 // displaySearchbox()
 
-function blinkHandler(bid, user){
+function blinkHandler(bid, usertype, userid){
     // handler for book *Detail* page link
     let result;
-    if (user == 'guest'){
-        result = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html'
-    }
-    else if (user == 'user'){
-        result = '../BookDetail/'+bid+'/'+bid+'_end_after.html'
+    if (usertype == 'guest'){
+        result = '/public/html/BookDetail.html?bookID='+bid
     }
     else{
-        result = '../BookDetail/'+bid+'/'+bid+'_admin_after.html'
+        result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
     }
     return result; 
 }  
@@ -275,10 +272,10 @@ function llinkHandler(lid, usertype, userid){
     // handler for book *list* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BooklistDetail.html?booklistID='+lid+'.html' // guest
+        result = '/public/html/BooklistDetail.html?booklistID='+lid // guest
     }
     else{
-        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID='+userid+'.html' 
+        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID='+userid
     }
     return result;
 }    
