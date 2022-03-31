@@ -1,3 +1,4 @@
+const log = console.log
 // global variables
 var BooklistsNum = 0; 
 var BooklistsList = [] 
@@ -114,7 +115,7 @@ function searchList(e){
 
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection) {
+	constructor(listName, listDescription, creator, bookCollection, id) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
@@ -123,7 +124,7 @@ class Booklist {
         }
 		this.creator = creator // username, temp
         this.books = bookCollection; // list of Book object
-		this.booklistID = BooklistsNum;
+		this.booklistID = id;
 		BooklistsNum++;
         this.likes = 0;
         this.collect = 0;
@@ -132,13 +133,30 @@ class Booklist {
 	}
 }
 
-// Load default booklist data
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
-BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
-
 const booklistTable = document.querySelector('#booklistTable')
 
+// get all booklist
+function getBooklists(){
+    const url = '/api/booklists'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const booklists = json.booklists
+        for (each of booklists){
+            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id))
+        }
+        displaySearchbox() // for search bar function 
+        displayAllBooklists(BooklistsList, getUserID())
+        addFormForDelete()
+        filpPage(1,3)
+    }).catch((error) => {
+        log(error)
+    })
+}
 // Display all availble booklists:
 function displayAllBooklists(BooklistsList, userID) {
     const userType = checkUserType(userID)
@@ -156,8 +174,12 @@ function displayAllBooklists(BooklistsList, userID) {
         document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
         document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
     } else {
-        document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
-        document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+        try{
+            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
+            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+        } catch {
+            log('changed the sorting way!')
+        }
     }
     const tableResultTBODY = document.querySelector('#tableResultTBODY')
 	for(let i = 0; i < BooklistsNum; i++) {
@@ -293,11 +315,16 @@ function sortByAtoZ(){
     for (each of allBooklists){
         nowBooks.removeChild(each.parentElement)
     }
+
+    displaySearchbox() // for search bar function 
     displayAllBooklists(sortedBooklistsList, getUserID())
+    addFormForDelete()
     filpPage(1,3)
 }
 
 function renewPage() {
+    /* BooklistsList = []
+    getBooklists() */
     if (document.querySelector("#sort_a_z").className === 'btn btn-secondary active'){
         sortByAtoZ()
     } else { // sort by default
@@ -360,9 +387,9 @@ function addBooklistInfo(booklistID, listName, userID, userType){
     const a1 = document.createElement('a')
     a1.className = "linkColor"
     if (userType === 'Admin' | userType === 'User'){
-        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklistID + "&userID="+ userID+".html"
+        a1.href = "./public/html/BooklistDetail.html?booklistID=" + booklistID + "&userID="+ userID+".html"
     } else {
-        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklistID + ".html"
+        a1.href = "./public/html/BooklistDetail.html?booklistID=" + booklistID + ".html"
     }
     a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
     const nameContent = document.createTextNode(listName)
@@ -432,12 +459,10 @@ function addBookShelf(books, userID, userType){
         const newBookLink = document.createElement('th')
         const bookLink = document.createElement('a')
         bookLink.className = "book"
-        if (userType === 'Admin'){
-            bookLink.href = "../BookDetail/" + books[j].bookID +"/"+ books[j].bookID+"_admin_after.html" // need new link
-        } else if (userType === 'User'){
-            bookLink.href = "../BookDetail/" + books[j].bookID +"/"+ books[j].bookID+"_end_after.html" // need new link
+        if (userType === 'Admin' | userType === 'User'){
+            bookLink.href = "./public/html/BookDetail.html?bookID=" + books[j]._id +"&userID="+ getUserID() // need check phase 2
         } else {
-            bookLink.href = "../BookDetail/"+ books[j].bookID+"/BookDetail-" + books[j].bookID + ".html"
+            bookLink.href = "./public/html/BookDetail.html?bookID=" + books[j]._id
         }
         bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
         bookLink.appendChild(document.createTextNode(books[j].name))
@@ -614,27 +639,31 @@ function increaseLikeOrCollect(e){
     e.preventDefault();
     const iconName = e.target.className
     if (iconName == 'collectIcon' || iconName == 'likeIcon') {
-        const index = parseInt(e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
-        const selectedBookList = BooklistsList.filter((booklist) => booklist.booklistID === index)
+        const index = (e.target.parentElement.parentElement.parentElement.parentElement.children[0].children[0].innerText)
+        const selectedBookList = BooklistsList.filter((booklist) => booklist.booklistID == index)
         const allBooklists = document.querySelectorAll('.booklist')
         for (let i = 0; i < allBooklists.length; i++){
-            const pageIndex = parseInt(allBooklists[i].children[0].children[0].innerHTML)
+            const pageIndex = (allBooklists[i].children[0].children[0].innerHTML)
             const type = e.target.parentElement.nextSibling.innerText
             if (pageIndex === index && iconName == 'collectIcon' && type.includes("Collects")){ // haven't collected
                 selectedBookList[0].collect++
+                // post a collect add
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
                 selectedBookList[0].likes++
+                // post a like add
                 allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/heart_icon.png"
             } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
                 selectedBookList[0].collect--
+                // post a collect reduce
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
                 selectedBookList[0].likes--
+                // post a like reduce
                 allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/like_icon.png"
@@ -645,13 +674,13 @@ function increaseLikeOrCollect(e){
 }
 
 // admin & creator only: delete list
-// event listener is added in 
 function deleteBooklist(e){
     e.preventDefault();
     if (e.target.className == 'deleteButton, btn btn-danger'){
         const ID = e.target.parentElement.parentElement.children[0].innerText
         const form = document.getElementById("deleteForm")
-        form.children[0].children[0].innerText="Confirm to delete the book ID: " + ID
+        form.children[0].children[0].innerText="Confirm to delete this booklist?"
+        form.name = ID
         form.style.display="block"
     }
 }
@@ -677,10 +706,33 @@ function addFormForDelete(){
     submit.onclick = function confirmDelete(e){
         e.preventDefault();
         if (e.target.id == 'submit_delete'){
-            /* const listElement = e.target.parentElement.parentElement.parentElement.parentElement
-            const tableResultTBODY = document.querySelector('#tableResultTBODY')
-            tableResultTBODY.removeChild(listElement) */
-            const ID =parseInt(document.getElementById("deleteForm").children[0].children[0].innerText.split(': ')[1]);
+            const ID =document.getElementById("deleteForm").name
+            const list = BooklistsList.filter((list)=> list.booklistID == ID )
+            const url = '/api/booklist/'+ID
+        
+            let data = {
+                _id: list[0].booklistID
+            }
+            const request = new Request(url, {
+                method: 'delete', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            fetch(request)
+            .then(function(res) {
+                if (res.status === 200) {
+                    console.log('delete booklist')    
+                } else {
+                    console.log('Failed to delete the booklist')
+                }
+                log(res)
+            }).catch((error) => {
+                log(error)
+            })
+
             for (let i=0; i<BooklistsNum; i++){
                 if (BooklistsList[i].booklistID == ID){
                     BooklistsList.splice(i, 1)
@@ -689,6 +741,7 @@ function addFormForDelete(){
             }
             renewPage()
             document.getElementById("deleteForm").style.display="none"
+            location.reload()
         }
     }
     form.appendChild(submit)
@@ -716,22 +769,44 @@ function closeForm() {
 }
 
 function changeBooks(){
+    let result = []
+    const url = '/api/books'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+
+        for (each of books){
+            result.push({
+                "bookID": each._id,
+                "name": each.name
+            })
+        }
+        return result
+    }).then((result)=>{
     const ul = document.querySelector('#randomBooks')
     ul.innerHTML=''
     const random3 = []
     while (random3.length<3){
-        const idx = Math.floor(Math.random() * BooksNum)// BooksNum might be change when db is ready
+        const idx = Math.floor(Math.random() * result.length)
         if (!random3.includes(idx)){
             random3.push(idx)
         }
     }
-    const ids = random3.map((idx)=>BooksList[idx].bookID)
-    const names = random3.map((idx)=>BooksList[idx].name)
+    //const ids = random3.map((idx)=>result[idx].bookID)
+    //const names = random3.map((idx)=>result[idx].name)
     for (let i=0;i<3;i++){
         const li = document.createElement('li')
-        li.innerText = "[ID:" + ids[i] + "]--" + names[i]
+        li.innerText = "[ID:" + result[random3[i]].bookID + "]--" + result[random3[i]].name
         ul.appendChild(li)
     }
+    }).catch((error) => {
+        log(error)
+    })
 }
 
 function addNewBooklist(e){
@@ -745,34 +820,82 @@ function addNewBooklist(e){
         }
         const description = document.getElementById('descriptionInput').value
         let result = document.getElementById('booklists').value
-        let ids = BooksList.map((book) =>  book.bookID)
-        const books = result.split(";")
-        // check id validation
-        let validInputs = []
-        for (item of books) {
-            const valid = ids.filter((each) => parseInt(item.trim()) === each)
-            if (valid.length === 1) {
-                validInputs.push(valid[0])
-            }
-        }
-        if (validInputs.length === books.length){
-            // avoid duplicates
-            const uniqueInput = Array.from(new Set(validInputs))
-            const addedBooks = uniqueInput.map((book)=> BooksList[book])
-            BooklistsList.push(new Booklist(listName, description, 'Admin', addedBooks)) // phase 2 need implement user
-            document.getElementById('booklistNameInput').value =""
-            document.getElementById('descriptionInput').value = ""
-            renewPage()
-            closeForm()
+        let ids = []
+        const url = '/api/books'
+        fetch(url).then((res) => { 
+            if (res.status === 200) {
+            return res.json() 
         } else {
-            document.querySelector('#bookInputHelp').innerText = ("Invalid input! Please re-check all your book IDs.")
-            //return
-        }
+                res.status(500).send("Internal Server Error") // not sure
+        }                
+        }).then((json) => {
+            const all = json.books
+
+            for (each of all){
+                ids.push({
+                    "bookID": each._id
+                })
+            }
+            return ids
+        }).then((ids)=>{
+            const books = result.split(";")
+            // check id validation
+            let validInputs = []
+            for (item of books) {
+                const valid = ids.filter((each) => item == each.bookID)
+                if (valid.length === 1) {
+                    validInputs.push(valid[0])
+                }
+            }
+            if (validInputs.length === books.length){
+                // avoid duplicates
+                const uniqueInput = Array.from(new Set(validInputs))
+                const bookinput = uniqueInput.map((each)=>each.bookID)
+                addBooklist(listName, description, bookinput)
+                document.getElementById('booklistNameInput').value =""
+                document.getElementById('descriptionInput').value = ""
+                closeForm()
+                renewPage() 
+                location.reload()// manuelly refresh will display...
+                return
+            } else {
+                document.querySelector('#bookInputHelp').innerText = ("Invalid input! Please re-check all your book IDs.")
+                //return
+            }
+        }).catch((error)=>{
+            log(error)
+        })
     }
 }
 
-// load main list
-displaySearchbox() // for search bar function 
-displayAllBooklists(BooklistsList, getUserID())
-addFormForDelete()
-filpPage(1,3)
+function addBooklist(bookname, description, books){
+    const url = '/api/booklist'
+    let data = {
+        listName: bookname,
+        listDescription: description,
+        creator: getUserName(getUserID()),
+        books: books
+    }
+    const request = new Request(url, {
+        method: 'post', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    log(data)
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('added book')    
+        } else {
+            console.log('Failed to add')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
+}
+// load page
+getBooklists()

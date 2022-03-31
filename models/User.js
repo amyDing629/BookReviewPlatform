@@ -42,15 +42,11 @@ const UserSchema = new mongoose.Schema({
         type: [BookList],
         default: []
     },
-    // userID: {
-    //     type: Number,
-    //     required: true,
-    // },
-    isAdmin: {
-        type: Boolean,
-        required: true,
-        // default:false,
-    }
+    type:{
+        type: String,
+        required: true
+        // user or admin (lower case)
+    },
 })
 
 // const AdminObject = Object.create(UserObject);
@@ -98,22 +94,6 @@ UserSchema.statics.findByNamePassword = function(username, password) {
 		})
 	})
 }
-
-UserSchema.statics.isAdmin = function(username) {
-	const User = this // binds this to the User model
-
-	// First find the user by their username
-	return User.findOne({ username: username }).then((user) => {
-		if (!user) {
-			return Promise.reject()  // a rejected promise
-		}
-		// if the user exists, check if is admin
-		return new Promise((resolve, reject) => {
-            resolve(user.isAdmin)
-		})
-	})
-}
-
 
 
 const User  = mongoose.model('User', UserSchema);

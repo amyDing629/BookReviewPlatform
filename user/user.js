@@ -1,4 +1,3 @@
-// get 'posts' variable
 
 /********** global variables **********/
 let numberOfUsers = 0;
@@ -12,7 +11,7 @@ const books = [];
 
 /********************** Object ***********************/
 class User {
-	constructor(userName, password) {
+	constructor(userName, password, isAdmin) {
 		this.userName = userName;
         this.password = password;
         this.signature = null;
@@ -22,17 +21,11 @@ class User {
         this.postCollectionList = [];
         this.booklistCollectionList = []
         this.userID = numberOfUsers;
-        this.isAdmin = false;
+        this.isAdmin = isAdmin;
 		numberOfUsers++;
     }
 }
 
-class AdminUser extends User {
-    constructor(userName, password) {
-        super(userName, password);
-        this.isAdmin = true;
-    }
-}
 
 class Post {
 	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
@@ -142,44 +135,51 @@ function profileButtonsOnClick(e) {
 
 
 /********************** DOM Functions ************************/
-function displayUserInfo(user, isVisit) {
-    // for phase 2
-    // let currentUserID = window.location.href.split('?')[1].split('=')[1];
-    // let user;
-    // let loopUser;
-    // for (loopUser of users){
-    //     if (loopUser.userID == parseInt(currentUserID)){
-    //         user = loopUser;
-    //         break;
-    //     }
-    // }
-    if (isVisit == true) {
-        document.getElementById('userInfo').removeChild(document.getElementById('profileButton'));
-    }
-    document.getElementById('userName').innerHTML = user.userName;
-    document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
-    if (user.signature != null) {
-        document.getElementById('signature').innerHTML = user.signature;
-    }
-    if (user.profilePhoto != null) {
-        userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
-    }
-    if (user.isAdmin == true && isVisit == false) {
-        let buttons = document.getElementById('menubar').children[0];
-        let manageButtonLi = document.createElement("li");
-        let manageButton = document.createElement("button");
-        manageButton.innerHTML = 'Manage';
-        manageButton.className = 'btn btn-light';
-        manageButtonLi.appendChild(manageButton);
-        buttons.appendChild(manageButtonLi);
-        let editBookButtonLi = document.createElement("li");
-        let editBookButton = document.createElement("button");
-        editBookButton.className = 'btn btn-light';
-        editBookButton.innerHTML = 'Edit Books';
-        editBookButtonLi.appendChild(editBookButton);
-        buttons.appendChild(editBookButtonLi);
-    }
-    displayUserPosts(user);
+function displayUserInfo(isVisit) {
+    let currentUserID = window.location.href.split('?')[1].split('=')[1];
+    const url = '/api/users/' + currentUserID;
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {  //pass json into object locally
+                if (isVisit == true) {
+                    document.getElementById('userInfo').removeChild(document.getElementById('profileButton'));
+                }
+                document.getElementById('userName').innerHTML = user.userName;
+                document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
+                if (user.signature != null) {
+                    document.getElementById('signature').innerHTML = user.signature;
+                }
+                if (user.profilePhoto != null) {
+                    userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
+                }
+                if (user.type == 'admin' && isVisit == false) {
+                    let buttons = document.getElementById('menubar').children[0];
+                    let manageButtonLi = document.createElement("li");
+                    let manageButton = document.createElement("button");
+                    manageButton.innerHTML = 'Manage';
+                    manageButton.className = 'btn btn-light';
+                    manageButtonLi.appendChild(manageButton);
+                    buttons.appendChild(manageButtonLi);
+                    let editBookButtonLi = document.createElement("li");
+                    let editBookButton = document.createElement("button");
+                    editBookButton.className = 'btn btn-light';
+                    editBookButton.innerHTML = 'Edit Books';
+                    editBookButtonLi.appendChild(editBookButton);
+                    buttons.appendChild(editBookButtonLi);
+                }
+                displayUserPosts(user);
+                
+            }).catch((error) => {
+                log(error)
+            })
+        }
+    })          
 }
 
 function changeButtonColor(target) {
@@ -979,6 +979,18 @@ function filpPage(pageNo, pageLimit) {
     document.getElementById("pageFliper").innerHTML = strHolder;
 }
 
+/******************* Receive user data from API *****************/
+const request = new XMLHttpRequest();
+try {
+  request.open('GET', 'localhost:50001/api/users/' + window.location.href.split('?')[1].split('=')[1]);
+
+  request.responseType = 'json';
+
+  console.log(request.responseText);
+
+} catch(error) {
+  console.error(`XHR error ${request.status}`);
+}
 
 /*************** actions ****************/
 let regularUser = new User('user', 'user');

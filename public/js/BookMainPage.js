@@ -113,12 +113,12 @@ function searchList(e){
 
 // get all books 
 function getBooks(){
-    const url = '/books'
+    const url = '/api/books'
     fetch(url).then((res) => { 
         if (res.status === 200) {
            return res.json() 
        } else {
-            res.status(500).send("Internal Server Error") // not sure
+            alert('faild to get all books.')
        }                
     }).then((json) => {  //pass json into object locally
         const books = json.books
@@ -137,7 +137,7 @@ function getBooks(){
 
 function deleteBookFromAdminUser(id){
     const book = BooksList.filter((book)=> book.bookID == id )
-    const url = '/deleteBook/'+id
+    const url = '/api/book/'+id
 
     let data = {
         _id: book[0].bookID
@@ -389,7 +389,7 @@ function addNewBook(e){
             document.querySelector('#reflect').innerText=('Missing required input, please re-enter information.')
             document.querySelector('#reflect').className = 'fail'
         } else {
-            const url = '/addBook'
+            const url = '/api/book'
             let data = {
                 name: bookname,
                 author: author,
@@ -468,7 +468,6 @@ function addFormForDelete(){
     submit.onclick = function confirmDelete(e){
         e.preventDefault();
         if (e.target.id == 'submit'){
-            //const ID = (document.getElementById("myForm").children[0].children[0].innerText.split(': ')[1])
             const ID = document.getElementById("myForm").name
             deleteBookFromAdminUser(ID)
             renewBooklist();

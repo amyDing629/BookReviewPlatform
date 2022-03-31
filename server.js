@@ -55,6 +55,24 @@ const sessionChecker = (req, res, next) => {
     }    
 };
 
+// Middleware for authentication of resources
+const authenticate = (req, res, next) => {
+	if (req.session.user) {
+		User.findById(req.session.user).then((user) => {
+			if (!user) {
+				return Promise.reject()
+			} else {
+				req.user = user
+				next()
+			}
+		}).catch((error) => {
+			res.status(401).send("Unauthorized")
+		})
+	} else {
+		res.status(401).send("Unauthorized")
+	}
+}
+
 
 /*** Session handling **************************************/
 // express-session for managing user sessions
@@ -73,32 +91,10 @@ app.use(session({
     resave: false, // don't resave an session that hasn't been modified.
 }));
 
-app.post('/users/login', mongoChecker, async (req, res) => {
-	const username = req.body.username
-    const password = req.body.password
 
-    try {
-		const user = await User.findByNamePassword(username, password);
-		if (!user) {
-            res.redirect('/public/html/login');
-        } else {
-            req.session.user = user._id;
-            req.session.username = user.username
-            res.redirect('/public/index.html?userID='+user._id);
-        }
-    } catch (error) {
-    	// redirect to login if can't login for any reason
-    	if (isMongoError(error)) {
-			res.status(500).redirect('/public/html/login');
-		} else {
-			log(error)
-			res.status(400).redirect('/public/html/login');
-		}
-    }
-})
 
 // A route to logout a user
-app.get('/users/logout', (req, res) => {
+app.get('/logout', (req, res) => {
 	// Remove the session
 	req.session.destroy((error) => {
 		if (error) {
@@ -123,23 +119,19 @@ app.use("/public/html", express.static(path.join(__dirname + '/public/html')));
 app.use('/public/css', express.static(path.join(__dirname + '/public/css')));
 app.use('/public/js', express.static(path.join(__dirname + '/public/js')));
 app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/static')));
+app.use('/user', express.static(path.join(__dirname + '/user')))
 
 /*******************************************************************/
 
-app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/public/index.html')
+app.get('/', sessionChecker, (req, res) => {
+	res.sendFile(__dirname + '/index.html')
 })
 
-
-app.get('/login', (req, res) => {
-    /* if (req.session.user) {
-        res.sendFile(__dirname + '/public/index.html?userID='+req.session.user._id) // not sure
-    } else { */
-        res.sendFile(__dirname + '/public/html/login.html')
-    //}
+app.get('/login',sessionChecker, (req, res) => {
+	res.sendFile(__dirname + '/public/html/login.html') 
 })
 
-app.get('/register', (req, res) => {
+app.get('/register', sessionChecker, (req, res) => {
 	res.sendFile(__dirname + '/public/html/register.html')
 })
 
@@ -151,7 +143,7 @@ app.get('/register', (req, res) => {
 app.get('/api/users', mongoChecker, async (req, res)=>{
 	try {
 		const users = await User.find()
-		res.send({ users })
+		res.send({users})
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
@@ -166,19 +158,44 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 		res.status(404).send() 
 		return;
 	}
-
 	try {
 		const user = await User.findOne({_id: id})
 		if (!user) {
 			res.status(404).send('Resource not found')  // could not find this user
 		} else { 
-			res.redirect("user/user.html?" + user._id)
+			res.json({user}) //
 		}
 	} catch(error) {
 		log(error)
 		res.status(500).send('Internal Server Error')  // server error
 	}
 })
+
+// login verify
+app.get('/login/:username/:password', mongoChecker, async (req, res) => {
+	const username = req.params.username
+	const password = req.params.password
+
+    try {
+		const user = await User.findByNamePassword(username, password);
+		if (!user) {
+			res.status(404).send(error)
+		} else {   
+			// Add the user's id and username to the session.
+            // We can check later if the session exists to ensure we are logged in.
+            req.session.user = user._id;
+            req.session.username = user.username
+			res.send({user})
+		}
+    } catch (error) {
+    	if (isMongoError(error)) {
+			res.status(500).send(error)
+		} else {
+			res.status(400).send(error)
+		}
+    }
+})
+
 
 app.post('/api/addUser', mongoChecker, async (req, res)=>{ 
     const newUser = new User({
@@ -190,7 +207,7 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
     	booklistList: [],
     	postColectionList: [],
     	booklistCollectionList: [],
-		isAdmin: req.body.isAdmin,
+		type: req.body.type
 	})
 
     try {
@@ -204,6 +221,7 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
 		}
 	}
 })
+
 
 app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{ 
     const user = req.params.userID
@@ -228,21 +246,10 @@ app.put('/api/users/:userID',mongoChecker, async (req, res)=>{})
 /*********** BOOKs ************/
 
 // get all books 
-app.get('/books', mongoChecker, async (req, res)=>{
+app.get('/api/books', mongoChecker, async (req, res)=>{
 	try {
 		const books = await Book.find()
 		res.send({ books })
-	} catch(error) {
-		log(error)
-		res.status(500).send("Internal Server Error")
-	}
-})
-
-// get all booklists
-app.get('/booklists', mongoChecker, async (req, res)=>{
-	try {
-		const lists = await BookList.find()
-		res.send({ lists })
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
@@ -278,8 +285,48 @@ app.get('/BookMain/:userID?', (req, res) => {
 
 })
 
+// find one book
+app.get('/api/book', mongoChecker, async (req, res) => {
+    const query = req.query
+    const book = query.bookID
+    if (!ObjectID.isValid(book)) {
+		res.status(404).send('invalid book id type') 
+		return
+	}
+	try {
+		const target = await Book.findOne({_id: book})
+		if (!target) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(target)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find a book")
+	}
+})
 
-app.post('/addBook', async (req, res)=>{ // not sure the config for book id
+// delete book
+app.delete('/api/book/:bookID', async (req, res)=>{
+    const book = req.params.bookID
+    if (!ObjectID.isValid(book)) {
+		res.status(404).send('invalid book id type') 
+		return
+	}
+	try {
+		const deleteBook = await Book.findOneAndRemove({_id: book})
+		if (!deleteBook) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(deleteBook)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on delete book")
+	}
+})
+
+app.post('/api/book', async (req, res)=>{ // not sure the config for book id
 
     const newBook = new Book({
 		name: req.body.name,
@@ -303,26 +350,123 @@ app.post('/addBook', async (req, res)=>{ // not sure the config for book id
 })
 
 
-app.delete('/deleteBook/:bookID', async (req, res)=>{ // not sure the config for book id
-    const book = req.params.bookID
+/*********** Booklist ************/
 
-    // if user is type admin check
-
-	// Delete a student by their id
+// get all booklists
+app.get('/api/booklists', mongoChecker, async (req, res)=>{
 	try {
-		const deleteBook = await Book.findOneAndRemove({_id: book})
-		if (!deleteBook) {
-			res.status(404).send("no such a book")
-		} else {   
-			res.send(deleteBook)
-		}
+		const booklists = await BookList.find()
+		res.send({ booklists })
 	} catch(error) {
 		log(error)
-		res.status(500).send("server error on delete book") // server error, could not delete.
+		res.status(500).send("Internal Server Error")
 	}
 })
 
+// add booklist
+app.post('/api/booklist', async (req, res)=>{
+	const booksIDs = req.body.books
+	let books = []
+	for (let i=0;i<booksIDs.length;i++){
+		const book = await Book.findOne({_id: booksIDs[i]})
+		if (!ObjectId.isValid(book)) {
+			res.status(404).send("invalid book id")
+		} else {   
+			books.push(book)
+		}
+	}
+	let booklist = null
+	if (books.length != booksIDs.length){
+		res.status(404).send("Fail, has unfound book")
+		return;
+	} else {
+		booklist = new BookList({
+			listName: req.body.listName,
+			listDescription: req.body.listDescription,
+			creator: req.body.creator,
+			books: books,
+			likes: 0,
+			collect: 0
+		})
+	}
+	log(booklist)
+    try {
+		const result = await booklist.save()	
+		res.send(result)
+	} catch(error) {
+		log(error) 
+		if (isMongoError(error)) { 
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') 
+		}
+	}
+})
 
+// delete a booklist
+app.delete('/api/booklist/:booklistID', async (req, res)=>{
+    const booklist = req.params.booklistID
+    if (!ObjectID.isValid(booklist)) {
+		res.status(404).send('invalid booklist id type') 
+		return
+	}
+	try {
+		const forDelete = await BookList.findOneAndRemove({_id: booklist})
+		if (!forDelete) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(forDelete)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on delete book")
+	}
+})
+app.get('/BooklistMain', (req, res) => {
+    /* try{
+        const user = req.query.userID
+        if (!user){
+            res.sendFile(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+user)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')    
+    } */
+	
+	res.sendFile(__dirname + '/public/html/BooklistMainPage.html')
+    /* try{
+        const userID = req.body._id
+        if(!userID){
+            res.redirect(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+userID)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')   
+    }  */
+
+})
+
+app.get('/UserMain/:userID', (req, res) => {
+	res.sendFile(__dirname + '/user/user.html');
+})
+
+
+/*************************************************/
+// get all book and lists
+app.get('/api/booksAndlists', mongoChecker, async (req, res)=>{
+	try {
+		const books = await Book.find()
+		const lists = await BookList.find()
+		res.send({ books, lists })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
