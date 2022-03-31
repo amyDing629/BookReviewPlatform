@@ -451,10 +451,22 @@ app.get('/BooklistMain', (req, res) => {
 })
 
 app.get('/UserMain/:userID', (req, res) => {
-	res.sendFile(__dirname + '/user/user.html?userID=' + req.params.userID);
+	res.sendFile(__dirname + '/user/user.html');
 })
 
 
+/*************************************************/
+// get all book and lists
+app.get('/api/booksAndlists', mongoChecker, async (req, res)=>{
+	try {
+		const books = await Book.find()
+		const lists = await BookList.find()
+		res.send({ books, lists })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
