@@ -228,21 +228,10 @@ app.put('/api/users/:userID',mongoChecker, async (req, res)=>{})
 /*********** BOOKs ************/
 
 // get all books 
-app.get('/books', mongoChecker, async (req, res)=>{
+app.get('/api/books', mongoChecker, async (req, res)=>{
 	try {
 		const books = await Book.find()
 		res.send({ books })
-	} catch(error) {
-		log(error)
-		res.status(500).send("Internal Server Error")
-	}
-})
-
-// get all booklists
-app.get('/booklists', mongoChecker, async (req, res)=>{
-	try {
-		const lists = await BookList.find()
-		res.send({ lists })
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
@@ -278,8 +267,48 @@ app.get('/BookMain/:userID?', (req, res) => {
 
 })
 
+// fiind one book
+app.get('/api/book', mongoChecker, async (req, res) => {
+    const query = req.query
+    const book = query.bookID
+    if (!ObjectID.isValid(book)) {
+		res.status(404).send('invalid book id type') 
+		return
+	}
+	try {
+		const target = await Book.findOne({_id: book})
+		if (!target) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(target)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find a book")
+	}
+})
 
-app.post('/addBook', async (req, res)=>{ // not sure the config for book id
+// delete book
+app.delete('/api/book/:bookID', async (req, res)=>{
+    const book = req.params.bookID
+    if (!ObjectID.isValid(book)) {
+		res.status(404).send('invalid book id type') 
+		return
+	}
+	try {
+		const deleteBook = await Book.findOneAndRemove({_id: book})
+		if (!deleteBook) {
+			res.status(404).send("no such a book")
+		} else {   
+			res.send(deleteBook)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on delete book")
+	}
+})
+
+app.post('/api/book', async (req, res)=>{ // not sure the config for book id
 
     const newBook = new Book({
 		name: req.body.name,
@@ -303,23 +332,104 @@ app.post('/addBook', async (req, res)=>{ // not sure the config for book id
 })
 
 
-app.delete('/deleteBook/:bookID', async (req, res)=>{ // not sure the config for book id
-    const book = req.params.bookID
+/*********** Booklist ************/
 
-    // if user is type admin check
-
-	// Delete a student by their id
+// get all booklists
+app.get('/api/booklists', mongoChecker, async (req, res)=>{
 	try {
-		const deleteBook = await Book.findOneAndRemove({_id: book})
-		if (!deleteBook) {
+		const booklists = await BookList.find()
+		res.send({ booklists })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+// add booklist
+app.post('/api/booklist', async (req, res)=>{
+	const booksIDs = req.body.books
+	let books = []
+	for (let i=0;i<booksIDs.length;i++){
+		const book = await Book.findOne({_id: booksIDs[i]})
+		if (!ObjectId.isValid(book)) {
+			res.status(404).send("invalid book id")
+		} else {   
+			books.push(book)
+		}
+	}
+	let booklist = null
+	if (books.length != booksIDs.length){
+		res.status(404).send("Fail, has unfound book")
+		return;
+	} else {
+		booklist = new BookList({
+			listName: req.body.listName,
+			listDescription: req.body.listDescription,
+			creator: req.body.creator,
+			books: books,
+			likes: 0,
+			collect: 0
+		})
+	}
+	log(booklist)
+    try {
+		const result = await booklist.save()	
+		res.send(result)
+	} catch(error) {
+		log(error) 
+		if (isMongoError(error)) { 
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') 
+		}
+	}
+})
+
+// delete a booklist
+app.delete('/api/booklist/:booklistID', async (req, res)=>{
+    const booklist = req.params.booklistID
+    if (!ObjectID.isValid(booklist)) {
+		res.status(404).send('invalid booklist id type') 
+		return
+	}
+	try {
+		const forDelete = await BookList.findOneAndRemove({_id: booklist})
+		if (!forDelete) {
 			res.status(404).send("no such a book")
 		} else {   
-			res.send(deleteBook)
+			res.send(forDelete)
 		}
 	} catch(error) {
 		log(error)
-		res.status(500).send("server error on delete book") // server error, could not delete.
+		res.status(500).send("server error on delete book")
 	}
+})
+app.get('/BooklistMain', (req, res) => {
+    /* try{
+        const user = req.query.userID
+        if (!user){
+            res.sendFile(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+user)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')    
+    } */
+	
+	res.sendFile(__dirname + '/public/html/BooklistMainPage.html')
+    /* try{
+        const userID = req.body._id
+        if(!userID){
+            res.redirect(__dirname + '/public/html/BookMainPage.html')
+        } else {
+            res.redirect(__dirname + '/public/html/BookMainPage.html?userID='+userID)
+        }
+    } catch(error){
+        log(error)
+        res.status(400).redirect('/public/index.html')   
+    }  */
+
 })
 
 
@@ -333,7 +443,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 50001
+const port = process.env.PORT || 5001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 

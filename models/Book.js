@@ -39,20 +39,14 @@ const BooklistSchema = new mongoose.Schema({
     },
     listDescription: {
         type: String,
-        required: true,
-        minlength: 1
+        required: false
     },
     creator: {
         type: String,
-        required: false,
+        required: true,
     },
     books: {
-        type: [BookSchema],
-        default: []
-    },
-    booklistID: {
-        type: Number,
-        required: true
+        type: [BookSchema]
     },
     likes: {
         type: Number,
