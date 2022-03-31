@@ -172,7 +172,7 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 		if (!user) {
 			res.status(404).send('Resource not found')  // could not find this user
 		} else { 
-			res.send({user})
+			res.redirect("user/user.html?" + user._id)
 		}
 	} catch(error) {
 		log(error)
@@ -190,7 +190,7 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
     	booklistList: [],
     	postColectionList: [],
     	booklistCollectionList: [],
-		isAdmin: req.body.isAdmin
+		isAdmin: req.body.isAdmin,
 	})
 
     try {
@@ -211,13 +211,13 @@ app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{
 	try {
 		const deleteUser = await User.findOneAndRemove({_id: user})
 		if (!deleteUser) {
-			res.status(404).send("no such a book")
+			res.status(404).send("no such a user")
 		} else {   
 			res.send({deleteUser})
 		}
 	} catch(error) {
 		log(error)
-		res.status(500).send("server error on delete book") // server error, could not delete.
+		res.status(500).send("server error on delete user") // server error, could not delete.
 	}
 })
 
