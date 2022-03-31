@@ -119,6 +119,7 @@ app.use("/public/html", express.static(path.join(__dirname + '/public/html')));
 app.use('/public/css', express.static(path.join(__dirname + '/public/css')));
 app.use('/public/js', express.static(path.join(__dirname + '/public/js')));
 app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/static')));
+app.use('/user', express.static(path.join(__dirname + '/user')))
 
 /*******************************************************************/
 
@@ -162,7 +163,7 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 		if (!user) {
 			res.status(404).send('Resource not found')  // could not find this user
 		} else { 
-			res.send({user})
+			res.json({user}) //
 		}
 	} catch(error) {
 		log(error)
@@ -449,6 +450,10 @@ app.get('/BooklistMain', (req, res) => {
 
 })
 
+app.get('/UserMain/:userID', (req, res) => {
+	res.sendFile(__dirname + '/user/user.html?userID=' + req.params.userID);
+})
+
 
 
 // 404 route at the bottom for anything not found.
@@ -460,7 +465,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 50001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 
