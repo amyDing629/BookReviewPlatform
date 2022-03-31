@@ -1,5 +1,4 @@
 /****************** Index Post ******************/
-const log = console.log;
 // helper for index.html & index.html?userID=0 & index.html?userID=0
 function getUserID(){
     try { 

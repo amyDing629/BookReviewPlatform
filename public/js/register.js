@@ -1,43 +1,26 @@
 const log = console.log;
 
 /****** User signUP ******/
-let numberOfUsers = 0;
 const users = [];
 
 class User {
-	constructor(userName, password) {
-		this.userName = userName;
+	constructor(userName, password, signature, profilePhoto, postlist, booklistList, postColectionList, booklistCollectionList, isAdmin, id) {
+		this.username = userName;
         this.password = password;
-        this.signature = null;
-        this.profilePhoto = null;
-        this.postList = [];
-        this.booklistList = [];
-        this.collectionList = [];
-        this.userID = numberOfUsers;
-        this.isAdmin = false;
-		numberOfUsers++;
+        this.signature = signature;
+        this.profilePhoto = profilePhoto;
+        this.postlist = postlist;
+        this.booklistList = booklistList;
+        this.postColectionList = postColectionList;
+        this.booklistCollectionList = booklistCollectionList;
+        this.isAdmin = isAdmin;
+        this.userid = id
     }
 }
 
-class AdminUser extends User {
-    constructor(userName, password) {
-        super(userName, password);
-        this.isAdmin = true;
-    }
-}
 
-function UserCallBack() {
-    /// Get users from server
-    // code below requires server call
-    users.push(new User('user', 'user'));
-    users.push(new AdminUser('admin', 'admin'));
- }
-
-if (window.location.href.indexOf('../public/html/register.html') !== -1) {
-    UserCallBack();
-    const signup = document.querySelector('#signup');
-    signup.addEventListener('click', change_page);
-}
+const signup = document.querySelector('#signup');
+signup.addEventListener('click', change_page);
 
 // press key enter trigger
 const passwordfield = document.querySelector('#password')

@@ -1,36 +1,69 @@
+
 /******************* Index Book *******************/
+const log = console.log
 
-// helper for index.html & index.html?userID=0 & index.html?userID=0
-function getUserID(){
-    try { 
-        return parseInt(window.location.href.split('?')[1].split('=')[1])
-    } catch { 
-        return 'guest'
-    }
+let user;
+let usertype;
+let username;
+try { 
+    user= String(window.location.href.split('?')[1].split('=')[1])
+    const url = '/api/users/'+user
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+           alert('Could not get this user')
+       }   
+    }).then((json) => {  //pass json into object locally
+        usertype = json.user.type
+        username = json.user.name
+        log(usertype)
+        log(username)
+        displayMenu(usertype, username)
+        welcome(username)
+        BooksCallBack(usertype)
+        BookListsCallBack(usertype)
+        displaySearchbox()
+
+    }).catch((error) => {
+        log(error)
+    })
+} catch { 
+    usertype= 'guest'
+    displayMenu(usertype)
 }
 
-// helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
 
-    if (userID === 0){ 
-        return('user')
-    } else if (userID === 1) {
-        return('admin')
-    } else {
-        return 'guest'
-    }
-}
+// helper for index.html & index.html?userID= 
+// function getUserID(){
+//     try { 
+//         return String(window.location.href.split('?')[1].split('=')[1])
+//     } catch { 
+//         return 'guest'
+//     }
+// }
 
-let id = getUserID()
-let user = checkUserType(id)
+// let user;
+// function checkType(userID){
+//     const url = '/api/users/'+userID
+//     fetch(url).then((res) => { 
+//         if (res.status === 200) {
+//            return res.json() 
+//        } else {
+//             assert("cannot find user")
+//        }   
+//     }).then((json) => {  //pass json into object locally
+
+//     }).catch((error) => {
+//         log(error)
+//     })
+// }
 
 
-displayMenu(user)
+// displayMenu(user)
 
 /*************** Menu Handler ********************/
-function displayMenu(user){
+function displayMenu(usertype, username){
     const ul = document.querySelector("#topMenu").children[0]
     const lis = ul.children
     const homea = lis[1].firstChild
@@ -42,48 +75,49 @@ function displayMenu(user){
     li2.className = 'addUserIdToLink'
     li2.id = 'userLoginInfo'
     const a2 = document.createElement("a")   
-    if (user == 'guest'){
-        homea.setAttribute('href', 'index2.html')
-        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html') // here
-        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage.html') // here
-        a.setAttribute("href", "login.html")
+    if (usertype == 'guest'){
+        homea.setAttribute('href', '/index.html')
+        booksa.setAttribute('href', '/public/html/BookMainPage.html') // here
+        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html') // here
+        a.setAttribute("href", "/public/html/login.html")
         a.innerText = 'Login/Register'
         li.appendChild(a)
         ul.appendChild(li)
     }
-    else if(user == 'user'){
-        homea.setAttribute('href', 'index2.html?userID=0') // here 
-        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html?userID=0') // here
-        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage.html?userID=0') // here
+    else if(usertype == 'user'){
+        homea.setAttribute('href', '/index.html?userID=0') // here 
+        booksa.setAttribute('href', '/public/html/BookMainPage.html?userID=0') // here
+        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html?userID=0') // here
         
-        a.setAttribute("href", "index.html")
+        a.setAttribute("href", "/index.html")
         a.innerText = 'QUIT'
         li.append(a)
         li.className = 'quit'
         a2.setAttribute("href", "../user/user.html") // user link?
-        a2.innerText = 'User' // dynamic? id?
+        a2.innerText = username // dynamic?
         li2.append(a2)
         ul.appendChild(li)
         ul.appendChild(li2)
     }
     else{
-        homea.setAttribute('href', 'index2.html?userID=1') // here
-        booksa.setAttribute('href', '../BookMainPage/BookMainPage.html?userID=1') // here
-        booklistsa.setAttribute('href', '../BooklistMainPage/BooklistMainPage_admin_after.html?userID=1') // here
+        homea.setAttribute('href', '/public/index.html?userID=1') // here
+        booksa.setAttribute('href', '/public/html/BookMainPage.html?userID=1') // here
+        booklistsa.setAttribute('href', '/public/html/BooklistMainPage_admin_after.html?userID=1') // here
         
-        a.setAttribute("href", "index.html")
+        a.setAttribute("href", "/public/index.html")
         a.innerText = 'QUIT'
         li.append(a)
         li.className = 'quit'
         a2.setAttribute("href", "../user/admin.html") // user link?
-        a2.innerText = 'Admin' // dynamic? id?
+        a2.innerText = username // dynamic?
         li2.append(a2)
         ul.appendChild(li)
         ul.appendChild(li2)
     }
 }
+
 /*************** Welcome Section ********************/
-if (user != "guest"){
+function welcome(username){
     const div = document.createElement("div")
     div.className = 'welcome'
     const h2 = document.createElement("h2")
@@ -91,7 +125,7 @@ if (user != "guest"){
     h2.innerText = 'Hello '
     const span = document.createElement("span")
     const b = document.createElement("b")
-    b.innerText = 'username'+ ',' // dynamic!!!!!!
+    b.innerText = username+ ','
     span.appendChild(b)
     h2.appendChild(span)
 
@@ -105,9 +139,9 @@ if (user != "guest"){
     top.parentElement.insertBefore(div, top.nextElementSibling)
 }
 
-
 /*************** Books & Booklists Data ********************/
 const allBooks = [];
+let BooklistsList = [];
 
 class Book {
 	constructor(bid, title, author, cover, description, link) {
@@ -119,23 +153,19 @@ class Book {
         this.link = link; // link to book detail page
     }
 }
-
-let BooklistsNum = 0; 
-let BooklistsList = [] 
-
+ 
 class DataBooklist {
-	constructor(listName, creator, bookCollection) {
+	constructor(lid, listName, creator, bookCollection) {
+        this.booklistID = lid;
 		this.listName = listName
 		this.creator = creator; 
         this.books = bookCollection; // list of DataBook here, list of Book object in BooklistMain
-		this.booklistID = BooklistsNum;
-		BooklistsNum++;
 	}
 }
 
-BooksCallBack(user)
-BookListsCallBack()
-displaySearchbox()
+// BooksCallBack(user)
+// BookListsCallBack(user)
+// displaySearchbox()
 
 function blinkHandler(bid, user){
     // handler for book *Detail* page link
@@ -156,59 +186,73 @@ function llinkHandler(lid, user){
     // handler for book *list* page link
     let result;
     if (user == 'guest'){
-        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'.html' // guest
+        result = '/public/html/BooklistDetail.html?booklistID='+lid+'.html' // guest
     }
     else if (user == 'user'){
-        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'&userID=0.html' // end userID: 0 'User'
+        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID=0.html' // end userID: 0 'User'
     }
     else{
-        result = '../BooklistDetail/BooklistDetail.html?booklistID='+lid+'&userID=1.html' // admin userID: 1
+        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID=1.html' // admin userID: 1
     }
     return result;
-
 }    
+
+function getBooks(){
+    const url = '/api/book'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            console.log("not found")
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+        for (each of books){
+            allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
+        }
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+function getLists(){
+    const url = '/api/booklists'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            console.log("not found")
+       }                
+    }).then((json) => {  //pass json into object locally
+        const lists = json.booklists
+        for (each of lists){
+            BooklistsList.push(new DataBooklist(each._id, each.listName, each.creator, each.books))
+        }
+    }).catch((error) => {
+        log(error)
+    }) 
+}
 
 
 function BooksCallBack(user){
-    // HERE!!
-// Get all books in database
-allBooks.push(new Book(0, 'Solaris', 'Stanisław Herman Lem', 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
-)); // currently link is empty
-allBooks.push(
-new Book(1, 'Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
-'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
-'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-));
-allBooks.push(
-new Book(2, 'The Story of the Lost Child', 'Elena Ferrante', 
-'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
-"The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
-));    
-allBooks.push(
-new Book(3, 'War and Peace', 'Leo Tolstoy', 
-'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
-'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
-)); 
-allBooks.push(
-new Book(4, 'Song of Solomon', 'Toni Morrison', 
-'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
-'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
-));                   
+    // Get all books in database
+    getBooks()
 
-// handle links
-for (let i=0; i<allBooks.length; i++){
-    allBooks[i].link = blinkHandler(allBooks[i].bookId, user)
-}
+    // handle links
+    for (let i=0; i<allBooks.length; i++){
+        allBooks[i].link = blinkHandler(allBooks[i].bookId, user)
+    }
 }
 
 function BookListsCallBack(){
-    // Load default booklist data
-    BooklistsList.push(new DataBooklist('novels', 'Admin',[allBooks[0],allBooks[1]]))
-    BooklistsList.push(new DataBooklist('All spanish', 'Admin',[allBooks[1]]))
-    BooklistsList.push(new DataBooklist('Before 20th', 'User',[allBooks[1], allBooks[3], allBooks[4],allBooks[0]]))
-    }
+    // Get all booklists in database
+    getLists()
+
+    // handle links
+    for (let i=0; i<BooklistsList.length; i++){
+        BooklistsList[i].link = llinkHandler(BooklistsList[i].booklistID, user)
+    }  
+}
 
 function displaySearchbox(){
     const bookoptionfield = document.querySelector(".search-book #myDropdown")

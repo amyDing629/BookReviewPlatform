@@ -55,6 +55,24 @@ const sessionChecker = (req, res, next) => {
     }    
 };
 
+// Middleware for authentication of resources
+const authenticate = (req, res, next) => {
+	if (req.session.user) {
+		User.findById(req.session.user).then((user) => {
+			if (!user) {
+				return Promise.reject()
+			} else {
+				req.user = user
+				next()
+			}
+		}).catch((error) => {
+			res.status(401).send("Unauthorized")
+		})
+	} else {
+		res.status(401).send("Unauthorized")
+	}
+}
+
 
 /*** Session handling **************************************/
 // express-session for managing user sessions
@@ -73,32 +91,10 @@ app.use(session({
     resave: false, // don't resave an session that hasn't been modified.
 }));
 
-app.post('/users/login', mongoChecker, async (req, res) => {
-	const username = req.body.username
-    const password = req.body.password
 
-    try {
-		const user = await User.findByNamePassword(username, password);
-		if (!user) {
-            res.redirect('/public/html/login');
-        } else {
-            req.session.user = user._id;
-            req.session.username = user.username
-            res.redirect('/public/index.html?userID='+user._id);
-        }
-    } catch (error) {
-    	// redirect to login if can't login for any reason
-    	if (isMongoError(error)) {
-			res.status(500).redirect('/public/html/login');
-		} else {
-			log(error)
-			res.status(400).redirect('/public/html/login');
-		}
-    }
-})
 
 // A route to logout a user
-app.get('/users/logout', (req, res) => {
+app.get('/logout', (req, res) => {
 	// Remove the session
 	req.session.destroy((error) => {
 		if (error) {
@@ -126,20 +122,15 @@ app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/
 
 /*******************************************************************/
 
-app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/public/index.html')
+app.get('/', sessionChecker, (req, res) => {
+	res.sendFile(__dirname + '/index.html')
 })
 
-
-app.get('/login', (req, res) => {
-    /* if (req.session.user) {
-        res.sendFile(__dirname + '/public/index.html?userID='+req.session.user._id) // not sure
-    } else { */
-        res.sendFile(__dirname + '/public/html/login.html')
-    //}
+app.get('/login',sessionChecker, (req, res) => {
+	res.sendFile(__dirname + '/public/html/login.html') 
 })
 
-app.get('/register', (req, res) => {
+app.get('/register', sessionChecker, (req, res) => {
 	res.sendFile(__dirname + '/public/html/register.html')
 })
 
@@ -151,7 +142,7 @@ app.get('/register', (req, res) => {
 app.get('/api/users', mongoChecker, async (req, res)=>{
 	try {
 		const users = await User.find()
-		res.send({ users })
+		res.send({users})
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
@@ -166,7 +157,6 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 		res.status(404).send() 
 		return;
 	}
-
 	try {
 		const user = await User.findOne({_id: id})
 		if (!user) {
@@ -180,6 +170,32 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 	}
 })
 
+// login verify
+app.get('/login/:username/:password', mongoChecker, async (req, res) => {
+	const username = req.params.username
+	const password = req.params.password
+
+    try {
+		const user = await User.findByNamePassword(username, password);
+		if (!user) {
+			res.status(404).send(error)
+		} else {   
+			// Add the user's id and username to the session.
+            // We can check later if the session exists to ensure we are logged in.
+            req.session.user = user._id;
+            req.session.username = user.username
+			res.send({user})
+		}
+    } catch (error) {
+    	if (isMongoError(error)) {
+			res.status(500).send(error)
+		} else {
+			res.status(400).send(error)
+		}
+    }
+})
+
+
 app.post('/api/addUser', mongoChecker, async (req, res)=>{ 
     const newUser = new User({
 		username: req.body.username,
@@ -190,7 +206,7 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
     	booklistList: [],
     	postColectionList: [],
     	booklistCollectionList: [],
-		isAdmin: req.body.isAdmin
+		type: req.body.type
 	})
 
     try {
@@ -204,6 +220,7 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
 		}
 	}
 })
+
 
 app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{ 
     const user = req.params.userID
@@ -267,7 +284,7 @@ app.get('/BookMain/:userID?', (req, res) => {
 
 })
 
-// fiind one book
+// find one book
 app.get('/api/book', mongoChecker, async (req, res) => {
     const query = req.query
     const book = query.bookID
