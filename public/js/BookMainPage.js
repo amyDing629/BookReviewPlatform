@@ -127,7 +127,7 @@ function getBooks(){
             BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
         }
         displaySearchbox()//for search bar function
-        ifNeedDeleteForm()
+        ifNeedDeleteForm(getUserID())
         displayAllBooks(BooksList,getUserID())
         filpPage(1,3)
     }).catch((error) => {
@@ -166,133 +166,150 @@ function deleteBookFromAdminUser(id){
 // Display all books in the book main page
 function displayAllBooks(BooksList, userID) {
     const bookTable = document.querySelector('#bookTable')
-    const userType = checkUserType(userID)
-    if (userType === 'Admin' | userType === 'User'){
-        // change navi bar username
-        const userName = getUserName(userID)
-        document.querySelector('#userLoginInfo').innerText = userName
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {  //pass json into object locally
+        //log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
+        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+        return JSON.stringify(json)
+    }).then((userInfo)=>{
+        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+        const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
+        //const userType = checkUserType(userID)
+        if (userType === 'Admin' | userType === 'User'){
+            // change navi bar username
+            //const userName = getUserName(userID)
+            document.querySelector('#userLoginInfo').innerText = username
 
-        // set navi bar link
-        document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
-        document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+userID
-        document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+userID
-        document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
-        if(userType === 'Admin'){
-            document.querySelector('#tableResult').addEventListener('click', deleteBook)
-            document.querySelector('#addButton').addEventListener('click', addNewBook)
-            document.getElementById('coverButton').addEventListener('change', uploadPicture)
+            // set navi bar link
+            document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
+            document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+userID
+            document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+userID
+            document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
+            if(userType === 'Admin'){
+                document.querySelector('#tableResult').addEventListener('click', deleteBook)
+                document.querySelector('#addButton').addEventListener('click', addNewBook)
+                document.getElementById('coverButton').addEventListener('change', uploadPicture)
+            } else {
+                document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
+            }
         } else {
             document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
+            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
         }
-    } else {
-        document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
-        document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
-    }
-    const tableResultTBODY = document.querySelector('#tableResultTBODY')
-	for(let i = 0; i < BooksNum; i++) {
-        const tr = document.createElement('tr')
-		const div = document.createElement('div')
-        div.className = 'book'
+        const tableResultTBODY = document.querySelector('#tableResultTBODY')
+        for(let i = 0; i < BooksNum; i++) {
+            const tr = document.createElement('tr')
+            const div = document.createElement('div')
+            div.className = 'book'
 
-        if (userType === 'Admin'){// admin only: admin delete button
-        const div1 = document.createElement('div')
-        div1.className = 'delete'
-        const button = document.createElement('button')
-        button.className = "deleteButton, btn btn-danger" 
-        button.setAttribute('data-toggle','model')
-        button.setAttribute('data-target','#exampleModalCenter')
+            if (userType === 'Admin'){// admin only: admin delete button
+            const div1 = document.createElement('div')
+            div1.className = 'delete'
+            const button = document.createElement('button')
+            button.className = "deleteButton, btn btn-danger" 
+            button.setAttribute('data-toggle','model')
+            button.setAttribute('data-target','#exampleModalCenter')
 
-        button.appendChild(document.createTextNode("Delete the book"))
-        div1.appendChild(button)
-        div.appendChild(div1)
+            button.appendChild(document.createTextNode("Delete the book"))
+            div1.appendChild(button)
+            div.appendChild(div1)
+            }
+            
+            // book name 
+            const p1 = document.createElement('p')
+            const strong1 = document.createElement('strong')
+            const name = document.createTextNode("Book Name: ")
+            strong1.appendChild(name)
+            p1.appendChild(strong1)
+
+            const span1 = document.createElement('span')
+            span1.className="bookTitle"
+            const a = document.createElement('a')
+            a.className = "linkColor"
+            a.href = "../BookDetail/"+BooksList[i].bookID +"/BookDetail-" + BooksList[i].bookID + ".html"
+            if (userType === 'Admin'){
+                a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_admin_after.html" // need new link
+            } else if (userType === 'User'){
+                a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_end_after.html" // need new link
+            } else {
+                a.href = "../BookDetail/"+ BooksList[i].bookID+"/BookDetail-" + BooksList[i].bookID + ".html"
+            }
+            a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
+            const nameContent = document.createTextNode(BooksList[i].name)
+            a.appendChild(nameContent)
+            span1.appendChild(a)
+            p1.appendChild(span1)
+            div.appendChild(p1)
+
+            // cover img
+            const img = document.createElement('img')
+            img.className = "cover"
+            img.src = BooksList[i].coverURL
+            img.alt = "cover"
+            div.appendChild(img)
+
+            // description
+            const p2 = document.createElement('p')
+            p2.className = "descriptionsBox"
+            const strong2 = document.createElement('strong')
+            const descri = document.createTextNode("Descriptions: ")
+            strong2.appendChild(descri)
+            p2.appendChild(strong2)
+
+            const span2 = document.createElement('span')
+            const descriContent = document.createTextNode(BooksList[i].description)
+            span2.appendChild(descriContent)
+            p2.appendChild(span2)
+            div.appendChild(p2)
+
+            // info table
+            const table = document.createElement('table')
+            table.className = "bookinfo"
+            const tbody = document.createElement('tbody')
+            const tr1 = document.createElement('tr')
+            const ID = document.createElement('th')
+            ID.innerText = 'Book ID'
+            ID.className = 'th'
+            const author = document.createElement('th')
+            author.innerText = 'Author'
+            author.className = 'th'
+            const year = document.createElement('th')
+            year.innerText = 'Publish year'
+            year.className = 'th'
+            tr1.appendChild(ID)
+            tr1.appendChild(author)
+            tr1.appendChild(year)
+            tbody.appendChild(tr1)
+
+            const tr2 = document.createElement('tr')
+            const IDcontent = document.createElement('td')
+            IDcontent.innerText = BooksList[i].bookID
+            IDcontent.className = 'td'
+            const authorContent = document.createElement('td')
+            authorContent.innerText = BooksList[i].author
+            authorContent.className = 'td'
+            const yearContent = document.createElement('td')
+            yearContent.innerText = BooksList[i].year
+            yearContent.className = 'td'
+            tr2.appendChild(IDcontent)
+            tr2.appendChild(authorContent)
+            tr2.appendChild(yearContent)
+            tbody.appendChild(tr2)
+            table.appendChild(tbody)
+            div.appendChild(table)
+
+            tr.appendChild(div)
+            tableResultTBODY.appendChild(tr)
         }
-        
-        // book name 
-        const p1 = document.createElement('p')
-        const strong1 = document.createElement('strong')
-        const name = document.createTextNode("Book Name: ")
-        strong1.appendChild(name)
-        p1.appendChild(strong1)
 
-        const span1 = document.createElement('span')
-        span1.className="bookTitle"
-        const a = document.createElement('a')
-        a.className = "linkColor"
-        a.href = "../BookDetail/"+BooksList[i].bookID +"/BookDetail-" + BooksList[i].bookID + ".html"
-        if (userType === 'Admin'){
-            a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_admin_after.html" // need new link
-        } else if (userType === 'User'){
-            a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_end_after.html" // need new link
-        } else {
-            a.href = "../BookDetail/"+ BooksList[i].bookID+"/BookDetail-" + BooksList[i].bookID + ".html"
-        }
-        a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
-        const nameContent = document.createTextNode(BooksList[i].name)
-        a.appendChild(nameContent)
-        span1.appendChild(a)
-        p1.appendChild(span1)
-        div.appendChild(p1)
-
-        // cover img
-        const img = document.createElement('img')
-        img.className = "cover"
-        img.src = BooksList[i].coverURL
-        img.alt = "cover"
-        div.appendChild(img)
-
-        // description
-        const p2 = document.createElement('p')
-        p2.className = "descriptionsBox"
-        const strong2 = document.createElement('strong')
-        const descri = document.createTextNode("Descriptions: ")
-        strong2.appendChild(descri)
-        p2.appendChild(strong2)
-
-        const span2 = document.createElement('span')
-        const descriContent = document.createTextNode(BooksList[i].description)
-        span2.appendChild(descriContent)
-        p2.appendChild(span2)
-        div.appendChild(p2)
-
-        // info table
-        const table = document.createElement('table')
-        table.className = "bookinfo"
-        const tbody = document.createElement('tbody')
-        const tr1 = document.createElement('tr')
-	    const ID = document.createElement('th')
-        ID.innerText = 'Book ID'
-        ID.className = 'th'
-        const author = document.createElement('th')
-	    author.innerText = 'Author'
-        author.className = 'th'
-        const year = document.createElement('th')
-	    year.innerText = 'Publish year'
-        year.className = 'th'
-        tr1.appendChild(ID)
-        tr1.appendChild(author)
-        tr1.appendChild(year)
-        tbody.appendChild(tr1)
-
-        const tr2 = document.createElement('tr')
-        const IDcontent = document.createElement('td')
-        IDcontent.innerText = BooksList[i].bookID
-        IDcontent.className = 'td'
-        const authorContent = document.createElement('td')
-        authorContent.innerText = BooksList[i].author
-        authorContent.className = 'td'
-        const yearContent = document.createElement('td')
-	    yearContent.innerText = BooksList[i].year
-        yearContent.className = 'td'
-        tr2.appendChild(IDcontent)
-        tr2.appendChild(authorContent)
-        tr2.appendChild(yearContent)
-        tbody.appendChild(tr2)
-        table.appendChild(tbody)
-        div.appendChild(table)
-
-        tr.appendChild(div)
-        tableResultTBODY.appendChild(tr)
-	}
+    }).catch((error)=>{log(error)})
+    
 }
 
 function filpPage(pageNo, pageLimit) {
@@ -492,7 +509,7 @@ function addFormForDelete(){
 // helper: get user id
 function getUserID(){
     try{
-        return parseInt(window.location.href.split('?')[1].split('userID=')[1])
+        return (window.location.href.split('?')[1].split('userID=')[1])
     } catch{
         return 'guest'
     }
@@ -515,11 +532,12 @@ function checkUserType(userID){
 //helper: get user name by user id
 function getUserName(userID){
     // need more dynamic way to search user database, check type
-    if (userID === 0){ 
+    return document.querySelector('#userLoginInfo').innerText 
+    /* if (userID === 0){ 
         return('User')
     } else if (userID === 1) {
         return('Admin')
-    } 
+    }  */
 }
 
 // helper: upload img
@@ -556,10 +574,31 @@ function uploadPicture(e){
     }
   }
 
-function ifNeedDeleteForm(){
-    if(checkUserType(getUserID()) == 'Admin'){
+function ifNeedDeleteForm(userID){
+    /* if(checkUserType(getUserID()) == 'Admin'){
         addFormForDelete()
-    }
+    } */
+
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {  //pass json into object locally
+        log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
+        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+        return JSON.stringify(json)
+    }).then((userInfo)=>{
+        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+
+        if(userType == 'Admin'){
+            addFormForDelete()
+        }
+    }).catch((error)=>{
+        log(error)
+    })
 }
 
   

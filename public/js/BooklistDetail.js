@@ -1,3 +1,4 @@
+const log = console.log
 // global variables
 var BooklistsNum = 0; 
 var BooklistsList = [] 
@@ -111,29 +112,51 @@ function searchList(e){
 /************** temp for search bar [END] ******************/
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection) {
+	constructor(listName, listDescription, creator, bookCollection, id, likes, collect) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
         } else {
             this.listDescription = listDescription
         }
-		this.creator = creator; // user id?
-        this.books = bookCollection; // list of bids
-		this.booklistID = BooklistsNum;
+		this.creator = creator // username, temp
+        this.books = bookCollection; // list of Book object
+		this.booklistID = id;
 		BooklistsNum++;
-        this.likes = 0;
-        this.collect = 0;
+        this.likes = likes;
+        this.collect = collect;
         const date = new Date() 
         this.createTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	}
 }
 
-// Load default booklist data
+/* // Load default booklist data
 BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
 BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
 BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
 
+ */
+
+// get all booklist
+function getBooklists(){
+    const url = '/api/booklists'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const booklists = json.booklists
+        for (each of booklists){
+            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likes, each.collect))
+        }
+        displaySearchbox() // for navi bar search function
+        selectBooklistToPlay()
+    }).catch((error) => {
+        log(error)
+    })
+}
 
 // Display the booklist detail page:
 function displayBooklistDetail(booklist, user) {
@@ -210,13 +233,14 @@ function fillBooklistBooks(booklist, user){
 }
 
 function selectBooklistToPlay(){
-    if (window.location.href.split('?')[1] == null){
+    const query = window.location.href.split('?')[1]
+    if (query == null){
         return;
     } else if (window.location.href.split('?')[1].split('&').length === 1){ // guest visit any booklist
-        const currentListID = parseInt(window.location.href.split('?')[1].split('booklistID=')[1].split('.')[0])
+        const currentListID = query.split('booklistID=')[1].split('.')[0]
         const list = BooklistsList.filter((list) => list.booklistID == currentListID)
         displayBooklistDetail(list[0], 'guest')
-        selectNarviBarUser('guest')
+        selectNarviBarUser('guest','')
     } else { // admin & user
         const currentListID = getBooklistID()
         const currentUser = getUserID()
@@ -225,15 +249,30 @@ function selectBooklistToPlay(){
         if (list.length === 0){ // not ready to connect the database yet, implement on phase 2
             window.location.assign("./UnderConstruction.html")
         } else {
-            const userType = checkUserType(currentUser)
-            displayBooklistDetail(list[0], userType)
-            selectNarviBarUser(userType)
-            editBooklist(userType)
+            const url = '/api/users/'+currentUser
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                return res.json() 
+            } else {
+                    log('faild to get user info. as guest.')
+            }                
+            }).then((json) => {  //pass json into object locally
+                return JSON.stringify(json)
+            }).then((userInfo)=>{
+                const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+                const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
+                displayBooklistDetail(list[0], userType)
+                selectNarviBarUser(userType, username)
+                editBooklist(username)
+            }).catch((error)=>{
+                log(error)
+            })
+            
         }
     }
 }
 
-function selectNarviBarUser(userType){
+function selectNarviBarUser(userType,userName){
     const userColumn = document.querySelector('.right')
     if (userType === 'User'){//end user
         userColumn.innerHTML =''
@@ -245,7 +284,7 @@ function selectNarviBarUser(userType){
         a.className = 'addUserIdToLink'
         a.href = "../user/user.html" // need more dynamiclly link fix on phase 2
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('User')) // need more dynamiclly get username
+        a.appendChild(document.createTextNode(userName)) // need more dynamiclly get username
         userColumn.appendChild(a)
         userColumn.before(newLI)
         document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+getUserID()
@@ -262,7 +301,7 @@ function selectNarviBarUser(userType){
         a.className = 'addUserIdToLink'
         a.href = "../user/admin.html" // need more dynamiclly link fix on phase 2
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
-        a.appendChild(document.createTextNode('Admin')) // need more dynamiclly get username
+        a.appendChild(document.createTextNode(userName)) // need more dynamiclly get username
         userColumn.appendChild(a)
         userColumn.before(newLI)
         document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+getUserID()
@@ -277,16 +316,17 @@ function editBooklist(user){
     // get self info (for booklist exist reference)
     let entireBooklist = document.querySelectorAll('.bookli')
     const listID = BooklistsList.filter((booklist) => 
-    booklist.booklistID === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+        booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
     )
     let currList = ''
-    const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList += (book.bookID+";"))
-    const creator = document.querySelector('.creator').innerHTML.split(': ')[1]
+    //const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList += (book.bookID+";"))
+    
+    const creator = listID[0].creator
     const description = document.querySelector('#descriptionText')
     const bookUL = document.querySelector('#bookUL')
     const button1 = addEditElement('editDescription','Modify the description:', document.querySelector('#descriptionText').innerText)
     const button2 = addEditElement('editBooks','Modify the booklist content:', currList)
-    if (creator === user){ // creator only 
+    if (creator == user){ // creator only 
         const div1 = document.createElement('div')
         div1.className = 'editDiv'
         div1.id ='edit_description'
@@ -391,9 +431,9 @@ function editDescription(e){
         }
         textSpan.innerText = request
         const self = BooklistsList.filter((booklist)=>
-        booklist.listId === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+            booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
         )
-        self.description = request
+        modiEditNewValue(self[0].booklistID, "listDescription", "new", request)
         document.getElementById("myForm_editDescription").style.display="none";
     }
 }
@@ -420,7 +460,7 @@ function saveEditBooksContent(e){
         // get self info
         let entireBooklist = document.querySelectorAll('.bookli')
         const listID = BooklistsList.filter((booklist) => 
-        booklist.booklistID === parseInt(document.querySelector(".listId").innerText.split(': ')[1])
+            booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
         )
 
         // set up book id reference list
@@ -544,7 +584,7 @@ function createForm(){
 // helper: get user id
 function getUserID(){
     try { 
-        return parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        return (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
     } catch { 
         return 'guest'
     }
@@ -552,7 +592,7 @@ function getUserID(){
 
 // helper: get booklist id
 function getBooklistID(){
-    return parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+    return (window.location.href.split('?')[1].split('&')[0].split('=')[1])
 }
 
 // helper: check the user type, return 'User' or 'Admin'?
@@ -569,5 +609,33 @@ function checkUserType(userID){
     }
 }
 
-displaySearchbox() // for navi bar search function
-selectBooklistToPlay()
+// patch modify
+function modiEditNewValue(id, target, operation, value){
+    const url = '/api/booklist/'+id
+    let data = {
+        target: target,
+        operation: operation,
+        value: value
+    }
+    const request = new Request(url, {
+        method: 'PATCH', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('updated')    
+        } else {
+            console.log('Failed to updated')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+getBooklists()
