@@ -67,7 +67,6 @@ a {
 }
 
 #topMenu {
-    padding-bottom: 10px;
 	background-color: white;
     width:100%;
     height:auto;
@@ -130,13 +129,30 @@ a {
 /**/
 
 /*phase2*/
-#topMenu li.search-book{
+#topMenu li.book{
     margin-left:5px;
     max-width: none;
 }
-#topMenu li.search-list{
+#topMenu li.list{
     margin-left:8%;
     max-width: none;
+}
+
+
+.search-book{
+    margin-left: 25%;   
+    width: 200px;
+    z-index: 1;
+    float:left;
+    position:absolute;
+}
+
+.search-list{
+    margin-left: 44%;
+    width: 200px;
+    z-index: 1;
+    float:left;
+    position:absolute;
 }
 
 /* Dropdown Button */
@@ -162,33 +178,43 @@ a {
     font-size: 16px;
     padding: 14px 12px 12px;
     border: none;
+    background-color: whitesmoke;
     border-bottom: 1px solid #ddd;
+    width: 200px;
   }
   
   /* The search field when it gets focus/clicked on */
   #myInput:focus {outline: 3px solid #ddd;}
   
   /* The container <div> - needed to position the dropdown content */
-  .dropdown {
-    position: relative;
+  /* .dropdown {
+    position: relative; 
     display: inline-block;
-  }
+  } */
   
   /* Dropdown Content (Hidden by Default) */
   .dropdown-content {
     display: block;
-    position: fixed;
-    background-color: #f6f6f6;
+    font-size: small;
+    /*position: relative;*/
+    background-color: white;
     border: 1px solid #ddd;
   }
   
   /* Links inside the dropdown */
-  #topMenu li .dropdown-content a {
+  /* #topMenu li .dropdown-content a {
+    color: black;
+    padding: 12px 12px;
+    text-decoration: none;
+    display: block;
+  } */
+  .dropdown-content a {
     color: black;
     padding: 12px 12px;
     text-decoration: none;
     display: block;
   }
+
   
   /* Change color of dropdown links on hover */
   .dropdown-content a:hover {background-color: #f1f1f1}
@@ -232,6 +258,8 @@ a {
     margin-left: 50px;
     margin-top:10px;
     margin-bottom: 10px;
+    z-index: -1;
+    float:left;
 }
 
 
@@ -239,12 +267,14 @@ a {
 #recommendation {
 	padding: 5px;
 	background-color: white;
+    z-index: -1;
 }
 
 .TopBookcontainer{
     margin-right: 20px;
     margin-left: 20px;
     margin-bottom: 20px;
+    z-index: -1;
 }
 
 .Topbook{

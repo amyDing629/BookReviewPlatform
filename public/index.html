@@ -20,8 +20,8 @@
  </head>
 
  <body>
-    <!-- for back to top-->
-    <a id="tips"></a>
+  <!-- for back to top-->
+  <a id="tips"></a>
  	<!-- The Top Menu -->
  	<div id="topMenu">
         <ul>
@@ -34,24 +34,32 @@
             <li><a class="active" href=''>Home</a></li>
             <li><a href=''>Books</a></li>
             <li><a href=''>Booklists</a></li>
-            <li class="search-book">
+            <li class="book">
                 <div class="dropdown">
                     <button onclick="bookFunction()" class="dropbtn">Search for books</button>
-                    <div id="myDropdown" class="hide">
-                      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-                    </div>
                   </div>
             </li>
-            <li class="search-list">
+            <li class="list">
                 <div class="dropdown">
                     <button onclick="listFunction()" class="dropbtn">Search for lists</button>
-                    <div id="myDropdown" class="hide">
-                      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-                    </div>
                   </div>
             </li>
           </ul>
-</div>
+  </div>
+  <div class="search-book">
+    <div calss="dropdown">
+      <span id="myDropdown" class="hide">
+        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+      </span>
+    </div>
+  </div>
+  <div class="search-list">
+    <div calss="dropdown">
+      <span id="myDropdown" class="hide">
+        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+      </span>
+    </div>
+  </div>
 
 
 	<!-- Recommendation books section -->
