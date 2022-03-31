@@ -40,7 +40,7 @@ try {
            alert('Could not get this user')
        }   
     }).then((json) => {  //pass json into object locally
-        usertype = json.user.type
+        usertype = json.user.type.toLowerCase()
         username = json.user.username
         log(usertype)
         log(username)
