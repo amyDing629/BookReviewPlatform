@@ -167,7 +167,9 @@ function displayUserInfo(isVisit) {
                 if (user.profilePhoto != null) {
                     userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
                 }
-                if (user.type == 'admin' && isVisit == false) {
+                console.log(user.type);
+                console.log(isVisit);
+                if (user.type == 'Admin' && isVisit == false) {
                     let buttons = document.getElementById('menubar').children[0];
                     let manageButtonLi = document.createElement("li");
                     let manageButton = document.createElement("button");
@@ -855,7 +857,7 @@ function _getRegularUserList() {
     let user;
     let regularUserList = [];
     for (user of users) {
-        if (user.type == 'admin') {
+        if (user.type == 'Admin') {
             regularUserList.push(user);
         }
     }
@@ -1102,7 +1104,7 @@ users.push(regularAmy);
 //         }
 //     }
 // }
-displayUserInfo()
+displayUserInfo(false);
 
 
 // Setup onclick

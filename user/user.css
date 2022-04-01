@@ -1,5 +1,5 @@
-@import "../HomeAndLogin/home.css";
-@import "../BooklistMainPage/BooklistMainPage.css";
+@import "../public/css/home.css";
+@import "../public/css/BooklistMainPage.css";
 
 #userMainPage {
     padding: 5px;
