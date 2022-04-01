@@ -348,6 +348,10 @@ function addEditElement(id, text, inner){
     button.appendChild(document.createTextNode('Edit'))
     outter.appendChild(button)
     //pop up element
+    if(id =='editBooks'){
+        outter.appendChild(document.querySelector('#myForm_editBooks'))
+        return outter
+    }
     const wrapper = document.createElement('div')
     wrapper.id ='myForm_'+id
     wrapper.className='form-popup'
@@ -462,18 +466,10 @@ function saveEditBooksContent(e){
         const listID = BooklistsList.filter((booklist) => 
             booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
         )
-
-        // set up book id reference list
-        let listString = "Book IDs Reference List: \n"
-        let names = BooksList.map((book) =>  '[ID: '+ book.bookID + ']--' + book.name + '\n')
-        let ids = BooksList.map((book) =>  book.bookID)
-        for (each of names){ listString+=each }
-        listString+="\n     Please edit your book IDs collection:\n     [Note]: use space or , to separate every ID."
-
         // prompt input default: self curr book ids
-        let currList = Array() 
-        const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList.push(book.bookID))
-        
+        let currList = (listID[0].books).map((each)=>each._id)
+        let listString = ""
+        document.querySelector('#editBooks_input').placeholder = listString
         
         let request = document.querySelector('#editBooks_input').value
         let uniqueCurrInput = uniqueSortedIDsArrayGenerator(request)
@@ -494,38 +490,166 @@ function saveEditBooksContent(e){
         }
 
         // error check for input id validation:
-        const idCollection = BooksList.map((book)=>book.bookID)
-        const Invalid = uniqueCurrInput.filter(inputID => !idCollection.includes(inputID))
-        if(Invalid.length > 0){
-            document.querySelector('#message_editBooks').innerHTML = 'Failed, you have invalid ID input.'
-                return;
-        } else { // valid
-            // modify books in object
-            let newBooksAttribute = Array()
-            const iterate = uniqueCurrInput.map((eachInputID) => {
-                const selected = BooksList.filter((bookObject) => bookObject.bookID === eachInputID)
-                newBooksAttribute.push(selected[0])
+        let result = []
+        const url = '/api/books'
+        fetch(url).then((res) => { 
+            if (res.status === 200) {
+            return res.json() 
+        } else {
+                res.status(500).send("Internal Server Error") // not sure
+        }                
+        }).then((json) => {  //pass json into object locally
+            const books = json.books
+
+            for (each of books){
+                result.push({
+                    "_id": each._id,
+                    "name": each.name,
+                    "author": each.author,
+                    "year": each.year,
+                    "coverURL": each.coverURL,
+                    "postCollection": each.postCollection,
+                    "description": each.description
+                })
+            }
+            return result
+        }).then((result)=>{
+            const idCollection = result.map((each)=>each._id)
+            const Invalid = uniqueCurrInput.filter(inputID => !idCollection.includes(inputID))
+            if(Invalid.length > 0){
+                document.querySelector('#message_editBooks').innerHTML = 'Failed, you have invalid ID input.'
+                    return;
+            } else { // valid
+                // modify books in object
+                let newBooksAttribute = Array()
+                const iterate = uniqueCurrInput.map((eachInputID) => {
+                    const selected = result.filter((bookObject) => bookObject._id === eachInputID)
+                    newBooksAttribute.push(selected[0])
+                })
+                listID[0].books = newBooksAttribute
+                log(listID)
+                log(newBooksAttribute)
+                
+                // display on page
+                modiEditNewValue(listID[0].booklistID, "books", "new", newBooksAttribute)
+                document.getElementById("myForm_editBooks").style.display="none";
+            }
+            location.reload()
+        }).catch((error)=>{
+            log(error)
+        })
+        
+    }
+}
+//helper: get user name by user id
+function getUserName(userID){
+    return document.querySelector('#userLoginInfo').innerText 
+}
+
+/* function changeBooks(){
+    let result = []
+    const url = '/api/books'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+
+        for (each of books){
+            result.push({
+                "bookID": each._id,
+                "name": each.name
             })
-            BooklistsList[listID[0].booklistID].books = newBooksAttribute
-            
-            // display on page
-            const table = document.querySelector('#bookUL').innerHTML=''
-            fillBooklistBooks(BooklistsList[listID[0].booklistID], document.querySelector('.creator').innerHTML.split(': ')[1])
-            document.getElementById("myForm_editBooks").style.display="none";
+        }
+        return result
+    }).then((result)=>{
+    const ul = document.querySelector('#randomBooks')
+    ul.innerHTML=''
+    const random3 = []
+    while (random3.length<3){
+        const idx = Math.floor(Math.random() * result.length)
+        if (!random3.includes(idx)){
+            random3.push(idx)
         }
     }
+    //const ids = random3.map((idx)=>result[idx].bookID)
+    //const names = random3.map((idx)=>result[idx].name)
+    for (let i=0;i<3;i++){
+        const li = document.createElement('li')
+        li.innerText = "[ID:" + result[random3[i]].bookID + "]--" + result[random3[i]].name
+        ul.appendChild(li)
+    }
+    }).catch((error) => {
+        log(error)
+    })
+} */
+
+
+function changeBooks(){
+    let result = []
+    const url = '/api/books'
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            res.status(500).send("Internal Server Error") // not sure
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+
+        for (each of books){
+            result.push({
+                "bookID": each._id,
+                "name": each.name
+            })
+        }
+        return result
+    }).then((result)=>{
+    const ul = document.querySelector('#randomBooks')
+    const random3 = []
+    while (random3.length<3){
+        const idx = Math.floor(Math.random() * result.length)
+        if (!random3.includes(idx)){
+            random3.push(idx)
+        }
+    }
+    for (let i=0;i<3;i++){
+        ul.children[i].children[0].innerHTML =  result[random3[i]].name
+        const span = document.createElement('span')
+        span.className = 'bookIDhide'
+        span.innerText = result[random3[i]].bookID
+        ul.children[i].appendChild(span)
+    }
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+const ul = document.querySelector('#randomBooks')
+ul.addEventListener('click', loadBook)
+function loadBook(e){
+    e.preventDefault;
+    if(e.target.className == 'addListID btn btn-outline-info'){
+        document.querySelector("#editBooks_input").value += (e.target.nextSibling.innerText+';')
+        e.target.className += " active"
+    } else if (e.target.className == 'addListID btn btn-outline-info active'){
+        let curr = document.querySelector("#editBooks_input").value
+        curr = curr.replace((e.target.nextSibling.innerText+';'),'')
+        document.querySelector("#editBooks_input").value = curr
+        e.target.className = "addListID btn btn-outline-info"
+    }
+    
 }
 
 function uniqueSortedIDsArrayGenerator(str){
     if (str == null){
         return "null"
     }
-    const valids = str.replace(/[^0-9\.]+/g, '').split('').map((each) => {
-        const element = parseInt(each)
-        if (isNaN(element) == false){
-            return element
-        }
-    })
+    const splited = (str.split(';'))
+    const valids = splited.filter((each)=> each != '')
     return Array.from(new Set(valids.sort()))
 }
 

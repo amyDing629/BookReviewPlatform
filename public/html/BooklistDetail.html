@@ -71,6 +71,33 @@
         <ul id="bookUL"></ul>
     </div> 
 
+    <div class="form-popup" id="myForm_editBooks">
+        <div class="div_form">
+        <form action="/action_page.php" class="form-container">
+          <h5>Create your collections...</h5>
+
+          <label for="booklists"><b>Booklist IDs</b></label>
+          <input type="text" id='editBooks_input' placeholder="Please use ; to seperate." name="booklists" required>
+          <small id="message_editBooks" class="form-text text-muted"></small>
+      
+          <button id='submit_editBooks' type="submit" class="addSubmit, btn">Create</button>
+          <button id='cancel_editBooks' type="button" class="btn cancel">Cancel</button>
+        </form>
+        </div>
+        <div class="div_form" id="youmaylike">
+            <h5>Choose books to load in your booklist...</h5>
+            <ul id='randomBooks'>
+                <li><button type="submit" class="addListID btn btn-outline-info"></button></li>
+                <li><button type="submit" class="addListID btn btn-outline-info"></button></li>
+                <li><button type="submit" class="addListID btn btn-outline-info"></button></li>
+            </ul>
+            <br>
+            <h6>Click me for exploring books we have.</h6>
+            <br>
+            <button id='bookButton' type="submit" class="btn btn-secondary" onclick="changeBooks()">Browser some books</button>
+        </div>
+    </div>
+
     <!-- footer -->
     <footer class="blog-footer">
         <p><i>&copy; BookLand built by team10</i></p>

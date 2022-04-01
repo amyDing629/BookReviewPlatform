@@ -179,6 +179,7 @@
   top:50%;
   left: 50%;
   -webkit-transform: translateX(-50%) translateY(-50%);
+  box-shadow:0 0 800px 800px rgba(153, 153, 153, 0.521);
 }
 .div_form{
     display: inline-block;
@@ -244,6 +245,7 @@
     float: right;
     padding: 10px;
     height: 100%;
+    text-align: center;
 }
 #randomBooks{
     list-style: none;
@@ -257,7 +259,14 @@
     bottom: 0;
     position: relative;
     top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+}
+.addListID{
+    margin-top: 5% !important;
+    margin-bottom: 5% !important;
+    width: 70%;
+    border: transparent !important;
+}
+
+.bookIDhide{
+    display: none;
 }

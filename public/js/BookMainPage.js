@@ -129,7 +129,6 @@ function getBooks(){
         displaySearchbox()//for search bar function
         ifNeedDeleteForm(getUserID())
         displayAllBooks(BooksList,getUserID())
-        filpPage(1,3)
     }).catch((error) => {
         log(error)
     })
@@ -307,12 +306,12 @@ function displayAllBooks(BooksList, userID) {
             tr.appendChild(div)
             tableResultTBODY.appendChild(tr)
         }
-
+        flipPage(1,3)
     }).catch((error)=>{log(error)})
     
 }
 
-function filpPage(pageNo, pageLimit) {
+function flipPage(pageNo, pageLimit) {
     const allBooks = document.getElementById("tableResultTBODY")
     const totalSize = allBooks.rows.length
     let totalPage = 0
@@ -333,7 +332,7 @@ function filpPage(pageNo, pageLimit) {
     let strHolder = ""
     let previousStr = "Previous"
     let nextStr = "Next"
-    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"filpPage("
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"flipPage("
     let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
     // single page is enough
     if (totalPage <= 1){
