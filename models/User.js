@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
 		required:false
     },
-    postlist: {
+    postList: {
         type: [Post],
         default: []
     },
@@ -42,20 +42,11 @@ const UserSchema = new mongoose.Schema({
         type: [BookList],
         default: []
     },
-    // userID: {
-    //     type: Number,
-    //     required: true,
-    // },
     type:{
         type: String,
         required: true
         // user or admin (lower case)
     }
-    // isAdmin: {
-    //     type: Boolean,
-    //     required: true,
-    //     // default:false,
-    // }
 })
 
 // const AdminObject = Object.create(UserObject);

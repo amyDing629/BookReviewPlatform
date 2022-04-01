@@ -120,6 +120,7 @@ app.use("/public/html", express.static(path.join(__dirname + '/public/html')));
 app.use('/public/css', express.static(path.join(__dirname + '/public/css')));
 app.use('/public/js', express.static(path.join(__dirname + '/public/js')));
 app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/static')));
+app.use('/user', express.static(path.join(__dirname + '/user')))
 
 /*******************************************************************/
 
@@ -170,6 +171,38 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 		res.status(500).send('Internal Server Error')  // server error
 	}
 })
+
+app.get('/user/template', async (req, res)=>{
+	try {
+		res.sendFile(__dirname + '/user/user.html');
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error');
+	}
+})
+
+// get user by id
+app.get('/user/:id', mongoChecker, async (req, res)=>{
+	const id = req.params.id
+
+	if (!ObjectId.isValid(id)) {
+		res.status(404).send() 
+		return;
+	}
+	try {
+		const user = await User.findOne({_id: id})
+		if (!user) {
+			res.status(404).send('Resource not found')  // could not find this user
+		} else { 
+			res.redirect('/user/template?userID=' + id);
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
+	}
+})
+
+
 
 // login verify
 app.get('/login/:username/:password', mongoChecker, async (req, res) => {
@@ -353,7 +386,6 @@ app.get('/api/booklists', mongoChecker, async (req, res)=>{
 		res.status(500).send("Internal Server Error")
 	}
 })
-
 
 // add booklist
 app.post('/api/booklist', async (req, res)=>{
