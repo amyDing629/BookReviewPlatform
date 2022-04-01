@@ -42,27 +42,14 @@ const UserSchema = new mongoose.Schema({
         type: [BookList],
         default: []
     },
-    // userID: {
-    //     type: Number,
-    //     required: true,
-    // },
     type:{
         type: String,
-        required: true
-        // user or admin (lower case)
+        required: true,
+        enum: ['Admin', 'User']
     }
-    // isAdmin: {
-    //     type: Boolean,
-    //     required: true,
-    //     // default:false,
-    // }
+
 })
 
-// const AdminObject = Object.create(UserObject);
-// AdminObject.isAdmin = 'true';
-
-//const UserSchema = new mongoose.Schema(UserObject);
-// const AdminSchema = new Schema(AdminObject);
 
 // This function will run immediately prior to saving the document
 // in the database.

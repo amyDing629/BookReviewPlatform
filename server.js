@@ -243,6 +243,49 @@ app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{
 // TODO
 app.put('/api/users/:userID',mongoChecker, async (req, res)=>{}) 
 
+
+
+
+/*********** POSTs ************/
+
+// get all posts 
+app.get('/api/posts', mongoChecker, async (req, res)=>{
+	try {
+		const posts = await Post.find()
+		res.send({ posts })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+
+// add post (change along with USER & BOOK)
+app.post('/api/addPost', mongoChecker, async (req, res)=>{ 
+    const newPost = new Post({
+		bookID: req.body.bookID,
+        userID: req.body.userID,
+		booktitle: req.body.booktitle,
+		username: req.body.username,
+        posterProfile: req.body.posterProfile,
+    	pic: req.body.pic,
+    	content: req.body.content,
+    	time: req.body.time,
+		likes: req.body.likes
+	})
+
+    try {
+		const post = await newPost.save()
+		res.send({post})
+	} catch(error) {
+		if (isMongoError(error)) {
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request')
+		}
+	}
+})
+
 /*********** BOOKs ************/
 
 // get all books 
@@ -503,16 +546,20 @@ app.get('/Booklist/Detail', async (req, res) => {
 
 /*************************************************/
 // get all book and lists
-app.get('/api/booksAndlists', mongoChecker, async (req, res)=>{
+app.get('/api/all', mongoChecker, async (req, res)=>{
 	try {
 		const books = await Book.find()
 		const lists = await BookList.find()
-		res.send({ books, lists })
+		const posts = await Post.find()
+		res.send({ books, lists, posts })
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
 	}
 })
+
+
+/*************************************************/
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
@@ -523,7 +570,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 50001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 
