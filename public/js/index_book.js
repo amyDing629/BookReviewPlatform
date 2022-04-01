@@ -30,30 +30,6 @@ class DataBooklist {
 	}
 }
 
-/****************** Index Post ******************/
-
-const posts = []; // all posts
-const homeposts = []; // for admin edit
-const collectedPosts = []; // collection of posts made by current user
-
-class Post {
-	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes) {
-		this.postID = pid;
-        this.bookID = bid;
-        this.booktitle = booktitle;
-        this.userid = userid;
-		this.poster = postername;
-        this.posterProfile = posterProfile;
-        this.pic = pic;
-        this.content = content; 
-        this.time = time;
-        this.likes = likes; 
-        this.booklink = null;
-        this.posterlink = null;
-    }
-}
-
-const postul = document.querySelector('#posts ul');
 
 try { 
     user= String(window.location.href.split('?')[1].split('=')[1])
@@ -71,7 +47,7 @@ try {
         log(usertype)
         log(username)
 
-        const url2 = '/api/all'
+        const url2 = '/api/two'
         fetch(url2).then((res) => { 
             if (res.status === 200) {
                return res.json() 
@@ -79,6 +55,7 @@ try {
                 console.log("not found")
            }                
         }).then((json) => {  //pass json into object locally
+            log(json)
             const books = json.books
             for (each of books){
                 allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
@@ -86,10 +63,6 @@ try {
             const lists = json.lists
             for (each of lists){
             BooklistsList.push(new DataBooklist(each._id, each.listName, each.creator, each.books))
-            }
-            const posts = json.posts
-            for (each of posts){
-                posts.push(new Post(each._id, each.bookID, each.userID, each.booktitle, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
             }
 
             // handle links
@@ -99,10 +72,6 @@ try {
             for (let i=0; i<BooklistsList.length; i++){
                 BooklistsList[i].link = llinkHandler(BooklistsList[i].booklistID, usertype)
             }  
-            for (let i=0; i<posts.length; i++){
-                posts[i].booklink = blinkHandler(posts[i].bookID, usertype)
-                posts[i].posterlink = ulinkHandler(posts[i].userid, usertype, user)
-            }
 
             /******************* Index Book *******************/
             welcome(username)
@@ -111,12 +80,7 @@ try {
             RecommendBooksCreate()
             displayTop()
             displayRecommendations()
-            
-            /******************* Index Post *******************/
-            homepostsCreate()
-            displayPosts(usertype)
-            //likeHandler()
-            //collectHandler()
+
 
             })
         }).catch((error) => {
@@ -124,7 +88,7 @@ try {
 } catch { 
     usertype= 'guest'
     log(usertype)
-    const url0 = '/api/all'
+    const url0 = '/api/two'
     fetch(url0).then((res) => { 
         if (res.status === 200) {
            return res.json() 
@@ -132,7 +96,7 @@ try {
             console.log("not found")
        }                
     }).then((json) => {  //pass json into object locally
-
+        log(json)
         const books = json.books
         for (each of books){
             allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
@@ -140,10 +104,6 @@ try {
         const lists = json.lists
         for (each of lists){
             BooklistsList.push(new DataBooklist(each._id, each.listName, each.creator, each.books))
-        }
-        const posts = json.posts
-        for (each of posts){
-            posts.push(new Post(each._id, each.bookID, each.userID, each.booktitle, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
         }
 
         // handle links
@@ -153,10 +113,6 @@ try {
         for (let i=0; i<BooklistsList.length; i++){
             BooklistsList[i].link = llinkHandler(BooklistsList[i].booklistID, usertype, user)
         }  
-        for (let i=0; i<posts.length; i++){
-            posts[i].booklink = blinkHandler(posts[i].bookID, usertype)
-            posts[i].posterlink = ulinkHandler(posts[i].userid, usertype, user)
-        }
 
         /******************* Index Book *******************/
         displayMenu(usertype, username, user)
@@ -164,17 +120,11 @@ try {
         RecommendBooksCreate()
         displayTop()
         displayRecommendations()
-
-        /******************* Index Post *******************/
-        // homepostsCreate()
-        // displayPosts(usertype)
-        
+       
         })
     .catch((error) => {
     log(error)})
 }
-
-
 
 
 
@@ -374,7 +324,7 @@ function RecommendBooksCreate() {
         }
     
 
- function displayTop(){
+function displayTop(){
         const div = document.getElementsByClassName('p-4 p-md-5 mb-4 text-white rounded bg-dark')
         if (recommendedBooks[0] !=null){
             const bookName = recommendedBooks[0].title;
@@ -495,145 +445,139 @@ function displayRecommendations(){
     }
 }
 
+/************************ Posts display ************************/
 
-function homepostsCreate(){
-    for (let i=0; i<posts.length; i++){
-        homeposts.push(posts[i])
-    }
-}
+// function homepostsCreate(){
+//     for (let i=0; i<posts.length; i++){
+//         homeposts.push(posts[i])
+//     }
+// }
 
-function displayPosts(userType){
+// function displayPosts(userType){
 
-    for (let i=0; i<5; i++){
-        if (homeposts[i] != null){
-            let li = postul.children[i]
+//     for (let i=0; i<3; i++){
+//         if (homeposts[i] != null){
+//             let li = postul.children[i]
             
-            /*clean all before display */
-            for (let j =0; j<li.children.length; j++){
-                li.removeChild(li.children[j])
-            }
+//             /*clean all before display */
+//             for (let j =0; j<li.children.length; j++){
+//                 li.removeChild(li.children[j])
+//             }
 
-            let postDiv = document.createElement('div')
-            postDiv.className = 'post'
-            let userDiv = document.createElement('div')
-            userDiv.className = 'userProfileContainer'
-            let contentDiv = document.createElement('div')
-            contentDiv.className ='postContent'
+//             let postDiv = document.createElement('div')
+//             postDiv.className = 'post'
+//             let userDiv = document.createElement('div')
+//             userDiv.className = 'userProfileContainer'
+//             let contentDiv = document.createElement('div')
+//             contentDiv.className ='postContent'
 
-            let title = posts[i].booktitle
-            let userName = posts[i].poster
-            let userProfile = posts[i].posterProfile
-            let pic = posts[i].pic
-            let content = posts[i].content
-            let time = posts[i].time
-            let likes = posts[i].likes
-            let plink = posts[i].posterlink
-            let pid = posts[i].postID
-            let bid = posts[i].bookID
-            let userid = posts[i].userid
-            let blink = posts[i].booklink
+//             let title = posts[i].booktitle
+//             let userName = posts[i].poster
+//             let userProfile = posts[i].posterProfile
+//             let pic = posts[i].pic
+//             let content = posts[i].content
+//             let time = posts[i].time
+//             let likes = posts[i].likes
+//             let plink = posts[i].posterlink
+//             let pid = posts[i].postID
+//             let bid = posts[i].bookID
+//             let userid = posts[i].userid
+//             let blink = posts[i].booklink
 
-            let img1 = document.createElement('img')
-            img1.className='userProfile'
-            img1.setAttribute('src', userProfile)
-            img1.setAttribute('alt', 'profile')
-            userDiv.appendChild(img1)
+//             let img1 = document.createElement('img')
+//             img1.className='userProfile'
+//             img1.setAttribute('src', userProfile)
+//             img1.setAttribute('alt', 'profile')
+//             userDiv.appendChild(img1)
 
-            let userh3 = document.createElement('h3')
-            let a1 = document.createElement('a')
-            a1.className = 'linkColor'
-            // if (userType == 'guest'){
-            //     plink = "/public/html/login.html"
-            // }
-            // else{
-            //     plink = '/public/html/BookDetail.html?bookID='+userid+"&userID="+user // need to change
-            // }
+//             let userh3 = document.createElement('h3')
+//             let a1 = document.createElement('a')
+//             a1.className = 'linkColor'
 
-        
-            a1.setAttribute('href', plink)
-            a1.innerText = userName
-            a1.onclick = function open(e){
-                e.preventDefault();
-                window.location.href=(a1.href) // need to handle user link
-            }
-            let spanid2 = document.createElement('span')
-            spanid2.className = 'postId'
-            spanid2.innerText = pid
-            userh3.appendChild(a1)
-            userh3.appendChild(spanid2) // Post id is here
+//             a1.setAttribute('href', plink)
+//             a1.innerText = userName
+//             a1.onclick = function open(e){
+//                 e.preventDefault();
+//                 window.location.href=(a1.href) // need to handle user link
+//             }
+//             let spanid2 = document.createElement('span')
+//             spanid2.className = 'postId'
+//             spanid2.innerText = pid
+//             userh3.appendChild(a1)
+//             userh3.appendChild(spanid2) // Post id is here
 
-            contentDiv.appendChild(userh3)
+//             contentDiv.appendChild(userh3)
 
-            let pbook = document.createElement('p')
-            pbook.innerText = 'Book Name: '
-            let span1 = document.createElement('span')
-            let a2 = document.createElement('a')
-            a2.className = 'linkColor'
-            a2.setAttribute('href', blink)
-            a2.innerText = title
-            a2.onclick = function open(e){
-                e.preventDefault();
-                window.location.href=(a2.href)
-            }
-            span1.appendChild(a2)
-            let span2 = document.createElement('span')
-            span2.className = 'postTime'
-            span2.innerText = time
+//             let pbook = document.createElement('p')
+//             pbook.innerText = 'Book Name: '
+//             let span1 = document.createElement('span')
+//             let a2 = document.createElement('a')
+//             a2.className = 'linkColor'
+//             a2.setAttribute('href', blink)
+//             a2.innerText = title
+//             a2.onclick = function open(e){
+//                 e.preventDefault();
+//                 window.location.href=(a2.href)
+//             }
+//             span1.appendChild(a2)
+//             let span2 = document.createElement('span')
+//             span2.className = 'postTime'
+//             span2.innerText = time
 
-            let spanid3 = document.createElement('span')
-            spanid3.className = 'bookId'
-            spanid3.innerText = ' bookID: '
-            let spanid4 = document.createElement('span')
-            spanid4.className = 'bookId'
-            spanid4.innerText = bid
+//             let spanid3 = document.createElement('span')
+//             spanid3.className = 'bookId'
+//             spanid3.innerText = ' bookID: '
+//             let spanid4 = document.createElement('span')
+//             spanid4.className = 'bookId'
+//             spanid4.innerText = bid
 
-            pbook.appendChild(span1)
-            pbook.appendChild(span2)
-            pbook.appendChild(spanid3) 
-            pbook.appendChild(spanid4) // Book id is here
-            contentDiv.appendChild(pbook)
+//             pbook.appendChild(span1)
+//             pbook.appendChild(span2)
+//             pbook.appendChild(spanid3) 
+//             pbook.appendChild(spanid4) // Book id is here
+//             contentDiv.appendChild(pbook)
 
-            let p = document.createElement('p')
-            p.innerText = content
-            contentDiv.appendChild(p)
+//             let p = document.createElement('p')
+//             p.innerText = content
+//             contentDiv.appendChild(p)
 
-            if (pic != null){
-                let img2 = document.createElement('img')
-                img2.className='postContentPicture'
-                img2.setAttribute('src', pic)
-                img2.setAttribute('alt', 'pic')
-                contentDiv.appendChild(img2)
-            }
+//             if (pic != null){
+//                 let img2 = document.createElement('img')
+//                 img2.className='postContentPicture'
+//                 img2.setAttribute('src', pic)
+//                 img2.setAttribute('alt', 'pic')
+//                 contentDiv.appendChild(img2)
+//             }
 
-            let br = document.createElement('br')
-            contentDiv.appendChild(br)
+//             let br = document.createElement('br')
+//             contentDiv.appendChild(br)
 
-            // ADMIN & USER
-            if (userType != 'guest'){
-                let likeh5 = document.createElement('h5')
-                let icon = document.createElement('i')
-                icon.className = 'fa fa-heart'
-                icon.innerText = ' '+likes
-                let button = document.createElement('button')
-                button.className = 'btn btn-outline-primary'
-                button.classList.add('like')
-                button.innerText = 'Like'
-                let button2 = document.createElement('button')
-                button2.className = 'btn btn-outline-success'
-                button2.classList.add('collect')
-                button2.innerText = 'Collect'
+//             // ADMIN & USER
+//             if (userType != 'guest'){
+//                 let likeh5 = document.createElement('h5')
+//                 let icon = document.createElement('i')
+//                 icon.className = 'fa fa-heart'
+//                 icon.innerText = ' '+likes
+//                 let button = document.createElement('button')
+//                 button.className = 'btn btn-outline-primary'
+//                 button.classList.add('like')
+//                 button.innerText = 'Like'
+//                 let button2 = document.createElement('button')
+//                 button2.className = 'btn btn-outline-success'
+//                 button2.classList.add('collect')
+//                 button2.innerText = 'Collect'
 
-                likeh5.appendChild(icon)
-                likeh5.appendChild(button2)
-                likeh5.appendChild(button)
-                contentDiv.appendChild(likeh5)
-            }
+//                 likeh5.appendChild(icon)
+//                 likeh5.appendChild(button2)
+//                 likeh5.appendChild(button)
+//                 contentDiv.appendChild(likeh5)
+//             }
 
-            postDiv.appendChild(userDiv)
-            postDiv.appendChild(contentDiv)
+//             postDiv.appendChild(userDiv)
+//             postDiv.appendChild(contentDiv)
 
-            li.appendChild(postDiv)
+//             li.appendChild(postDiv)
             
-        }
-    }
-}
+//         }
+//     }
+// }

@@ -546,12 +546,11 @@ app.get('/Booklist/Detail', async (req, res) => {
 
 /*************************************************/
 // get all book and lists
-app.get('/api/all', mongoChecker, async (req, res)=>{
+app.get('/api/two', mongoChecker, async (req, res)=>{
 	try {
 		const books = await Book.find()
 		const lists = await BookList.find()
-		const posts = await Post.find()
-		res.send({ books, lists, posts })
+		res.send({ books, lists})
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")

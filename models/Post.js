@@ -27,6 +27,7 @@ const PostSchema = new mongoose.Schema({
     pic: {
         type: String,
         required: false,
+        default:"" // if no pic, use empty string
     },
     content: {
         type: String,
