@@ -543,6 +543,33 @@ app.get('/Booklist/Detail', async (req, res) => {
 
 })
 
+/*********** Book detail ************/
+app.get('/BookDetail/Detail', async (req, res) => {
+	const query = req.query
+	const book = query.bookID
+	const user = query.userID
+
+	if (!book){
+		res.status(500).send("server error on display book detail page")
+	}else {
+		res.sendFile(__dirname + '/public/html/BookDetail.html')
+	}
+})
+
+app.get('/BookDetail/Detail?bookID=:book&userID=:user', async (req, res) => {
+	const query = req.query
+	const book = query.bookID
+	const user = query.userID
+
+	if (!book){
+		if(!user){
+			res.sendFile(__dirname + '/public/html/BookDetail.html?bookID='+book)
+		}
+	}else {
+		res.sendFile(__dirname + '/public/html/BookDetail.html')
+	}
+})
+
 
 /*************************************************/
 // get all book and lists
