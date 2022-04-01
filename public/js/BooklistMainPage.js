@@ -170,10 +170,9 @@ function displayAllBooklists(BooklistsList, userID) {
         //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
         return JSON.stringify(json)
     }).then((userInfo)=>{
-        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
-        const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
-        //log(userType)
-        if (userType === 'Admin' | userType === 'User'){
+        try {
+            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
             booklistTable.addEventListener('click', deleteBooklist)
             const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
             endUserActionsWrap.addEventListener('click', addNewBooklist)
@@ -185,18 +184,20 @@ function displayAllBooklists(BooklistsList, userID) {
             document.querySelector('#bookmain').href = "../BookMainPage/BookMainPage.html?userID="+userID
             document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
             document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
-        } else {
-            try{
-                document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
-                document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
-            } catch {
-                log('changed the sorting way!')
+
+            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
+            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+            const tableResultTBODY = document.querySelector('#tableResultTBODY')
+            for(let i = 0; i < BooklistsNum; i++) {
+                const tr = addBooklistCard(BooklistsList[i],userID, userType)
+                tableResultTBODY.appendChild(tr)
             }
-        }
-        const tableResultTBODY = document.querySelector('#tableResultTBODY')
-        for(let i = 0; i < BooklistsNum; i++) {
-            const tr = addBooklistCard(BooklistsList[i],userID, userType)
-            tableResultTBODY.appendChild(tr)
+        } catch {
+            const tableResultTBODY = document.querySelector('#tableResultTBODY')
+            for(let i = 0; i < BooklistsNum; i++) {
+                const tr = addBooklistCard(BooklistsList[i],"", "guest")
+                tableResultTBODY.appendChild(tr)
+            }
         }
         flipPage(1,3)
     }).catch((error) => {
@@ -352,26 +353,6 @@ function getUserID(){
         return 'guest'
     }
 }
-
-/* // helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
-
-    const url = '/api/users/'+userID
-    fetch(url).then((res) => { 
-        if (res.status === 200) {
-           return res.json() 
-       } else {
-            log('faild to get user info. as guest.')
-       }                
-    }).then((json) => {  //pass json into object locally
-        log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
-        return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
-    }).catch((error) => {
-        log(error)
-    })
-} */
 
 //helper: delete icon for each booklist card
 function addDeleteButton(){
