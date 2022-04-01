@@ -115,7 +115,7 @@ function searchList(e){
 
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection, id) {
+	constructor(listName, listDescription, creator, bookCollection, id, likes, collect) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
@@ -126,8 +126,8 @@ class Booklist {
         this.books = bookCollection; // list of Book object
 		this.booklistID = id;
 		BooklistsNum++;
-        this.likes = 0;
-        this.collect = 0;
+        this.likes = likes;
+        this.collect = collect;
         const date = new Date() 
         this.createTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	}
@@ -147,7 +147,7 @@ function getBooklists(){
     }).then((json) => {  //pass json into object locally
         const booklists = json.booklists
         for (each of booklists){
-            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id))
+            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likes, each.collect))
         }
         displaySearchbox() // for search bar function 
         displayAllBooklists(BooklistsList, getUserID())
@@ -159,33 +159,51 @@ function getBooklists(){
 }
 // Display all availble booklists:
 function displayAllBooklists(BooklistsList, userID) {
-    const userType = checkUserType(userID)
-    if (userType === 'Admin' | userType === 'User'){
-        booklistTable.addEventListener('click', deleteBooklist)
-        const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
-        endUserActionsWrap.addEventListener('click', addNewBooklist)
-        // change navi bar username
-        const userName = getUserName(userID)
-        document.querySelector('#userLoginInfo').innerText = userName
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {  //pass json into object locally
+        //log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
+        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+        return JSON.stringify(json)
+    }).then((userInfo)=>{
+        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+        const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
+        //log(userType)
+        if (userType === 'Admin' | userType === 'User'){
+            booklistTable.addEventListener('click', deleteBooklist)
+            const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
+            endUserActionsWrap.addEventListener('click', addNewBooklist)
+            // change navi bar username
+            ////const userName = getUserName(userID)
+            document.querySelector('#userLoginInfo').innerText = username
 
-        // set navi bar link
-        document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
-        document.querySelector('#bookmain').href = "../BookMainPage/BookMainPage.html?userID="+userID
-        document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
-        document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
-    } else {
-        try{
-            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
-            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
-        } catch {
-            log('changed the sorting way!')
+            // set navi bar link
+            document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
+            document.querySelector('#bookmain').href = "../BookMainPage/BookMainPage.html?userID="+userID
+            document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
+            document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
+        } else {
+            try{
+                document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
+                document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+            } catch {
+                log('changed the sorting way!')
+            }
         }
+        const tableResultTBODY = document.querySelector('#tableResultTBODY')
+        for(let i = 0; i < BooklistsNum; i++) {
+            const tr = addBooklistCard(BooklistsList[i],userID, userType)
+            tableResultTBODY.appendChild(tr)
     }
-    const tableResultTBODY = document.querySelector('#tableResultTBODY')
-	for(let i = 0; i < BooklistsNum; i++) {
-        const tr = addBooklistCard(BooklistsList[i],userID, userType)
-        tableResultTBODY.appendChild(tr)
-    }
+    }).catch((error) => {
+        log(error)
+    })
+    
 }
 
 
@@ -335,25 +353,31 @@ function renewPage() {
 // helper: get user id
 function getUserID(){
     try{
-        return parseInt(window.location.href.split('?')[1].split('userID=')[1])
+        return (window.location.href.split('?')[1].split('userID=')[1])
     } catch{
         return 'guest'
     }
 }
 
-// helper: check the user type, return 'User' or 'Admin'?
+/* // helper: check the user type, return 'User' or 'Admin'?
 function checkUserType(userID){
     // need more dynamic way to search user database, check type
     // phase 2 task
 
-    if (userID === 0){ 
-        return('User')
-    } else if (userID === 1) {
-        return('Admin')
-    } else {
-        return ('guest')
-    }
-}
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {  //pass json into object locally
+        log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
+        return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+    }).catch((error) => {
+        log(error)
+    })
+} */
 
 //helper: delete icon for each booklist card
 function addDeleteButton(){
@@ -368,12 +392,7 @@ function addDeleteButton(){
 
 //helper: get user name by user id
 function getUserName(userID){
-    // need more dynamic way to search user database, check type
-    if (userID === 0){ 
-        return('User')
-    } else if (userID === 1) {
-        return('Admin')
-    } 
+    return document.querySelector('#userLoginInfo').innerText 
 }
 
 // helper for addBooklistCard: li element for booklist info
@@ -590,6 +609,7 @@ function addBooklistCard(booklist, userID, userType){
 
     // li2: list creator
     const selfName = getUserName(userID)
+    log(selfName)
     const li2 = addCreator(booklist.creator, selfName, userType)
     ul1.appendChild(li2)
 
@@ -647,23 +667,27 @@ function increaseLikeOrCollect(e){
             const type = e.target.parentElement.nextSibling.innerText
             if (pageIndex === index && iconName == 'collectIcon' && type.includes("Collects")){ // haven't collected
                 selectedBookList[0].collect++
-                // post a collect add
+                // put a collect add
+                modifyLikeOrCollect(index, "collect", "add")
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
                 selectedBookList[0].likes++
-                // post a like add
+                // put a like add
+                modifyLikeOrCollect(index, "likes", "add")
                 allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/heart_icon.png"
             } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
                 selectedBookList[0].collect--
-                // post a collect reduce
+                // put a collect reduce
+                modifyLikeOrCollect(index, "collect", "reduce")
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
                 selectedBookList[0].likes--
-                // post a like reduce
+                // put a like reduce
+                modifyLikeOrCollect(index, "likes", "reduce")
                 allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/like_icon.png"
@@ -671,6 +695,36 @@ function increaseLikeOrCollect(e){
         }
     }
     
+}
+
+// patch modify
+function modifyLikeOrCollect(id, target, operation){
+    const book = BooklistsList.filter((list)=> list.booklistID == id )
+    const url = '/api/booklist/'+id
+
+    let data = {
+        target: target,
+        operation: operation
+    }
+    const request = new Request(url, {
+        method: 'PATCH', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('updated')    
+        } else {
+            console.log('Failed to updated')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
 }
 
 // admin & creator only: delete list
@@ -884,7 +938,6 @@ function addBooklist(bookname, description, books){
             'Content-Type': 'application/json'
         },
     });
-    log(data)
     fetch(request)
     .then(function(res) {
         if (res.status === 200) {
