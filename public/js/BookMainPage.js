@@ -120,7 +120,7 @@ function getBooks(){
        } else {
             alert('faild to get all books.')
        }                
-    }).then((json) => {  //pass json into object locally
+    }).then((json) => {
         const books = json.books
 
         for (each of books){
@@ -172,24 +172,22 @@ function displayAllBooks(BooksList, userID) {
        } else {
             log('faild to get user info. as guest.')
        }                
-    }).then((json) => {  //pass json into object locally
-        //log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
-        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+    }).then((json) => {
         return JSON.stringify(json)
     }).then((userInfo)=>{
-        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
-        const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
-        //const userType = checkUserType(userID)
-        if (userType === 'Admin' | userType === 'User'){
+        let userType = "guest"
+        try { // check if logined
+            userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
+
             // change navi bar username
-            //const userName = getUserName(userID)
             document.querySelector('#userLoginInfo').innerText = username
 
             // set navi bar link
-            document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
-            document.querySelector('#bookmain').href = "./BookMainPage.html?userID="+userID
-            document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+userID
-            document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
+            document.querySelector('#home').href = "./public/html/index.html?userID="+userID
+            document.querySelector('#bookmain').href = "./public/html/BookMainPage.html?userID="+userID
+            document.querySelector('#booklistmain').href = "./public/html/BooklistMainPage.html?userID="+userID
+            document.querySelector('#userLoginInfo').href = "./public/html/user.html?userID="+userID // need check
             if(userType === 'Admin'){
                 document.querySelector('#tableResult').addEventListener('click', deleteBook)
                 document.querySelector('#addButton').addEventListener('click', addNewBook)
@@ -197,10 +195,13 @@ function displayAllBooks(BooksList, userID) {
             } else {
                 document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
             }
-        } else {
+        } catch { // guest
+            const userType = "guest"
             document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
             document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
         }
+        
+        // construct book card
         const tableResultTBODY = document.querySelector('#tableResultTBODY')
         for(let i = 0; i < BooksNum; i++) {
             const tr = document.createElement('tr')
@@ -514,29 +515,9 @@ function getUserID(){
     }
 }
 
-// helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
-
-    if (userID === 0){ 
-        return('User')
-    } else if (userID === 1) {
-        return('Admin')
-    } else {
-        return ('guest')
-    }
-}
-
 //helper: get user name by user id
 function getUserName(userID){
-    // need more dynamic way to search user database, check type
     return document.querySelector('#userLoginInfo').innerText 
-    /* if (userID === 0){ 
-        return('User')
-    } else if (userID === 1) {
-        return('Admin')
-    }  */
 }
 
 // helper: upload img
@@ -574,10 +555,6 @@ function uploadPicture(e){
   }
 
 function ifNeedDeleteForm(userID){
-    /* if(checkUserType(getUserID()) == 'Admin'){
-        addFormForDelete()
-    } */
-
     const url = '/api/users/'+userID
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -585,18 +562,21 @@ function ifNeedDeleteForm(userID){
        } else {
             log('faild to get user info. as guest.')
        }                
-    }).then((json) => {  //pass json into object locally
-        log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
-        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+    }).then((json) => {
         return JSON.stringify(json)
     }).then((userInfo)=>{
-        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
-
-        if(userType == 'Admin'){
-            addFormForDelete()
+        try{
+            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            if(userType == 'Admin'){
+                addFormForDelete()
+            }
+        } catch {
+            log("guest")
         }
+        
     }).catch((error)=>{
         log(error)
+        return
     })
 }
 
