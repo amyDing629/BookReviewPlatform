@@ -359,18 +359,16 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 })
 
 // create post
-app.post('/api/posts', mongoChecker, async (req, res)=>{
+app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	const newPost = new Post({
 		bookID: req.body.bookID,
 		bookTitle: req.body.bookTitle,
-		bookLink: req.body.bookLink,
-        poster: req.body.poster,
+        username: req.body.username,
 		posterProfile: req.body.posterProfile,
 		pic: req.body.pic,
         content: req.body.content,
         time: req.body.time,
 		likes: 0,
-		collect: 0
 	})
     try {
 		const result = await newPost.save()	
@@ -417,49 +415,6 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 })
 
 
-
-
-
-/*********** POSTs ************/
-
-// get all posts 
-app.get('/api/posts', mongoChecker, async (req, res)=>{
-	try {
-		const posts = await Post.find()
-		res.send({ posts })
-	} catch(error) {
-		log(error)
-		res.status(500).send("Internal Server Error")
-	}
-})
-
-
-// add post (change along with USER & BOOK)
-app.post('/api/addPost', mongoChecker, async (req, res)=>{ 
-    const newPost = new Post({
-		bookID: req.body.bookID,
-        userID: req.body.userID,
-		booktitle: req.body.booktitle,
-		username: req.body.username,
-        posterProfile: req.body.posterProfile,
-    	pic: req.body.pic,
-    	content: req.body.content,
-    	time: req.body.time,
-		likes: req.body.likes
-	})
-
-    try {
-		const post = await newPost.save()
-		res.send({post})
-	} catch(error) {
-		if (isMongoError(error)) {
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request')
-		}
-	}
-})
-
 /*********** BOOKs ************/
 
 // get all books 
@@ -497,7 +452,7 @@ app.get('/BookMain/:userID?', async (req, res) => {
 app.get('/api/book', mongoChecker, async (req, res) => {
     const query = req.query
     const book = query.bookID
-    if (!ObjectID.isValid(book)) {
+    if (!ObjectId.isValid(book)) {
 		res.status(404).send('invalid book id type') 
 		return
 	}
@@ -517,7 +472,7 @@ app.get('/api/book', mongoChecker, async (req, res) => {
 // delete book
 app.delete('/api/book/:bookID', async (req, res)=>{
     const book = req.params.bookID
-    if (!ObjectID.isValid(book)) {
+    if (!ObjectId.isValid(book)) {
 		res.status(404).send('invalid book id type') 
 		return
 	}
