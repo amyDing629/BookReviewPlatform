@@ -110,10 +110,11 @@ function getBooks(){
 
         for (each of books){
             BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
-            log(BooksList.length)
         }
         displaySearchbox()//for search bar function
         selectBookToPlay(BooksList)
+        // log(getUserID())
+        ifNeedaddButton(getUserID())
         // checkDesButton(getUserID())
         // displayBookDescription(BooksList,getUserID())
         // filpPage(1,3)
@@ -207,7 +208,6 @@ function displayBookDetail(BooksList, bookID, user) {
 
 // // display the book information like book cover, author...
 function displayBookDescription(BooksList, id, user) {
-    log(BooksList)
     const book = BooksList.filter((book)=> book.bookID == id)
     const bookInfo = document.querySelector('#bookInfo');
 
@@ -247,13 +247,25 @@ function displayBookDescription(BooksList, id, user) {
 
     const descriContent = document.createTextNode(book[0].description)
     bookDescription.appendChild(descriContent)
-    if(user == 'Admin'){
-        const editDes = document.createElement('button');
-        editDes.id = "DesButton"
-        editDes.className = "btn btn-light"
-        editDes.innerText = "Edit Description"
-        insertAfter(editDes, bookDescription)
-    }
+    // if(user == 'Admin'){
+    //     const editDes = document.createElement('button');
+    //     editDes.id = "DesButton"
+    //     editDes.className = "btn btn-light"
+    //     editDes.innerText = "Edit Description"
+    //     editDes.addEventListener('click', profileButtonsOnClick)
+    //     insertAfter(editDes, bookDescription)
+    // }
+    // addDesButton()
+}
+
+function addDesButton(){
+    const bookDescription = document.querySelector('#bookDescription');
+    const editDes = document.createElement('button');
+    editDes.id = "DesButton"
+    editDes.className = "btn btn-light"
+    editDes.innerText = "Edit Description"
+    editDes.addEventListener('click', profileButtonsOnClick)
+    insertAfter(editDes, bookDescription)
 }
 
 function insertAfter(newNode, existingNode) {
@@ -499,12 +511,13 @@ function selectBookToPlay(BooksList){
         // selectNarviBarUser('guest')
     } else { // admin & user
         const currentBookID = getBookID()
+        // log(currentBookID)
         const currentUser = getUserID()
         
         const userType = checkUserType(currentUser)
-        displayBookDetail(currentBookID, userType)
-        selectNarviBarUser(userType)
-        displayAddPost();
+        displayBookDetail(BooksList, currentBookID, userType)
+        // selectNarviBarUser(userType)
+        // displayAddPost();
     }
 }
 
@@ -551,10 +564,10 @@ function selectNarviBarUser(userType){
 // displaySearchbox()
 // selectBookToPlay()
 
-const desButton = document.querySelector('#DesButton');
-if(desButton){
-    desButton.addEventListener('click', profileButtonsOnClick);
-}
+// const desButton = document.querySelector('#DesButton');
+// if(desButton){
+//     desButton.addEventListener('click', profileButtonsOnClick);
+// }
 
 /* If 'Edit' is clicked, display edition page.
    If 'Submit' is clicked, display confirmed information */
@@ -571,11 +584,14 @@ if(desButton){
     }
     else if (e.target.innerHTML == 'Submit') {
         let signature = document.getElementById('sigForm').value;
+        const selectedBook = BooksList.filter((book) => book.bookID == getBookID())
+        modifyDescription(getBookID(), 'description', signature)
         userInfo.removeChild(document.getElementById('sigForm'));
         let newSignature = document.createElement('div');
         newSignature.id = 'bookDescription';
         newSignature.className = 'bookDescription';
-        newSignature.innerHTML = signature;
+        // log(selectedBook[0].description)
+        newSignature.innerHTML = selectedBook[0].description;
         userInfo.insertBefore(newSignature, profileButton);
         profileButton.innerHTML = 'Edit Description';
     }
@@ -736,7 +752,7 @@ function addNewPost(e){
 // helper: get user id
 function getUserID(){
     try { 
-        return parseInt(window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        return (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
     } catch { 
         return 'guest'
     }
@@ -744,7 +760,7 @@ function getUserID(){
 
 // helper: get book id
 function getBookID(){
-    return parseInt(window.location.href.split('?')[1].split('&')[0].split('=')[1])
+    return window.location.href.split('?')[1].split('&')[0].split('=')[1]
 }
 
 // helper: check the user type, return 'User' or 'Admin'?
@@ -760,4 +776,66 @@ function checkUserType(userID){
         return 'guest'
     }
 }
+
+function ifNeedaddButton(userID){
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {
+        return JSON.stringify(json)
+    }).then((userInfo)=>{
+        try{
+            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            if(userType == 'User'){
+                displayAddPost()
+            }else if(userType == 'Admin'){
+                addDesButton();
+                displayAddPost()
+            }
+        } catch {
+            log("guest")
+        }
+        
+    }).catch((error)=>{
+        log(error)
+        return
+    })
+}
+
+// patch modify
+function modifyDescription(id, target, content){
+    // const book = getBookID()
+    const url = '/api/book/'+id
+
+    let data = {
+        target: target,
+        content: content
+    }
+    const request = new Request(url, {
+        method: 'PATCH', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        log(res)
+        if (res.status === 200) {
+            console.log('updated')    
+        } else {
+            console.log('Failed to updated')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+
 getBooks();

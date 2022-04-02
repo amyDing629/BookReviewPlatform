@@ -550,24 +550,54 @@ app.get('/BookDetail/Detail', async (req, res) => {
 	const user = query.userID
 
 	if (!book){
-		res.status(500).send("server error on display book detail page")
+		res.status(500).send("server error on display book detail page2")
 	}else {
 		res.sendFile(__dirname + '/public/html/BookDetail.html')
 	}
 })
 
-app.get('/BookDetail/Detail?bookID=:book&userID=:user', async (req, res) => {
-	const query = req.query
-	const book = query.bookID
-	const user = query.userID
-
-	if (!book){
-		if(!user){
-			res.sendFile(__dirname + '/public/html/BookDetail.html?bookID='+book)
-		}
-	}else {
-		res.sendFile(__dirname + '/public/html/BookDetail.html')
+app.patch('/api/book/:bookID', async (req, res)=>{
+	const bookID = req.params.bookID
+	if (!ObjectID.isValid(bookID)) {
+		res.status(404).send('invalid booklist id type') 
+		return
 	}
+	
+	const target = req.body.target
+	const content = req.body.content
+	const fieldsToUpdate = {}
+	try {
+		const item = await Book.findOne({_id: bookID})
+		if (!item) {
+			res.status(404).send("no such a book")
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find booklist")
+	}
+
+	if (content){
+		fieldsToUpdate[target] = content
+	} else {
+		res.status(404).send('invalid request body') 
+		return;
+ 	}
+	try {
+		const book = await Book.findOneAndUpdate({_id: bookID}, {$set: fieldsToUpdate}, {new: true})
+		if (!book) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.send(book)
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // bad request for changing the student.
+		}
+	}
+	
 })
 
 
