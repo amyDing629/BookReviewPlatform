@@ -15,17 +15,15 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 1,
-		maxlength: 10
     },
     signature: {
         type: String,
-		required:true,
+		required:false,
         default: ''
     },
     profilePhoto: {
         type: String,
-		required:true,
+		required:false,
         default: ''
     },
     postList: {
@@ -51,7 +49,7 @@ const UserSchema = new mongoose.Schema({
     },
     isActivate:{
         type: Boolean,
-        required: true,
+        required: false,
         default: true
     }
 })

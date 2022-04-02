@@ -12,17 +12,17 @@ const PostSchema = new mongoose.Schema({
         // type: String,
 		required: true
     },
-    bookTitle: {
+    booktitle: {
         type: String,
-        required: true,
+        required: false,
     },
     username: {
         type: String,
-        required: true,
+        required: false,
     },
     posterProfile: {
         type: String,
-        required: true
+        required: false,
     },
     pic: {
         type: String,
@@ -32,14 +32,16 @@ const PostSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true,
+        default:""
     },
     time: {
         type: String,
-        // default: Date.now
+        required: false
     },
     likes: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     }
 });
 

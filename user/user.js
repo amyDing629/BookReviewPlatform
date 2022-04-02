@@ -313,34 +313,80 @@ function _getUserByName(username) {
         }
     }
 }
+
 function _createPostDiv(post) {
+    post = post.post;
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
-        let contentDiv = e.target.parentElement.parentElement
-        let pid = contentDiv.getElementsByClassName('postId')[0].innerHTML
-        let post;
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
-        for (post of posts){
-            if (parseInt(post.postID) == pid){
-                if (e.target.classList.contains('like')){
-                    post.likes ++;
-                    icon.innerText = ' '+ post.likes;
-                    e.target.classList.remove('like');
-                    e.target.classList.add('dislike');
-                    e.target.innerText = 'Dislike';
-                    break;
-                }
-                else if (e.target.classList.contains('dislike')){
-                    post.likes --;
-                    icon.innerText = ' '+ post.likes;
-                    e.target.classList.remove('dislike');
-                    e.target.classList.add('like');
-                    e.target.innerText = 'Like';
-                    break;
-                }    
-            } 
-        }
+
+        let url = '/api/posts/' + post._id;
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                fetch(url).then((res) => { 
+                    if (res.status === 200) {
+                       return res.json() 
+                   } else {
+                        console.log("Could not get this user.")
+                   }                
+                }).then((post) => {
+                    post = post.post
+                    if (e.target.classList.contains('like')){
+                        console.log(post.likes);
+                        post.likes ++;
+                        icon.innerText = ' '+ post.likes; //TODO: update db
+                        e.target.classList.remove('like');
+                        e.target.classList.add('dislike');
+                        e.target.innerText = 'Dislike';
+                        let url = '/api/posts/' + post._id
+                        let request = new Request(url, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'add'}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to updated')
+                            }
+                        })
+                    }
+                    else if (e.target.classList.contains('dislike')){
+                        post.likes --;
+                        icon.innerText = ' '+ post.likes;
+                        e.target.classList.remove('dislike');
+                        e.target.classList.add('like');
+                        e.target.innerText = 'Like';
+                        let url = '/api/posts/' + post._id;
+                        let request = new Request(url, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'reduce'}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to updated')
+                            }
+                        })
+                    }    
+                }).catch((error) => {
+                    console.log(error)
+                })
+            }
+        })
     }
+
 
     function collectOnClick(e){
         e.preventDefault(); // prevent default action
@@ -359,6 +405,18 @@ function _createPostDiv(post) {
     function deletePostButtonOnClick(e) {
         let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
         document.getElementById('contents').children[0].removeChild(deletePostDiv);
+        let url = '/api/post/' + id
+        let request = new Request(url, {
+            method: 'DELETE',
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('deleted')
+            } else {
+                console.log('failed to delete')
+            }
+        })
+
     }
 
     let postDiv = document.createElement('div');
@@ -367,16 +425,16 @@ function _createPostDiv(post) {
     userDiv.className = 'userProfileContainer';
     let contentDiv = document.createElement('div');
     contentDiv.className ='postContent';
+    
 
     let title = post.booktitle;
-    let username = post.poster;
+    let username = post.username;
     let userProfile = post.posterProfile;
     let pic = post.pic;
     let content = post.content;
     let time = post.time;
     let likes = post.likes;
-    let plink = post.posterlink;
-    let pid = post.postID;
+    let pid = post._id;
     let bid = post.bookID;
     
     let blink;
@@ -387,7 +445,6 @@ function _createPostDiv(post) {
     }else{
         blink = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
     }
-    
 
     let img1 = document.createElement('img');
     img1.className='userProfile';
@@ -482,9 +539,8 @@ function _createPostDiv(post) {
     button2.addEventListener('click', collectOnClick);
     // end user: delete button only for lists created by self
     const userInfo = document.querySelector('#userLoginInfo').innerText
-
     likeh5.appendChild(icon)
-    if (userInfo.toLowerCase() === post.poster.toLowerCase() || userInfo.toLowerCase() == 'admin') {
+    if (userInfo.toLowerCase() === post.username.toLowerCase() || userInfo.toLowerCase() == 'admin') {
         let button3 = document.createElement('button');
         button3.className = "btn btn-outline-danger";
         button3.classList.add('delete');
@@ -513,11 +569,23 @@ function displayUserPosts(user) {
 
     let ul = document.createElement('ul');
     //ul.id = 'posts';
-    let post;
-    for (post of user.postList) {
-        let li = document.createElement('li');
-        li.appendChild(_createPostDiv(post));
-        ul.appendChild(li);
+    let postID;
+    for (postID of user.postList) {
+        let url = 'http://localhost:50001/api/posts/' + postID;
+        console.log(url);
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json() 
+            } else {
+                 console.log("Could not get this post.")
+            }  
+        }).then((post) => {
+            console.log(post);
+            let li = document.createElement('li');
+            li.appendChild(_createPostDiv(post));
+            ul.appendChild(li);
+
+        })
     }
     content.appendChild(ul);
     let pageFliper = document.createElement('div');

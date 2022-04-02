@@ -362,14 +362,28 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	const newPost = new Post({
 		bookID: req.body.bookID,
-		bookTitle: req.body.bookTitle,
-        username: req.body.username,
-		posterProfile: req.body.posterProfile,
-		pic: req.body.pic,
-        content: req.body.content,
-        time: req.body.time,
-		likes: 0,
+		userID: req.body.userID,
+		content: req.body.content
 	})
+	if (req.body.pic){
+		newPost.pic = req.body.pic
+	}
+	if (req.body.bookTitle){
+		newPost.bookTitle = req.body.bookTitle
+	}
+	if (req.body.username){
+		newPost.username = req.body.username
+	}
+	if (req.body.posterProfile){
+		newPost.posterProfile = req.body.posterProfile
+	}
+	if (req.body.content){
+		newPost.content = req.body.content
+	}
+	if (req.body.time){
+		newPost.time = req.body.time
+	}
+
     try {
 		const result = await newPost.save()	
 		res.send(result)
@@ -378,7 +392,7 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
 			res.status(500).send('Internal server error')
 		} else {
-			res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+			res.status(400).send('Bad Request hello') // 400 for bad request gets sent to client.
 		}
 	}  
 })
