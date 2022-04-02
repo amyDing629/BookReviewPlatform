@@ -1,21 +1,16 @@
 const mongoose = require('mongoose');
 
 const PostSchema = new mongoose.Schema({
-    postID: {
-        type: Number,
-        required: true,
-        minlength: 1
-    },
     bookID: {
         type: Number,
         required: true,
         minlength: 1
     },
-    booktitle: {
+    bookTitle: {
         type: String,
         required: true,
     },
-    booklink: {
+    bookLink: {
         type: String,
         required: false,
     },
@@ -49,7 +44,7 @@ const PostSchema = new mongoose.Schema({
     likes: {
         type: Number,
         required: true
-    },
+    }
 });
 
 const Post = mongoose.model("Post", PostSchema);
