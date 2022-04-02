@@ -20,34 +20,40 @@ const UserSchema = new mongoose.Schema({
     },
     signature: {
         type: String,
-		required:false
+		required:true,
+        default: ''
     },
     profilePhoto: {
         type: String,
-		required:false
+		required:true,
+        default: ''
     },
-    postlist: {
-        type: [Post],
+    postList: {
+        type: [String],
         default: []
     },
     booklistList: {
-        type: [BookList],
+        type: [String],
         default: []
     },
     postCollection: {
-        type: [Post],
+        type: [String],
         default: []
     },
-    booklistCollectionList: {
-        type: [BookList],
+    booklistCollection: {
+        type: [String],
         default: []
     },
     type:{
         type: String,
         required: true,
         enum: ['Admin', 'User']
+    },
+    isActivate:{
+        type: Boolean,
+        required: true,
+        default: true
     }
-
 })
 
 

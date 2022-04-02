@@ -120,6 +120,7 @@ app.use("/public/html", express.static(path.join(__dirname + '/public/html')));
 app.use('/public/css', express.static(path.join(__dirname + '/public/css')));
 app.use('/public/js', express.static(path.join(__dirname + '/public/js')));
 app.use('/public/img/static', express.static(path.join(__dirname + '/public/img/static')));
+app.use('/user', express.static(path.join(__dirname + '/user')))
 
 /*******************************************************************/
 
@@ -137,7 +138,30 @@ app.get('/register', sessionChecker, (req, res) => {
 
 /*******************************************************************/
 /*******************************************************************/
+// login verify
+app.get('/login/:username/:password', mongoChecker, async (req, res) => {
+	const username = req.params.username
+	const password = req.params.password
 
+    try {
+		const user = await User.findByNamePassword(username, password);
+		if (!user) {
+			res.status(404).send(error)
+		} else {   
+			// Add the user's id and username to the session.
+            // We can check later if the session exists to ensure we are logged in.
+            req.session.user = user._id;
+            req.session.username = user.username
+			res.send({user})
+		}
+    } catch (error) {
+    	if (isMongoError(error)) {
+			res.status(500).send(error)
+		} else {
+			res.status(400).send(error)
+		}
+    }
+})
 /*********** USERs ************/
 // get all users
 app.get('/api/users', mongoChecker, async (req, res)=>{
@@ -171,42 +195,11 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 	}
 })
 
-// login verify
-app.get('/login/:username/:password', mongoChecker, async (req, res) => {
-	const username = req.params.username
-	const password = req.params.password
-
-    try {
-		const user = await User.findByNamePassword(username, password);
-		if (!user) {
-			res.status(404).send(error)
-		} else {   
-			// Add the user's id and username to the session.
-            // We can check later if the session exists to ensure we are logged in.
-            req.session.user = user._id;
-            req.session.username = user.username
-			res.send({user})
-		}
-    } catch (error) {
-    	if (isMongoError(error)) {
-			res.status(500).send(error)
-		} else {
-			res.status(400).send(error)
-		}
-    }
-})
-
 
 app.post('/api/addUser', mongoChecker, async (req, res)=>{ 
     const newUser = new User({
 		username: req.body.username,
         password: req.body.password,
-		signature: "",
-		profilePhoto: "",
-        postist: [],
-    	booklistList: [],
-    	postColectionList: [],
-    	booklistCollectionList: [],
 		type: req.body.type
 	})
 
@@ -229,27 +222,93 @@ app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{
 	try {
 		const deleteUser = await User.findOneAndRemove({_id: user})
 		if (!deleteUser) {
-			res.status(404).send("no such a book")
+			res.status(404).send("no such a user")
 		} else {   
 			res.send({deleteUser})
 		}
 	} catch(error) {
 		log(error)
-		res.status(500).send("server error on delete book") // server error, could not delete.
+		res.status(500).send("server error on delete user") // server error, could not delete.
 	}
 })
 
-// Modify user info like collection lists
-// TODO
-app.put('/api/users/:userID',mongoChecker, async (req, res)=>{}) 
 
 
+app.get('/user/template', async (req, res)=>{
+	try {
+		res.sendFile(__dirname + '/user/user.html');
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error');
+	}
+})
+
+// get user by id
+app.get('/user/:id', mongoChecker, async (req, res)=>{
+	const id = req.params.id
+
+	if (!ObjectId.isValid(id)) {
+		res.status(404).send() 
+		return;
+	}
+	try {
+		const user = await User.findOne({_id: id})
+		if (!user) {
+			res.status(404).send('Resource not found')  // could not find this user
+		} else { 
+			res.redirect('/user/template?userID=' + id);
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
+	}
+})
+
+// update user information (signature, profilePhoto, post/booklist, post/booklist collection, isActivate)
+app.patch('/api/users/:userID', async (req, res)=>{
+    const userID = req.params.userID
+    if (!ObjectId.isValid(userID)) {
+		res.status(404).send('invalid user id type') 
+		return
+	}
+	const operation = req.body.operation
+	const value = req.body.value
+	
+	try {
+		const user = await User.findOne({_id: userID})
+		if (!user) {
+			res.status(404).send("no such a user")
+		} else {  
+			if (operation == 'signature'){
+				user.signature = value
+			} else if (operation == 'profile') {
+				user.profilePhoto = value
+			} else if (operation == 'postList') {
+				user.postList = value
+			} else if (operation == 'booklistList') {
+				user.booklistList = value
+			} else if (operation == 'postCollection') {
+				user.postCollection = value
+			} else if (operation == 'booklistCollection') {
+				user.booklistCollection = value
+			} else if (operation == 'isActivate') {
+				user.isActivate = value
+			} else {
+				res.status(404).send('invalid operation')
+			}
+		}
+		user.save().then((updatedUser) => {
+			res.send({user: updatedUser})
+		})
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find user")
+	}
+})
 
 
-/*********** POSTs ************/
-
-// get all posts 
-app.get('/api/posts', mongoChecker, async (req, res)=>{
+/************** POSTS ************/
+app.get('/api/posts', mongoChecker, async (req, res) => {
 	try {
 		const posts = await Post.find()
 		res.send({ posts })
@@ -259,32 +318,102 @@ app.get('/api/posts', mongoChecker, async (req, res)=>{
 	}
 })
 
+app.get('/api/posts/:postID', mongoChecker, async (req, res) => {
+	const postID = req.params.postID
 
-// add post (change along with USER & BOOK)
-app.post('/api/addPost', mongoChecker, async (req, res)=>{ 
-    const newPost = new Post({
-		bookID: req.body.bookID,
-        userID: req.body.userID,
-		booktitle: req.body.booktitle,
-		username: req.body.username,
-        posterProfile: req.body.posterProfile,
-    	pic: req.body.pic,
-    	content: req.body.content,
-    	time: req.body.time,
-		likes: req.body.likes
-	})
-
-    try {
-		const post = await newPost.save()
-		res.send({post})
-	} catch(error) {
-		if (isMongoError(error)) {
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request')
+	if (!ObjectId.isValid(postID)) {
+		res.status(404).send() 
+		return;
+	}
+	try {
+		const post = await Post.findOne({_id: postID})
+		if (!post) {
+			res.status(404).send('Resource not found')  // could not find this post
+		} else { 
+			res.send({post});
 		}
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
 	}
 })
+
+// delete post
+app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
+    const postID = req.params.postID
+    if (!ObjectId.isValid(postID)) {
+		res.status(404).send('invalid post id type') 
+		return
+	}
+	try {
+		const deletePost = await Post.findOneAndRemove({_id: postID})
+		if (!deletePost) {
+			res.status(404).send("no such a post")
+		} else {   
+			res.send(deletePost)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error')
+	}
+})
+
+// create post
+app.post('/api/addPost', mongoChecker, async (req, res)=>{
+	const newPost = new Post({
+		bookID: req.body.bookID,
+		bookTitle: req.body.bookTitle,
+        username: req.body.username,
+		posterProfile: req.body.posterProfile,
+		pic: req.body.pic,
+        content: req.body.content,
+        time: req.body.time,
+		likes: 0,
+	})
+    try {
+		const result = await newPost.save()	
+		res.send(result)
+	} catch(error) {
+		log(error) // log server error to the console, not to the client.
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+		}
+	}  
+})
+
+// update post likes
+app.patch('/api/posts/:postID', async (req, res)=>{
+    const postID = req.params.postID
+    if (!ObjectId.isValid(postID)) {
+		res.status(404).send('invalid post id type') 
+		return
+	}
+	const operation = req.body.operation
+	
+	try {
+		const post = await Post.findOne({_id: postID})
+		if (!post) {
+			res.status(404).send("no such a book")
+		} else {   
+			if (operation == 'add'){
+				post.likes += 1
+			} else if (operation == 'reduce'){
+				post.likes -= 1
+			} else {
+				res.status(404).send('invalid operation in request body')
+			}	
+		}
+		post.save().then((updatedPost) => {
+			res.send({updatedPost})
+		})
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find post")
+	}
+})
+
 
 /*********** BOOKs ************/
 
@@ -323,7 +452,7 @@ app.get('/BookMain/:userID?', async (req, res) => {
 app.get('/api/book', mongoChecker, async (req, res) => {
     const query = req.query
     const book = query.bookID
-    if (!ObjectID.isValid(book)) {
+    if (!ObjectId.isValid(book)) {
 		res.status(404).send('invalid book id type') 
 		return
 	}
@@ -343,7 +472,7 @@ app.get('/api/book', mongoChecker, async (req, res) => {
 // delete book
 app.delete('/api/book/:bookID', async (req, res)=>{
     const book = req.params.bookID
-    if (!ObjectID.isValid(book)) {
+    if (!ObjectId.isValid(book)) {
 		res.status(404).send('invalid book id type') 
 		return
 	}
@@ -396,7 +525,6 @@ app.get('/api/booklists', mongoChecker, async (req, res)=>{
 		res.status(500).send("Internal Server Error")
 	}
 })
-
 
 // add booklist
 app.post('/api/booklist', async (req, res)=>{

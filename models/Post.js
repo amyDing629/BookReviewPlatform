@@ -12,7 +12,7 @@ const PostSchema = new mongoose.Schema({
         // type: String,
 		required: true
     },
-    booktitle: {
+    bookTitle: {
         type: String,
         required: true,
     },

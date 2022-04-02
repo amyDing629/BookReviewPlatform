@@ -12,8 +12,8 @@ const books = [];
 
 /********************** Object ***********************/
 class User {
-	constructor(userName, password) {
-		this.userName = userName;
+	constructor(username, password) {
+		this.username = username;
         this.password = password;
         this.signature = null;
         this.profilePhoto = null;
@@ -28,8 +28,8 @@ class User {
 }
 
 class AdminUser extends User {
-    constructor(userName, password) {
-        super(userName, password);
+    constructor(username, password) {
+        super(username, password);
         this.isAdmin = true;
     }
 }
@@ -142,44 +142,55 @@ function profileButtonsOnClick(e) {
 
 
 /********************** DOM Functions ************************/
-function displayUserInfo(user, isVisit) {
-    // for phase 2
-    // let currentUserID = window.location.href.split('?')[1].split('=')[1];
-    // let user;
-    // let loopUser;
-    // for (loopUser of users){
-    //     if (loopUser.userID == parseInt(currentUserID)){
-    //         user = loopUser;
-    //         break;
-    //     }
-    // }
-    if (isVisit == true) {
-        document.getElementById('userInfo').removeChild(document.getElementById('profileButton'));
-    }
-    document.getElementById('userName').innerHTML = user.userName;
-    document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
-    if (user.signature != null) {
-        document.getElementById('signature').innerHTML = user.signature;
-    }
-    if (user.profilePhoto != null) {
-        userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
-    }
-    if (user.isAdmin == true && isVisit == false) {
-        let buttons = document.getElementById('menubar').children[0];
-        let manageButtonLi = document.createElement("li");
-        let manageButton = document.createElement("button");
-        manageButton.innerHTML = 'Manage';
-        manageButton.className = 'btn btn-light';
-        manageButtonLi.appendChild(manageButton);
-        buttons.appendChild(manageButtonLi);
-        let editBookButtonLi = document.createElement("li");
-        let editBookButton = document.createElement("button");
-        editBookButton.className = 'btn btn-light';
-        editBookButton.innerHTML = 'Edit Books';
-        editBookButtonLi.appendChild(editBookButton);
-        buttons.appendChild(editBookButtonLi);
-    }
-    displayUserPosts(user);
+function displayUserInfo(isVisit) {
+    let currentUserID = window.location.href.split('?')[1].split('=')[1];
+    const url = '/api/users/' + currentUserID;
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {  //pass json into object locally
+                user = user.user;
+                console.log(user);
+                if (isVisit == true) {
+                    document.getElementById('userInfo').removeChild(document.getElementById('profileButton'));
+                }
+                document.getElementById('username').innerHTML = user.username;
+                document.getElementById('id').innerHTML = 'user ID: ' + String(user.userID);
+                if (user.signature != null) {
+                    document.getElementById('signature').innerHTML = user.signature;
+                }
+                if (user.profilePhoto != null) {
+                    userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
+                }
+                console.log(user.type);
+                console.log(isVisit);
+                if (user.type == 'Admin' && isVisit == false) {
+                    let buttons = document.getElementById('menubar').children[0];
+                    let manageButtonLi = document.createElement("li");
+                    let manageButton = document.createElement("button");
+                    manageButton.innerHTML = 'Manage';
+                    manageButton.className = 'btn btn-light';
+                    manageButtonLi.appendChild(manageButton);
+                    buttons.appendChild(manageButtonLi);
+                    let editBookButtonLi = document.createElement("li");
+                    let editBookButton = document.createElement("button");
+                    editBookButton.className = 'btn btn-light';
+                    editBookButton.innerHTML = 'Edit Books';
+                    editBookButtonLi.appendChild(editBookButton);
+                    buttons.appendChild(editBookButtonLi);
+                }
+                displayUserPosts(user);
+
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+    })          
 }
 
 function changeButtonColor(target) {
@@ -294,10 +305,10 @@ function displaySearchbox(){
 }
 
 /********** Display functions ************ */
-function _getUserByName(userName) {
+function _getUserByName(username) {
     let user;
     for (user of users) {
-        if (user.userName == userName) {
+        if (user.username == username) {
             return user;
         }
     }
@@ -358,7 +369,7 @@ function _createPostDiv(post) {
     contentDiv.className ='postContent';
 
     let title = post.booktitle;
-    let userName = post.poster;
+    let username = post.poster;
     let userProfile = post.posterProfile;
     let pic = post.pic;
     let content = post.content;
@@ -387,11 +398,11 @@ function _createPostDiv(post) {
     let userh3 = document.createElement('h3');
     let a1 = document.createElement('a');
     a1.className = 'linkColor';
-    a1.innerText = userName;
+    a1.innerText = username;
     a1.onclick = function open(e){
         e.preventDefault();
-        if (window.location.href.indexOf(userName+'.html') != -1){
-            window.location.href = userName + ".html";
+        if (window.location.href.indexOf(username+'.html') != -1){
+            window.location.href = username + ".html";
         }else{
             if (window.location.href.indexOf('user.html') != -1) {
                 window.location.href = "user.html?visit=" + _getUserByName('admin').userID;
@@ -491,8 +502,10 @@ function _createPostDiv(post) {
 
 }
 function displayUserPosts(user) {
+    console.log(user);
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
+    console.log(user.postList);
     if (user.postList.length == 0){
         content.innerHTML = "Don't have any post.";
         return
@@ -844,7 +857,7 @@ function _getRegularUserList() {
     let user;
     let regularUserList = [];
     for (user of users) {
-        if (user.isAdmin == false) {
+        if (user.type == 'Admin') {
             regularUserList.push(user);
         }
     }
@@ -882,7 +895,7 @@ function displayManageWindow() {
         let a = document.createElement('a');
         a.className = 'userLink linkColor';
         a.href = 'admin.html?visit=' + user.userID;
-        a.innerHTML = user.userName + '&nbsp#' + user.userID.toString();
+        a.innerHTML = user.username + '&nbsp#' + user.userID.toString();
         let span1 = document.createElement('span');
         span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
         let span2 = document.createElement('span');
@@ -1067,30 +1080,31 @@ users.push(regularAmy);
 
             
 // handle links
-for (let i=0; i<books.length; i++){
-    books[i].link = blinkHandler(books[i].bookId)
-}        
+// for (let i=0; i<books.length; i++){
+//     books[i].link = blinkHandler(books[i].bookId)
+// }        
 
-if (window.location.href.indexOf('visit') == '-1'){
-    if (window.location.href.indexOf('user.html') != -1){
-        displayUserInfo(regularUser, false);
-    }
-    else if (window.location.href.indexOf('admin.html') != -1){
-        displayUserInfo(adminUser, false);
-    }
-    else if (window.location.href.indexOf('amy.html') != -1){
-        displayUserInfo(regularAmy, false);
-    }
-}
-else {
-    let user;
-    let visitUserId = window.location.href.split('?')[1].split('=')[1];
-    for (user of users) {
-        if (user.userID == parseInt(visitUserId)){
-            displayUserInfo(user, true);
-        }
-    }
-}
+// if (window.location.href.indexOf('visit') == '-1'){
+//     if (window.location.href.indexOf('user.html') != -1){
+//         displayUserInfo(regularUser, false);
+//     }
+//     else if (window.location.href.indexOf('admin.html') != -1){
+//         displayUserInfo(adminUser, false);
+//     }
+//     else if (window.location.href.indexOf('amy.html') != -1){
+//         displayUserInfo(regularAmy, false);
+//     }
+// }
+// else {
+//     let user;
+//     let visitUserId = window.location.href.split('?')[1].split('=')[1];
+//     for (user of users) {
+//         if (user.userID == parseInt(visitUserId)){
+//             displayUserInfo(user, true);
+//         }
+//     }
+// }
+displayUserInfo(false);
 
 
 // Setup onclick

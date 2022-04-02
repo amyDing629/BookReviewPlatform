@@ -1,5 +1,5 @@
-@import "../HomeAndLogin/home.css";
-@import "../BooklistMainPage/BooklistMainPage.css";
+@import "../public/css/home.css";
+@import "../public/css/BooklistMainPage.css";
 
 #userMainPage {
     padding: 5px;
@@ -26,7 +26,7 @@
 	margin-top: 50px;
 }
 
-#userName {
+#username {
 	font-size: 300%;
 	font-weight: bold;
 	margin-top: 30px;
