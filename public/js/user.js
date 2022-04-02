@@ -80,35 +80,42 @@ class Booklist {
 function menuButtonsOnClick(e) {
     // Change button color
     changeButtonColor(e.target);
-    let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
-    // Find user
-    let user = null;
-    for (user of users) {
-        if (user.userID == userID) {
-            // Display contents depending on which button is clicked  
-            if (e.target.innerHTML.indexOf('Posts') !== -1) {
-                displayUserPosts(user);
-            }
-            else if (e.target.innerHTML.indexOf('Booklists') !== -1) {
-                displayUserBooklists(user);
-            }
-            else if (e.target.innerHTML.indexOf('Post Collections') !== -1) {
-                displayCollectedPost(user);
-            }
-            else if (e.target.innerHTML.indexOf('Booklist Collections') != -1) {
-                displayCollectedBooklist(user);
-            }
-            else if (e.target.innerHTML.indexOf('Manage') !== -1) {
-                displayManageWindow();
-            }
-            else {
-                displayEditBooksWindow();
-            }
-            break;  
+    let userID = window.location.href.split('?')[1].split('=')[1];
+    const url = '/api/users/' + userID;
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {
+                user = user.user
+                console.log(user)
+                if (e.target.innerHTML.indexOf('Posts') !== -1) {
+                    displayUserPosts(user);
+                }
+                else if (e.target.innerHTML.indexOf('Booklists') !== -1) {
+                    displayUserBooklists(user);
+                }
+                else if (e.target.innerHTML.indexOf('Post Collections') !== -1) {
+                    displayCollectedPost(user);
+                }
+                else if (e.target.innerHTML.indexOf('Booklist Collections') != -1) {
+                    displayCollectedBooklist(user);
+                }
+                else if (e.target.innerHTML.indexOf('Manage') !== -1) {
+                    displayManageWindow();
+                }
+                else {
+                    displayEditBooksWindow();
+                }
+            })
         }
-    }
+    })
 }
-
+    
 /* If 'Edit' is clicked, display edition page.
    If 'Submit' is clicked, display confirmed information */
 function profileButtonsOnClick(e) {
@@ -599,7 +606,6 @@ function displayUserPosts(user) {
                  console.log("Could not get this post.")
             }  
         }).then((post) => {
-            console.log(post);
             let li = document.createElement('li');
             li.appendChild(_createPostDiv(post));
             ul.appendChild(li);
@@ -613,32 +619,65 @@ function displayUserPosts(user) {
     filpPage(1, 2);
 }
 
-function _createUserBooklists(booklist) {
+function _createBooklistDiv(booklist) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
-        let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        let booklistID = booklistDiv.getElementsByClassName('listID')[0].children[0].innerHTML;
-        let booklist;
         let likeNum = e.target.parentElement.parentElement.getElementsByClassName('likeNum')[0];
-        for (booklist of booklists){
-            if (parseInt(booklist.booklistID) == booklistID){
-                if (e.target.parentElement.classList.contains('likeButton')){
-                    booklist.likes ++;
-                    likeNum.innerText = 'Liked: '+ booklist.likes;
-                    e.target.parentElement.classList.remove('likeButton');
-                    e.target.parentElement.classList.add('dislikeButton');
-                    break;
-                }
-                else if (e.target.parentElement.classList.contains('dislikeButton')){
-                    booklist.likes --;
-                    likeNum.innerText = 'Liked: '+ booklist.likes;
-                    e.target.parentElement.classList.remove('dislikeButton');
-                    e.target.parentElement.classList.add('likeButton');
-                    break;
-                }    
-            } 
-        }
-    }
+        let url = '/api/booklists/' + booklist._id
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json() 
+            } else {
+                console.log("Could not get this user.")
+            }                
+        }).then((booklist) => {
+            if (e.target.parentElement.classList.contains('likeButton')){
+                booklist.likes ++;
+                likeNum.innerText = 'Liked: '+ booklist.likes;
+                e.target.parentElement.classList.remove('likeButton');
+                e.target.parentElement.classList.add('dislikeButton');
+                let url = '/api/booklist/' + booklist._id
+                let request = new Request(url, {
+                    method: 'PATCH',
+                    body: JSON.stringify({'operation': 'add', 'target': 'likes'}),
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                fetch(request).then(function(res){
+                    if (res.status === 200) {
+                        console.log('updated')
+                    } else {
+                        console.log('failed to update')
+                    }
+                })
+
+            }
+            else if (e.target.parentElement.classList.contains('dislikeButton')){
+                booklist.likes --;
+                likeNum.innerText = 'Liked: '+ booklist.likes;
+                e.target.parentElement.classList.remove('dislikeButton');
+                e.target.parentElement.classList.add('likeButton');
+                let url = '/api/booklist/' + booklist._id
+                let request = new Request(url, {
+                    method: 'PATCH',
+                    body: JSON.stringify({'operation': 'reduce', 'target': 'likes'}),
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                fetch(request).then(function(res){
+                    if (res.status === 200) {
+                        console.log('updated')
+                    } else {
+                        console.log('failed to update')
+                    }
+                })  
+            }   
+        })
+    } 
 
     function collectOnClick(e){
         e.preventDefault(); // prevent default action
@@ -669,6 +708,17 @@ function _createUserBooklists(booklist) {
     function deleteBooklistButtonOnClick(e) {
         let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
         document.getElementById('contents').children[0].removeChild(booklistDiv);
+        let url = '/api/booklist/' + booklist._id
+        let request = new Request(url, {
+            method: 'DELETE',
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('deleted')
+            } else {
+                console.log('failed to delete')
+            }
+        })
     }
 
     const div = document.createElement('div')
@@ -679,7 +729,7 @@ function _createUserBooklists(booklist) {
     id.className = "listID"
     id.appendChild(document.createTextNode("List ID: "))
     const IDcontent = document.createElement('span')
-    IDcontent.appendChild(document.createTextNode(booklist.booklistID))
+    IDcontent.appendChild(document.createTextNode(booklist._id))
     id.appendChild(IDcontent)
     div.appendChild(id)
 
@@ -760,7 +810,11 @@ function _createUserBooklists(booklist) {
     strong3.appendChild(time)
     const span3 = document.createElement('span')
     span3.className = "timeContent"
-    const timeContent = document.createTextNode(booklist.createTime)
+    let date = new Date(parseInt(booklist.createTime))
+    console.log(booklist.createTime)
+    console.log(date)
+    let formatted_time = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+    const timeContent = document.createTextNode(formatted_time)
     span3.appendChild(timeContent)
     li3.appendChild(strong3)
     li3.appendChild(span3)
@@ -835,7 +889,7 @@ function _createUserBooklists(booklist) {
     button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
     iconImgLike.className = "likeIcon"
-    iconImgLike.src = "../static/like_icon.png"
+    iconImgLike.src = 'http://localhost:50001/public/img/static/like_icon.png'
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
 
@@ -853,7 +907,7 @@ function _createUserBooklists(booklist) {
     button2.addEventListener('click', collectOnClick);
     const iconImgCollect = document.createElement('img')
     iconImgCollect.className = "collectIcon"
-    iconImgCollect.src = "../static/click-&-collect.png"
+    iconImgCollect.src = 'http://localhost:50001/public/img/static/click-&-collect.png'
     button2.appendChild(iconImgCollect)
     liCollect.appendChild(button2)
 
@@ -880,12 +934,23 @@ function displayUserBooklists(user) {
         return;
     }
     let ul = document.createElement('ul');
-    let booklist;
+    let booklistID;
     // TODO: flip page
-    for (booklist of user.booklistList) {
-        let li = document.createElement('li');
-        li.appendChild(_createUserBooklists(booklist));
-        ul.appendChild(li);
+    for (booklistID of user.booklistList) {
+        let url = 'http://localhost:50001/api/booklists/' + booklistID;
+        console.log(url);
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json() 
+            } else {
+                 console.log("Could not get this post.")
+            }  
+        }).then((booklist) => {
+            console.log(booklist);
+            let li = document.createElement('li');
+            li.appendChild(_createBooklistDiv(booklist));
+            ul.appendChild(li);
+        })        
     }
     content.appendChild(ul);
     let pageFliper = document.createElement('div');
@@ -929,7 +994,7 @@ function displayCollectedBooklist(user){
     let booklistCollection;
     for (booklistCollection of user.booklistCollectionList) {
         let li = document.createElement('li');
-        li.appendChild(_createUserBooklists(booklistCollection));
+        li.appendChild(_createBooklistDiv(booklistCollection));
         ul.appendChild(li);
     }
     content.appendChild(ul); 

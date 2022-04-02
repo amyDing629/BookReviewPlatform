@@ -53,10 +53,16 @@ const BooklistSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
+    createTime: {
+        type: String,
+        required: true,
+        default: Date.now()
+    },
     collect: {
         type: Number,
         required: true,
         minlength: 1
+
     }
 });
 

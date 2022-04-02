@@ -234,9 +234,9 @@ app.delete('/api/deleteUser/:userID',mongoChecker, async (req, res)=>{
 
 
 
-app.get('/user/template', async (req, res)=>{
+app.get('/user/template', mongoChecker, async (req, res)=>{
 	try {
-		res.sendFile(__dirname + '/user/user.html');
+		res.sendFile(__dirname + '/public/html/user.html');
 	} catch(error) {
 		log(error)
 		res.status(500).send('Internal Server Error');
@@ -540,6 +540,25 @@ app.get('/api/booklists', mongoChecker, async (req, res)=>{
 	}
 })
 
+app.get('/api/booklists/:booklistID', mongoChecker, async(req, res)=>{
+    const booklistID = req.params.booklistID
+    if (!ObjectId.isValid(booklistID)) {
+		res.status(404).send('invalid book id type') 
+		return
+	}
+	try {
+		const booklist = await BookList.findOne({_id: booklistID})
+		if (!booklist) {
+			res.status(404).send("no such a booklist")
+		} else {   
+			res.send(booklist)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find a booklist")
+	}
+})
+
 // add booklist
 app.post('/api/booklist', async (req, res)=>{
 	const booksIDs = req.body.books
@@ -623,7 +642,7 @@ app.patch('/api/booklist/:booklistID', async (req, res)=>{
 		log(error)
 		res.status(500).send("server error on find booklist")
 	}
-
+    // target = likes/collect
 	if (operation == 'add'){
 		fieldsToUpdate[target] = curr+1
 	} else if(operation == 'reduce'){
