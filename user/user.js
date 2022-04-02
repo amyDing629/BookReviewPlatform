@@ -137,6 +137,25 @@ function profileButtonsOnClick(e) {
         newSignature.innerHTML = signature;
         userInfo.insertBefore(newSignature, profileButton);
         profileButton.innerHTML = 'Edit Signature';
+
+        let url = '/api/users/' + window.location.href.split('?')[1].split('=')[1]
+        let request = new Request(url, {
+            method: 'PATCH',
+            body: JSON.stringify({'operation': 'signature', 'value': signature}),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('updated')
+            } else {
+                console.log('failed to update')
+            }
+        })
+
     }
 }
 
