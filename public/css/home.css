@@ -186,11 +186,6 @@ a {
   /* The search field when it gets focus/clicked on */
   #myInput:focus {outline: 3px solid #ddd;}
   
-  /* The container <div> - needed to position the dropdown content */
-  /* .dropdown {
-    position: relative; 
-    display: inline-block;
-  } */
   
   /* Dropdown Content (Hidden by Default) */
   .dropdown-content {
@@ -201,13 +196,6 @@ a {
     border: 1px solid #ddd;
   }
   
-  /* Links inside the dropdown */
-  /* #topMenu li .dropdown-content a {
-    color: black;
-    padding: 12px 12px;
-    text-decoration: none;
-    display: block;
-  } */
   .dropdown-content a {
     color: black;
     padding: 12px 12px;
@@ -334,6 +322,7 @@ a {
     margin-top: 20px;
     padding: 5px;
 	background-color: white;
+    z-index: -1;
 }
 
 #posts .textDecoration2{
@@ -363,6 +352,12 @@ a {
 
 .postId{
     color:transparent; /* hide id */
+    font-size: small;
+    float:right;
+}
+
+.postIdadmin{
+    font-size: small;
     float:right;
 }
 

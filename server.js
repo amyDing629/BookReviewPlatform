@@ -417,6 +417,49 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 })
 
 
+
+
+
+/*********** POSTs ************/
+
+// get all posts 
+app.get('/api/posts', mongoChecker, async (req, res)=>{
+	try {
+		const posts = await Post.find()
+		res.send({ posts })
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+
+// add post (change along with USER & BOOK)
+app.post('/api/addPost', mongoChecker, async (req, res)=>{ 
+    const newPost = new Post({
+		bookID: req.body.bookID,
+        userID: req.body.userID,
+		booktitle: req.body.booktitle,
+		username: req.body.username,
+        posterProfile: req.body.posterProfile,
+    	pic: req.body.pic,
+    	content: req.body.content,
+    	time: req.body.time,
+		likes: req.body.likes
+	})
+
+    try {
+		const post = await newPost.save()
+		res.send({post})
+	} catch(error) {
+		if (isMongoError(error)) {
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request')
+		}
+	}
+})
+
 /*********** BOOKs ************/
 
 // get all books 
@@ -673,19 +716,49 @@ app.get('/Booklist/Detail', async (req, res) => {
 
 })
 
+/*********** Book detail ************/
+app.get('/BookDetail/Detail', async (req, res) => {
+	const query = req.query
+	const book = query.bookID
+	const user = query.userID
+
+	if (!book){
+		res.status(500).send("server error on display book detail page")
+	}else {
+		res.sendFile(__dirname + '/public/html/BookDetail.html')
+	}
+})
+
+app.get('/BookDetail/Detail?bookID=:book&userID=:user', async (req, res) => {
+	const query = req.query
+	const book = query.bookID
+	const user = query.userID
+
+	if (!book){
+		if(!user){
+			res.sendFile(__dirname + '/public/html/BookDetail.html?bookID='+book)
+		}
+	}else {
+		res.sendFile(__dirname + '/public/html/BookDetail.html')
+	}
+})
+
 
 /*************************************************/
 // get all book and lists
-app.get('/api/booksAndlists', mongoChecker, async (req, res)=>{
+app.get('/api/two', mongoChecker, async (req, res)=>{
 	try {
 		const books = await Book.find()
 		const lists = await BookList.find()
-		res.send({ books, lists })
+		res.send({ books, lists})
 	} catch(error) {
 		log(error)
 		res.status(500).send("Internal Server Error")
 	}
 })
+
+
+/*************************************************/
 
 // 404 route at the bottom for anything not found.
 app.get('*', (req, res) => {
@@ -696,7 +769,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 50001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 

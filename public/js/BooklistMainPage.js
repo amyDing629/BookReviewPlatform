@@ -1,7 +1,7 @@
 const log = console.log
 // global variables
-var BooklistsNum = 0; 
-var BooklistsList = [] 
+let BooklistsNum = 0; 
+let BooklistsList = [] 
 
 // temp hardcode for all books:
 var BooksNum = 0; 
@@ -152,7 +152,6 @@ function getBooklists(){
         displaySearchbox() // for search bar function 
         displayAllBooklists(BooklistsList, getUserID())
         addFormForDelete()
-        filpPage(1,3)
     }).catch((error) => {
         log(error)
     })
@@ -171,15 +170,13 @@ function displayAllBooklists(BooklistsList, userID) {
         //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
         return JSON.stringify(json)
     }).then((userInfo)=>{
-        const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
-        const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
-        //log(userType)
-        if (userType === 'Admin' | userType === 'User'){
+        try {
+            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
             booklistTable.addEventListener('click', deleteBooklist)
             const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
             endUserActionsWrap.addEventListener('click', addNewBooklist)
             // change navi bar username
-            ////const userName = getUserName(userID)
             document.querySelector('#userLoginInfo').innerText = username
 
             // set navi bar link
@@ -187,19 +184,22 @@ function displayAllBooklists(BooklistsList, userID) {
             document.querySelector('#bookmain').href = "../BookMainPage/BookMainPage.html?userID="+userID
             document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
             document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
-        } else {
-            try{
-                document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
-                document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
-            } catch {
-                log('changed the sorting way!')
+
+            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
+            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+            const tableResultTBODY = document.querySelector('#tableResultTBODY')
+            for(let i = 0; i < BooklistsNum; i++) {
+                const tr = addBooklistCard(BooklistsList[i],userID, userType)
+                tableResultTBODY.appendChild(tr)
+            }
+        } catch {
+            const tableResultTBODY = document.querySelector('#tableResultTBODY')
+            for(let i = 0; i < BooklistsNum; i++) {
+                const tr = addBooklistCard(BooklistsList[i],"", "guest")
+                tableResultTBODY.appendChild(tr)
             }
         }
-        const tableResultTBODY = document.querySelector('#tableResultTBODY')
-        for(let i = 0; i < BooklistsNum; i++) {
-            const tr = addBooklistCard(BooklistsList[i],userID, userType)
-            tableResultTBODY.appendChild(tr)
-    }
+        flipPage(1,3)
     }).catch((error) => {
         log(error)
     })
@@ -227,7 +227,7 @@ function alertCollect(e){
     
 }
 
-function filpPage(pageNo, pageLimit) {
+function flipPage(pageNo, pageLimit) {
     const allBooks = document.getElementById("tableResultTBODY")
     const totalSize = allBooks.rows.length
     let totalPage = 0
@@ -248,7 +248,7 @@ function filpPage(pageNo, pageLimit) {
     let strHolder = ""
     let previousStr = "Previous"
     let nextStr = "Next"
-    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"filpPage("
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"flipPage("
     let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
     // single page is enough
     if (totalPage <= 1){
@@ -309,40 +309,35 @@ function sortDefault() {
         nowBooks.removeChild(each.parentElement)
     }
     displayAllBooklists(BooklistsList, getUserID())
-    filpPage(1,3)
   }
 
 function sortByAtoZ(){
     document.querySelector('#sort_a_z').className = "btn btn-secondary active"
     document.querySelector('#sort_default').className = "btn btn-secondary"
-    let nameArr = []
+    let nameArr = BooklistsList.map((list)=> list.listName)
     let sortedBooklistsList = []
-    for (let i=0; i<BooklistsNum; i++){
-        nameArr.push(BooklistsList[i].listName)
-    }
+    const num = BooklistsList.length
     nameArr = nameArr.sort((x,y)=>x.localeCompare(y))
-    for (let i=0; i<BooklistsNum; i++) {
-        for (let j=0; j<BooklistsNum; j++){
+    for (let i=0; i<num; i++) {
+        for (let j=0; j<num; j++){
             if (nameArr[i] == BooklistsList[j].listName) {
                 sortedBooklistsList.push(BooklistsList[j])
             }
         }
     }
+    log(sortedBooklistsList)
     const nowBooks = document.querySelector('#tableResultTBODY')
     const allBooklists = document.querySelectorAll('.booklist')
     for (each of allBooklists){
         nowBooks.removeChild(each.parentElement)
     }
-
-    displaySearchbox() // for search bar function 
     displayAllBooklists(sortedBooklistsList, getUserID())
     addFormForDelete()
-    filpPage(1,3)
 }
 
 function renewPage() {
-    /* BooklistsList = []
-    getBooklists() */
+    BooklistsList = []
+    getBooklists()
     if (document.querySelector("#sort_a_z").className === 'btn btn-secondary active'){
         sortByAtoZ()
     } else { // sort by default
@@ -358,26 +353,6 @@ function getUserID(){
         return 'guest'
     }
 }
-
-/* // helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
-
-    const url = '/api/users/'+userID
-    fetch(url).then((res) => { 
-        if (res.status === 200) {
-           return res.json() 
-       } else {
-            log('faild to get user info. as guest.')
-       }                
-    }).then((json) => {  //pass json into object locally
-        log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
-        return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
-    }).catch((error) => {
-        log(error)
-    })
-} */
 
 //helper: delete icon for each booklist card
 function addDeleteButton(){
@@ -609,7 +584,6 @@ function addBooklistCard(booklist, userID, userType){
 
     // li2: list creator
     const selfName = getUserName(userID)
-    log(selfName)
     const li2 = addCreator(booklist.creator, selfName, userType)
     ul1.appendChild(li2)
 
@@ -793,7 +767,7 @@ function addFormForDelete(){
                     BooklistsNum--
                 }
             }
-            renewPage()
+            //renewPage()
             document.getElementById("deleteForm").style.display="none"
             location.reload()
         }
@@ -843,7 +817,6 @@ function changeBooks(){
         return result
     }).then((result)=>{
     const ul = document.querySelector('#randomBooks')
-    ul.innerHTML=''
     const random3 = []
     while (random3.length<3){
         const idx = Math.floor(Math.random() * result.length)
@@ -851,16 +824,32 @@ function changeBooks(){
             random3.push(idx)
         }
     }
-    //const ids = random3.map((idx)=>result[idx].bookID)
-    //const names = random3.map((idx)=>result[idx].name)
     for (let i=0;i<3;i++){
-        const li = document.createElement('li')
-        li.innerText = "[ID:" + result[random3[i]].bookID + "]--" + result[random3[i]].name
-        ul.appendChild(li)
+        ul.children[i].children[0].innerHTML =  result[random3[i]].name
+        const span = document.createElement('span')
+        span.className = 'bookIDhide'
+        span.innerText = result[random3[i]].bookID
+        ul.children[i].appendChild(span)
     }
     }).catch((error) => {
         log(error)
     })
+}
+
+const ul = document.querySelector('#randomBooks')
+ul.addEventListener('click', loadBook)
+function loadBook(e){
+    e.preventDefault;
+    if(e.target.className == 'addListID btn btn-outline-info'){
+        document.querySelector("#booklists").value += (e.target.nextSibling.innerText+';')
+        e.target.className += " active"
+    } else if (e.target.className == 'addListID btn btn-outline-info active'){
+        let curr = document.querySelector("#booklists").value
+        curr = curr.replace((e.target.nextSibling.innerText+';'),'')
+        document.querySelector("#booklists").value = curr
+        e.target.className = "addListID btn btn-outline-info"
+    }
+    
 }
 
 function addNewBooklist(e){
@@ -892,7 +881,8 @@ function addNewBooklist(e){
             }
             return ids
         }).then((ids)=>{
-            const books = result.split(";")
+            const books = result.split(";").pop()
+            log(books)
             // check id validation
             let validInputs = []
             for (item of books) {
@@ -909,9 +899,7 @@ function addNewBooklist(e){
                 document.getElementById('booklistNameInput').value =""
                 document.getElementById('descriptionInput').value = ""
                 closeForm()
-                renewPage() 
-                location.reload()// manuelly refresh will display...
-                return
+                location.reload() 
             } else {
                 document.querySelector('#bookInputHelp').innerText = ("Invalid input! Please re-check all your book IDs.")
                 //return

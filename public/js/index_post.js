@@ -1,108 +1,195 @@
 /****************** Index Post ******************/
-// helper for index.html & index.html?userID=0 & index.html?userID=0
-function getUserID(){
-    try { 
-        return parseInt(window.location.href.split('?')[1].split('=')[1])
-    } catch { 
-        return 'guest'
-    }
-}
 
-// helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
-
-    if (userID === 0){ 
-        return('user')
-    } else if (userID === 1) {
-        return('admin')
-    } else {
-        return 'guest'
-    }
-}
-
-const postid = getUserID()
-const postuser = checkUserType(postid)
-
-/************************ Posts display ************************/
 const posts = []; // all posts
 const homeposts = []; // for admin edit
 const collectedPosts = []; // collection of posts made by current user
 
 class Post {
-	constructor(pid, bid, booktitle, booklink, userid, postername, posterlink, posterProfile, pic, content, time, likes) {
+	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes) {
 		this.postID = pid;
         this.bookID = bid;
         this.booktitle = booktitle;
-        this.booklink = booklink;
         this.userid = userid;
 		this.poster = postername;
-        this.posterlink = posterlink;
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
         this.likes = likes; 
+        this.booklink = null;
+        this.posterlink = null;
     }
 }
 
-function blinkHandlerinPost(bid, user){
-    // handler for book Detail page link
-        for (let i =0; i<posts.length; i++){
-            if (posts[i].bookID == bid){
-                // HERE!
-                let result;
-                if (user == 'guest'){
-                    result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
-                }
-                else if (user == 'user'){
-                    result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_end_after.html'
-                }
-                else{
-                    result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_admin_after.html'
-                }
-                return result;
-            }
-        }  
-    }
-
-
-function postCallBack() {
-    /// Get post from server
-    // code below requires server call
-    // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris',null,1, 'admin', null,
-    "https://avatars.githubusercontent.com/u/73209681?v=4", 
-    null,
-    'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0));
-
-    posts.push(new Post(1, 0, 'Solaris',null,0, 'user', null,
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-    'I really like this book! I really like this book! I really like this book! I really like this book!',
-    '2022-03-01 18:05', 1));
-
-    posts.push(new Post(2, 4, 'Song of Solomon',null,0,'user', null,
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
-    'I have to read it every day otherwise I cannot sleep',
-    '2022-03-05 00:05', 5));
-
-    posts.push(new Post(3, 3, 'War and Peace',null,0, 'user', null,
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
-    '2022-03-05 16:00', 0));
-  }
-
-
-
+let puser;
+let pusertype;
+let pusername;
 const postul = document.querySelector('#posts ul');
-postCallBack()
-homepostsCreate()
-displayPosts(postuser)
+
+try { 
+    puser= String(window.location.href.split('?')[1].split('=')[1])
+    //try puser = String ...
+    const url3 = '/api/users/'+puser
+    fetch(url3).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+           alert('Could not get this user')
+       }   
+    }).then((json) => {  //pass json into object locally
+        pusertype = json.user.type.toLowerCase()
+        pusername = json.user.username
+        const url4 = '/api/posts'
+        fetch(url4).then((res) => { 
+            if (res.status === 200) {
+               return res.json() 
+           } else {
+                console.log("not found")
+           }                
+        }).then((json) => {  //pass json into object locally
+            const jsonposts = json.posts
+            for (each of jsonposts){
+                posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+            }
+            log(posts)
+            // handle links
+            for (let i=0; i<posts.length; i++){
+                posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype)
+                posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
+            }
+            homepostsCreate()
+            displayPosts(pusertype)
+            likeHandler()
+            collectHandler()
+
+            /////// Admin ///////
+            if (pusertype == 'admin'){
+                displayPostManagerBar()
+            }
+
+            })
+        }).catch((error) => {
+        log(error)})
+} catch { 
+    pusertype= 'guest'
+    log(pusertype)
+    const url5 = '/api/posts'
+    fetch(url5).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            console.log("not found")
+       }                
+    }).then((json) => {  //pass json into object locally
+        log(json)
+        const jsonposts = json.posts
+        for (each of jsonposts){
+            posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+        }
+        log(posts)
+        
+        // handle links
+        for (let i=0; i<posts.length; i++){
+            posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, puser)
+            posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
+        }
+        homepostsCreate()
+        displayPosts(pusertype)
+    })
+    .catch((error) => {
+    log(error)})
+
+}
+
+
+
+
+
+
+
+// helper for index.html & index.html?userID=0 & index.html?userID=0
+// function getUserID(){
+//     try { 
+//         return parseInt(window.location.href.split('?')[1].split('=')[1])
+//     } catch { 
+//         return 'guest'
+//     }
+// }
+
+// // helper: check the user type, return 'User' or 'Admin'?
+// function checkUserType(userID){
+//     // need more dynamic way to search user database, check type
+//     // phase 2 task
+
+//     if (userID === 0){ 
+//         return('user')
+//     } else if (userID === 1) {
+//         return('admin')
+//     } else {
+//         return 'guest'
+//     }
+// }
+
+// const postid = getUserID()
+// const postuser = checkUserType(postid)
+
+/************************ Posts display ************************/
+
+
+// function blinkHandlerinPost(bid, user){
+//     // handler for book Detail page link
+//         for (let i =0; i<posts.length; i++){
+//             if (posts[i].bookID == bid){
+//                 // HERE!
+//                 let result;
+//                 if (user == 'guest'){
+//                     result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
+//                 }
+//                 else if (user == 'user'){
+//                     result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_end_after.html'
+//                 }
+//                 else{
+//                     result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_admin_after.html'
+//                 }
+//                 return result;
+//             }
+//         }  
+//     }
+
+function blinkHandlerinPost(bid, usertype, userid){
+        // handler for book *Detail* page link
+        let result;
+        if (usertype == 'guest'){
+            result = '/public/html/BookDetail.html?bookID='+bid
+        }
+        else{
+            result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
+        }
+        return result; 
+    }  
+
+
+function ulinkHandler(uid, usertype, userid){
+        // handler for book *Detail* page link
+        let result;
+        if (usertype == 'guest'){
+            result = '/public/html/login.html'
+        }
+        else{
+            result = '/public/html/BookDetail.html?bookID='+uid+"&userID="+userid // need to change
+        }
+        return result; 
+    }      
+
+
+
+
+
+
+//const postul = document.querySelector('#posts ul');
+//postCallBack()
+//homepostsCreate()
+//displayPosts(postuser)
 
 
 function homepostsCreate(){
@@ -141,8 +228,7 @@ function displayPosts(userType){
             let pid = posts[i].postID
             let bid = posts[i].bookID
             let userid = posts[i].userid
-
-            let blink = blinkHandlerinPost(bid, userType)
+            let blink = posts[i].booklink
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -153,30 +239,9 @@ function displayPosts(userType){
             let userh3 = document.createElement('h3')
             let a1 = document.createElement('a')
             a1.className = 'linkColor'
-            if (userType == 'guest'){
-                plink = "login.html"
-            }
-            else if (userType == 'user'){
-                // need to handle user link
-                // temporary use
-                if (userid){
-                    plink = '../user/user.html?visit='+userid
-                }
-                else{ // userid is user, visit myself
-                    plink = '../user/user.html'
-                }
-            }
-            else{
-                // need to handle user link
-                // temporary use
-                if (userid){ // userid is admin, visit myself
-                    plink = '../user/admin.html'
-                }
-                else{
-                    plink = '../user/admin.html?visit='+userid
-                }
-            }
-            
+
+
+        
             a1.setAttribute('href', plink)
             a1.innerText = userName
             a1.onclick = function open(e){
@@ -184,7 +249,13 @@ function displayPosts(userType){
                 window.location.href=(a1.href) // need to handle user link
             }
             let spanid2 = document.createElement('span')
-            spanid2.className = 'postId'
+            if (userType == 'admin'){
+                log(userType)
+                spanid2.className = 'postIdadmin'
+            }
+            else{
+                spanid2.className = 'postId'
+            }
             spanid2.innerText = pid
             userh3.appendChild(a1)
             userh3.appendChild(spanid2) // Post id is here
@@ -224,7 +295,7 @@ function displayPosts(userType){
             p.innerText = content
             contentDiv.appendChild(p)
 
-            if (pic != null){
+            if (pic != ""){
                 let img2 = document.createElement('img')
                 img2.className='postContentPicture'
                 img2.setAttribute('src', pic)
@@ -266,9 +337,11 @@ function displayPosts(userType){
 }
 
 // ADMIN & USER
-if (postuser != "guest"){
-    const likefield = document.querySelector('#posts ul')
-    likefield.addEventListener('click', like)
+    function likeHandler(){
+        const likefield = document.querySelector('#posts ul')
+        likefield.addEventListener('click', like)     
+    }
+
 
     function like(e){
         e.preventDefault(); // prevent default action
@@ -303,11 +376,13 @@ if (postuser != "guest"){
                     break;
                 }
             }
-        } 
-    }
+            } 
+        }
 
-    const collectfield = document.querySelector('#posts ul')
-    collectfield.addEventListener('click', collect);
+    function collectHandler(){
+        const collectfield = document.querySelector('#posts ul')
+        collectfield.addEventListener('click', collect);
+    }
 
     function collect(e){
         e.preventDefault(); // prevent default action
@@ -343,13 +418,14 @@ if (postuser != "guest"){
             }
         } 
     }
-}
+    
+
 
 
 /************************ Admin manage bar ************************/
 
-if (postuser == 'admin'){
-    displayPostManagerBar()
+
+    //displayPostManagerBar()
 
     // function post1Function() {
     //     log('yes')
@@ -489,6 +565,7 @@ if (postuser == 'admin'){
             displayPosts()
         })
 
+        divadmin.appendChild(h5)
         divadmin.appendChild(div1)
         divadmin.appendChild(div3)
         divadmin.appendChild(modify)
@@ -530,7 +607,7 @@ if (postuser == 'admin'){
 
     }
     
-}
+
 
 
 

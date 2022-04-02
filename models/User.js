@@ -46,8 +46,8 @@ const UserSchema = new mongoose.Schema({
     },
     type:{
         type: String,
-        required: true
-        // user or admin (lower case)
+        required: true,
+        enum: ['Admin', 'User']
     },
     isActivate:{
         type: Boolean,
@@ -56,11 +56,6 @@ const UserSchema = new mongoose.Schema({
     }
 })
 
-// const AdminObject = Object.create(UserObject);
-// AdminObject.isAdmin = 'true';
-
-//const UserSchema = new mongoose.Schema(UserObject);
-// const AdminSchema = new Schema(AdminObject);
 
 // This function will run immediately prior to saving the document
 // in the database.

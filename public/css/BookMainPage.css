@@ -125,6 +125,7 @@ body {
     top:50%;
     left: 50%;
     -webkit-transform: translateX(-50%) translateY(-50%);
+    box-shadow:0 0 800px 800px rgba(153, 153, 153, 0.521);
   }
   .div_form{
       display: inline-block;

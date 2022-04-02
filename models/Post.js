@@ -1,50 +1,51 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const PostSchema = new mongoose.Schema({
     bookID: {
-        type: Number,
-        required: true,
-        minlength: 1
+        type: mongoose.Schema.Types.ObjectId,
+        // type: String,
+		required: true
+    },
+    userID: {
+        type: mongoose.Schema.Types.ObjectId,
+        // type: String,
+		required: true
     },
     bookTitle: {
         type: String,
         required: true,
     },
-    bookLink: {
-        type: String,
-        required: false,
-    },
-    poster: {
+    username: {
         type: String,
         required: true,
     },
     posterProfile: {
         type: String,
-        required: false
+        required: true
     },
     pic: {
         type: String,
         required: false,
-        minlength: 1
+        default:"" // if no pic, use empty string
     },
     content: {
         type: String,
-        required: false,
-        validate: {
-            validator: function(price) {
-                return price >= 0;
-            },
-            message: price => `${price} is not a valid price`
-        }
+        required: true,
     },
     time: {
         type: String,
-        required: true
+        // default: Date.now
     },
     likes: {
         type: Number,
         required: true
     }
+});
+
+PostSchema.pre('save', function(next) {
+    this.time = moment(this.time).format('MM-DD-YYYY');
+    next();
 });
 
 const Post = mongoose.model("Post", PostSchema);
