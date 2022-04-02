@@ -185,6 +185,10 @@ function getPosts(){
                 likeHandler()
                 collectHandler();
                 addHandler();
+                addFormForDelete()
+                if(pusertype == 'Admin'){
+                    deleteHandler();
+                }
             })
         })
     }else{
@@ -789,9 +793,10 @@ function collect(e){
             e.target.innerText = 'Collect';
     }
 }
-
-const deletefield = document.querySelector('#left-part')
-deletefield.addEventListener('click', delete_post)
+function deleteHandler(){
+    const deletefield = document.querySelector('#left-part')
+    deletefield.addEventListener('click', delete_post)
+}
 
 function delete_post(e){
     e.preventDefault(); // prevent default action
@@ -802,26 +807,32 @@ function delete_post(e){
         const pid = h3.children[1].innerText
         // log(pid)
         if(e.target.innerText == 'Delete'){
-            e.target.innerText = 'Confirm?'
-            setTimeout(()=>{
-                e.target.innerText = 'Delete';
-            }, 7 * 1000)
+            // e.target.innerText = 'Confirm?'
+            // setTimeout(()=>{
+            //     e.target.innerText = 'Delete';
+            // }, 7 * 1000)
+            const ID = e.target.parentElement.parentElement.children[0].children[1].innerText
+            log(ID)
+            const form = document.getElementById("deleteForm")
+            form.children[0].children[0].innerText="Confirm to delete this Post?"
+            form.name = ID
+            form.style.display="block"
         }
-        else if(e.target.innerText == 'Confirm?'){
-            setTimeout(()=>{
-                for (let i=0; i<posts.length; i++){
-                    if(parseInt(posts[i].postID) == pid){
-                        posts.splice(i, 1) // start from index=i, remove 1 item
+        // else if(e.target.innerText == 'Confirm?'){
+        //     setTimeout(()=>{
+        //         for (let i=0; i<posts.length; i++){
+        //             if(parseInt(posts[i].postID) == pid){
+        //                 posts.splice(i, 1) // start from index=i, remove 1 item
         
-                        const ul = contentDiv.parentElement.parentElement.parentElement
-                        const li = contentDiv.parentElement.parentElement
-                        ul.removeChild(li)
-                        displayPosts()
-                        break;
-                    }
-                }
-            }, 3 * 1000)
-        }
+        //                 const ul = contentDiv.parentElement.parentElement.parentElement
+        //                 const li = contentDiv.parentElement.parentElement
+        //                 ul.removeChild(li)
+        //                 displayPosts()
+        //                 break;
+        //             }
+        //         }
+        //     }, 3 * 1000)
+        // }
     }
 }
 
@@ -840,7 +851,6 @@ function addNewPost(e){
     const url3 = '/api/posts'
     let book = []
     let likes = 0
-    let initial_id = 1111111
     let filterPosts = []
     if (e.target.classList.contains('addSubmit,')){
         const postContent = document.getElementById('postContent').value
@@ -1073,6 +1083,81 @@ function modifyPost(bid, uid, bookName, username, posterProfile, pic, content, t
     }).catch((error) => {
         log(error)
     })
+}
+
+function addFormForDelete(){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='deleteForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit_delete'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit_delete'){
+            const ID =document.getElementById("deleteForm").name
+            const list = posts.filter((post)=> post.postID == ID )
+            log(ID)
+            const url = '/api/posts/'+ID
+        
+            let data = {
+                _id: list[0].postID
+            }
+            const request = new Request(url, {
+                method: 'delete', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            fetch(request)
+            .then(function(res) {
+                if (res.status === 200) {
+                    console.log('delete booklist')    
+                } else {
+                    console.log('Failed to delete the booklist')
+                }
+                log(res)
+            }).catch((error) => {
+                log(error)
+            })
+
+            for (let i=0; i<posts.length; i++){
+                if (posts[i].postID == ID){
+                    posts.splice(i, 1)
+                    // BooklistsNum--
+                }
+            }
+            log(posts)
+            //renewPage()
+            document.getElementById("deleteForm").style.display="none"
+            location.reload()
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("deleteForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
 }
 
 getBooks();
