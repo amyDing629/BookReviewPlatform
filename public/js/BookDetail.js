@@ -93,8 +93,6 @@ class Book {
 		BooksNum++;
 	}
 }
-const posts = [];
-
 // get all books 
 function getBooks(){
     const url = '/api/books'
@@ -124,49 +122,137 @@ function getBooks(){
 }
 
 class Post {
-	constructor(postID, bookID, booktitle, booklink, poster, posterProfile, pic, content, time, likes) {
-		this.postID = postID;
-        this.bookID = bookID;
+	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes) {
+		this.postID = pid;
+        this.bookID = bid;
         this.booktitle = booktitle;
-        this.booklink = booklink;
-		this.poster = poster;
+        this.userid = userid;
+		this.poster = postername;
         this.posterProfile = posterProfile;
         this.pic = pic;
         this.content = content; 
         this.time = time;
         this.likes = likes; 
+        this.booklink = null;
+        this.posterlink = null;
     }
 }
 
-function postCallBack() {
-    /// Get post from server
-    // code below requires server call
-    // posts in post list should be added by admin user
-    posts.push(new Post(0, 0, 'Solaris',null, 'admin',
-    "https://avatars.githubusercontent.com/u/73209681?v=4", 
-    null,
-    'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0));
+const posts = []; // all posts
+const homeposts = []; // for admin edit
+const collectedPosts = []; // collection of posts made by current user
+const postul = document.querySelector('#posts ul');
 
-    posts.push(new Post(1, 0, 'Solaris',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    'I really like this book! I really like this book! I really like this book! I really like this book!',
-    '2022-03-01 18:05', 1));
+let puser;
+let pusertype;
+let pusername;
 
-    posts.push(new Post(2, 4, 'Song of Solomon',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    'I have to read it every day otherwise I cannot sleep',
-    '2022-03-05 00:05', 5));
+function getPosts(){
+    puser = getUserID();
+    let book = getBookID();
+    if (puser != 'guest') {
+        const url = '/api/users/' + puser
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            } else {
+                alert('Could not get this user')
+            }
+        }).then((json) => {
+            pusertype = json.user.type
+            pusername = json.user.username
+            const url2 = '/api/posts'
+            fetch(url2).then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else {
+                    console.log("not found")
+                }
+            }).then((json) => {
+                const jsonposts = json.posts
+                for (each of jsonposts) {
+                    if (each.bookID == book) {
+                        posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+                    }
+                }
+                // log(posts)
+                for (let i = 0; i < posts.length; i++) {
+                    posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype)
+                    posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
+                }
+                homepostsCreate();
+                displayPosts(pusertype, posts)
+                likeHandler()
+                collectHandler();
+                addHandler();
+                addFormForDelete()
+                if(pusertype == 'Admin'){
+                    deleteHandler();
+                }
+            })
+        })
+    }else{
+        pusertype= 'guest'
+        const url5 = '/api/posts'
+        fetch(url5).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            } else {
+                console.log("not found")
+            }
+        }).then((json) => {  //pass json into object locally
+            log(json)
+            const jsonposts = json.posts
+            for (each of jsonposts) {
+                if (each.bookID == book) {
+                    posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+                }
+            }
+            // log(posts)
 
-    posts.push(new Post(3, 3, 'War and Peace',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
-    '2022-03-05 16:00', 0));
+            // handle links
+            for (let i = 0; i < posts.length; i++) {
+                posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, puser)
+                posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
+            }
+            homepostsCreate()
+            displayPosts(pusertype, posts)
+        })
+            .catch((error) => {
+                log(error)
+            })
+    }
 }
-postCallBack()
+
+function homepostsCreate(){
+    for (let i=0; i<posts.length; i++){
+        homeposts.push(posts[i])
+    }
+}
+
+function blinkHandlerinPost(bid, usertype, userid){
+    // handler for book *Detail* page link
+    let result;
+    if (usertype == 'guest'){
+        result = '/public/html/BookDetail.html?bookID='+bid
+    }
+    else{
+        result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
+    }
+    return result; 
+} 
+
+function ulinkHandler(uid, usertype, userid){
+    // handler for book *Detail* page link
+    let result;
+    if (usertype == 'guest'){
+        result = '/public/html/login.html'
+    }
+    else{
+        result = '/public/html/BookDetail.html?bookID='+uid+"&userID="+userid // need to change
+    }
+    return result; 
+}  
 
 function myFunction(){
     var x = document.getElementById("myFile");
@@ -198,16 +284,14 @@ function myFunction(){
     document.getElementById("demo").innerHTML = txt;
 }
 
-const postul = document.querySelector('#posts ul');
-
-function displayBookDetail(BooksList, bookID, user) {
-    displayBookDescription(BooksList, bookID, user);
-    displayPosts(bookID, user);
-    filpPage(1, 3);
+function displayBookDetail(BooksList, bookID) {
+    displayBookDescription(BooksList, bookID);
+    // displayPosts(bookID, user);
+    flipPage(1, 3);
 }
 
 // // display the book information like book cover, author...
-function displayBookDescription(BooksList, id, user) {
+function displayBookDescription(BooksList, id) {
     const book = BooksList.filter((book)=> book.bookID == id)
     const bookInfo = document.querySelector('#bookInfo');
 
@@ -273,12 +357,12 @@ function insertAfter(newNode, existingNode) {
 }
 
 
-function displayPosts(bookID, user){
+function displayPosts(user, newposts){
     // clean all before display
     postul.innerHTML = ''
     
-    for (let i=0; i<1000; i++){
-        if (posts[i] != null){
+    for (let i=0; i<100; i++){
+        if (newposts[i] != null){
             let li = document.createElement('li')
 
             let postDiv = document.createElement('div')
@@ -288,16 +372,18 @@ function displayPosts(bookID, user){
             let contentDiv = document.createElement('div')
             contentDiv.className ='postContent'
 
-            let title = posts[i].booktitle
-            let userName = posts[i].poster
-            let userProfile = posts[i].posterProfile
-            let pic = posts[i].pic
-            let content = posts[i].content
-            let time = posts[i].time
-            let likes = posts[i].likes
-            let plink = posts[i].posterlink
-            let pid = posts[i].postID
-            let bid = posts[i].bookID
+            let title = newposts[i].booktitle
+            let userName = newposts[i].poster
+            let userProfile = newposts[i].posterProfile
+            let pic = newposts[i].pic
+            let content = newposts[i].content
+            let time = newposts[i].time
+            let likes = newposts[i].likes
+            let plink = newposts[i].posterlink
+            let pid = newposts[i].postID
+            let bid = newposts[i].bookID
+            let userid = newposts[i].userid
+            let blink = newposts[i].booklink
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -327,7 +413,7 @@ function displayPosts(bookID, user){
             let span1 = document.createElement('span')
             let a2 = document.createElement('a')
             a2.className = 'linkColor'
-            a2.setAttribute('href', 'BookDetail-0.html')
+            a2.setAttribute('href', blink)
             a2.innerText = title
             a2.onclick = function open(e){
                 e.preventDefault();
@@ -355,8 +441,12 @@ function displayPosts(bookID, user){
             p.innerText = content
             contentDiv.appendChild(p)
 
-            if (pic != null){
-                contentDiv.appendChild(pic)
+            if (pic != ''){
+                let img2 = document.createElement('img')
+                img2.className='postContentPicture'
+                img2.setAttribute('src', pic)
+                img2.setAttribute('alt', 'pic')
+                contentDiv.appendChild(img2)
             }
 
             let br = document.createElement('br')
@@ -396,6 +486,7 @@ function displayPosts(bookID, user){
             postul.appendChild(li)
         }
     }
+    flipPage(1,3)
 }
 
 function displayAddPost(){
@@ -443,7 +534,7 @@ function displayAddPost(){
 
 
 // page flip
-function filpPage(pageNo, pageLimit) {
+function flipPage(pageNo, pageLimit) {
     const allPosts = document.getElementById("post-body")
     const totalSize = allPosts.children.length
     let totalPage = 0
@@ -465,7 +556,7 @@ function filpPage(pageNo, pageLimit) {
     let previousStr = "Previous&nbsp;&nbsp;&nbsp;&nbsp;"
     let spaceStr = "&nbsp;&nbsp;&nbsp;&nbsp;"
     let nextStr = "Next&nbsp;&nbsp;&nbsp;&nbsp;"
-    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"filpPage("
+    let setupStr = "<a class=\"pagelink\" href=\"#\" onClick=\"flipPage("
     // single page is enough
     if (totalPage <= 1){
         strHolder = previousStr + setupStr + totalPage + "," + pageLimit + ")\">" + "1" + spaceStr + "</a>" + nextStr
@@ -507,15 +598,15 @@ function selectBookToPlay(BooksList){
         // log(bookIndex)
         // log(BooksList)
         // const book = BooksList[currentBookID]
-        displayBookDetail(BooksList, currentBookID, 'guest')
+        displayBookDetail(BooksList, currentBookID)
         // selectNarviBarUser('guest')
     } else { // admin & user
         const currentBookID = getBookID()
         // log(currentBookID)
-        const currentUser = getUserID()
+        // const currentUser = getUserID()
         
-        const userType = checkUserType(currentUser)
-        displayBookDetail(BooksList, currentBookID, userType)
+        // const userType = checkUserType(currentUser)
+        displayBookDetail(BooksList, currentBookID)
         // selectNarviBarUser(userType)
         // displayAddPost();
     }
@@ -597,11 +688,15 @@ function selectNarviBarUser(userType){
     }
 }
 
-
-const likefield = document.querySelector('#left-part')
-if(likefield){
+function likeHandler(){
+    const likefield = document.querySelector('#left-part')
     likefield.addEventListener('click', like)
 }
+
+// const likefield = document.querySelector('#left-part')
+// if(likefield){
+//     likefield.addEventListener('click', like)
+// }
 
 function like(e){
     e.preventDefault(); // prevent default action
@@ -609,55 +704,88 @@ function like(e){
     if(e.target.parentElement){
         contentDiv = e.target.parentElement.parentElement
     }
-    let pid
-    if(contentDiv && contentDiv.getElementsByClassName('postId')[0]){
-        pid = contentDiv.getElementsByClassName('postId')[0].innerText
-    }
+    // let pid
+    // if(contentDiv && contentDiv.getElementsByClassName('postId')[0]){
+    //     pid = contentDiv.getElementsByClassName('postId')[0].innerText
+    // }
     // let post;
     let icon
     if(e.target.parentElement){
         icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
     }
-    for(var i = 0; i < posts.length; i++){
-        if (parseInt(posts[i].postID) == pid) {
-            if (e.target.classList.contains('like')) {
-                posts[i].likes++;
-                icon.innerText = ' ' + posts[i].likes;
-                e.target.classList.remove('like');
-                e.target.classList.add('dislike');
-                e.target.innerText = 'Dislike';
-            }
-            else if (e.target.classList.contains('dislike')) {
-                posts[i].likes--;
-                icon.innerText = ' ' + posts[i].likes;
-                e.target.classList.remove('dislike');
-                e.target.classList.add('like');
-                e.target.innerText = 'Like';
-            }
-        }
+    let onePost 
+    if(e.target.parentElement){
+        onePost = e.target.parentElement.parentElement.parentElement.parentElement
+    } 
+    let i
+    if(e.target.parentElement){
+        i = Array.from(onePost.parentElement.children).indexOf(onePost)
     }
+    // log(posts[i])
+    if (e.target.classList.contains('like')) {
+        posts[i].likes++;
+        icon.innerText = ' ' + posts[i].likes;
+        e.target.classList.remove('like');
+        e.target.classList.add('dislike');
+        e.target.innerText = 'Dislike';
+        // log(posts[i].postID)
+        modifyLike(posts[i].postID, "add")
+    }
+    else if (e.target.classList.contains('dislike')) {
+        posts[i].likes--;
+        icon.innerText = ' ' + posts[i].likes;
+        e.target.classList.remove('dislike');
+        e.target.classList.add('like');
+        e.target.innerText = 'Like';
+        modifyLike(posts[i].postID, "reduce")
+    }
+    
+    // for(var i = 0; i < posts.length; i++){
+    //     if (parseInt(posts[i].postID) == pid) {
+    //         if (e.target.classList.contains('like')) {
+    //             posts[i].likes++;
+    //             icon.innerText = ' ' + posts[i].likes;
+    //             e.target.classList.remove('like');
+    //             e.target.classList.add('dislike');
+    //             e.target.innerText = 'Dislike';
+    //         }
+    //         else if (e.target.classList.contains('dislike')) {
+    //             posts[i].likes--;
+    //             icon.innerText = ' ' + posts[i].likes;
+    //             e.target.classList.remove('dislike');
+    //             e.target.classList.add('like');
+    //             e.target.innerText = 'Like';
+    //         }
+    //     }
+    // }
 }
 
+function collectHandler(){
+    const collectfield = document.querySelector('#left-part')
+    collectfield.addEventListener('click', collect);
+    // log(111111111111)
+}
 
-const collectfield = document.querySelector('#left-part')
-collectfield.addEventListener('click', collect);
 
 function collect(e){
     e.preventDefault(); // prevent default action
 
     if (e.target.classList.contains('collect')) {
-	
+        // log(1111)
 		const contentDiv = e.target.parentElement.parentElement
         const h3 = contentDiv.children[0]
         const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                e.target.classList.remove('collect');
-                e.target.classList.add('collected');
-                e.target.innerText = 'Collected!';
+        // for (let i=0; i<posts.length; i++){
+        //     if(parseInt(posts[i].postID) == pid){
+        //         e.target.classList.remove('collect');
+        //         e.target.classList.add('collected');
+        //         e.target.innerText = 'Collected!';
 
-            }
-        } 
+        //     }
+        // } 
+        e.target.classList.remove('collect');
+        e.target.classList.add('collected');
+        e.target.innerText = 'Collected!';
 	}
     else if (e.target.classList.contains('collected')){
             e.target.classList.remove('collected');
@@ -665,9 +793,10 @@ function collect(e){
             e.target.innerText = 'Collect';
     }
 }
-
-const deletefield = document.querySelector('#left-part')
-deletefield.addEventListener('click', delete_post)
+function deleteHandler(){
+    const deletefield = document.querySelector('#left-part')
+    deletefield.addEventListener('click', delete_post)
+}
 
 function delete_post(e){
     e.preventDefault(); // prevent default action
@@ -678,74 +807,146 @@ function delete_post(e){
         const pid = h3.children[1].innerText
         // log(pid)
         if(e.target.innerText == 'Delete'){
-            e.target.innerText = 'Confirm?'
-            setTimeout(()=>{
-                e.target.innerText = 'Delete';
-            }, 7 * 1000)
+            // e.target.innerText = 'Confirm?'
+            // setTimeout(()=>{
+            //     e.target.innerText = 'Delete';
+            // }, 7 * 1000)
+            const ID = e.target.parentElement.parentElement.children[0].children[1].innerText
+            log(ID)
+            const form = document.getElementById("deleteForm")
+            form.children[0].children[0].innerText="Confirm to delete this Post?"
+            form.name = ID
+            form.style.display="block"
         }
-        else if(e.target.innerText == 'Confirm?'){
-            setTimeout(()=>{
-                for (let i=0; i<posts.length; i++){
-                    if(parseInt(posts[i].postID) == pid){
-                        posts.splice(i, 1) // start from index=i, remove 1 item
+        // else if(e.target.innerText == 'Confirm?'){
+        //     setTimeout(()=>{
+        //         for (let i=0; i<posts.length; i++){
+        //             if(parseInt(posts[i].postID) == pid){
+        //                 posts.splice(i, 1) // start from index=i, remove 1 item
         
-                        const ul = contentDiv.parentElement.parentElement.parentElement
-                        const li = contentDiv.parentElement.parentElement
-                        ul.removeChild(li)
-                        displayPosts()
-                        break;
-                    }
-                }
-            }, 3 * 1000)
-        }
+        //                 const ul = contentDiv.parentElement.parentElement.parentElement
+        //                 const li = contentDiv.parentElement.parentElement
+        //                 ul.removeChild(li)
+        //                 displayPosts()
+        //                 break;
+        //             }
+        //         }
+        //     }, 3 * 1000)
+        // }
     }
 }
 
-const addArea = document.querySelector('#addPost');
-if(addArea){
-    addArea.addEventListener('click', addNewPost)
+function addHandler() {
+    const addArea = document.querySelector('#addPost');
+    if (addArea) {
+        addArea.addEventListener('click', addNewPost)
+    }
 }
-
 function addNewPost(e){
     e.preventDefault();
+    const userID = getUserID();
     const currentBookID = getBookID()
+    const url = '/api/books'
+    const url2 = '/api/users/'+userID
+    const url3 = '/api/posts'
+    let book = []
+    let likes = 0
+    let filterPosts = []
     if (e.target.classList.contains('addSubmit,')){
         const postContent = document.getElementById('postContent').value
-        const x = document.getElementById('myFile')
-        const img = document.createElement("img");
-        if(x.files.length > 0){
-            img.src = URL.createObjectURL(x.files[0]);
-            img.className = 'postContentPicture'
-        }
+        fetch(url).then((res) => { 
+            if (res.status === 200) {
+            return res.json() 
+        } else {
+                res.status(500).send("Internal Server Error") // not sure
+        }                
+        }).then((json) => {
+            const all = json.books
+            for(each of all){
+                if(each._id == currentBookID){
+                    book.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
+                }
+            }
+            // log(book)
+            fetch(url2).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("not found")
+               }                
+            }).then((json) => {
+                pusertype = json.user.type
+                pusername = json.user.username
+                posterProfile = json.user.profilePhoto
+                // log(posterProfile)
+                pic = '' //gonna change in future
+                booktitle = book[0].name
+                const today = new Date();
+                const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + ' ' + today.getHours()+':'+today.getMinutes();
+                modifyPost(currentBookID,userID,booktitle, pusername,posterProfile,pic,postContent, date);
+                fetch(url3).then((res) => { 
+                    if (res.status === 200) {
+                       return res.json() 
+                   } else {
+                        console.log("not found")
+                   }                
+                }).then((json) =>{
+                    const jsonposts = json.posts
+                    for(each of jsonposts){
+                        if(each.content == postContent && each.userID == userID){
+                            filterPosts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+                        }
+                    }
+                    // log(filterPosts[0].postID)
+                    const newPost = new Post(filterPosts[0].postID, currentBookID, booktitle, userID, pusername,posterProfile, pic, postContent, date, likes)
+                    posts.push(newPost);
+                    // log(posts)
+                    displayPosts(pusertype, posts)
+                    const postContentInput = document.getElementById('postContent')
+                    postContentInput.value = 'add successfully!'
+                    postContentInput.style = 'color: red'
+                    setTimeout(() => {
+                        postContentInput.value = '';
+                        postContentInput.style = 'color: black'
+                    }, 3 * 1000)
+                })
+            })
+        })
+        // const x = document.getElementById('myFile')
+        // const img = document.createElement("img");
+        // if(x.files.length > 0){
+        //     img.src = URL.createObjectURL(x.files[0]);
+        //     img.className = 'postContentPicture'
+        // }
 
-        const today = new Date();
-        const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + ' ' + today.getHours()+':'+today.getMinutes();
-        const userType = checkUserType(getUserID())
-        var url;
-        if(userType == 'Admin'){
-            url = 'https://avatars.githubusercontent.com/u/73209681?v=4'
-        }else if(userType == 'User'){
-            url = 'https://avatars.githubusercontent.com/u/71192401?v=4'
-        }
+        // const today = new Date();
+        // const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + ' ' + today.getHours()+':'+today.getMinutes();
+        // const userType = checkUserType(getUserID())
+        // var url;
+        // if(userType == 'Admin'){
+        //     url = 'https://avatars.githubusercontent.com/u/73209681?v=4'
+        // }else if(userType == 'User'){
+        //     url = 'https://avatars.githubusercontent.com/u/71192401?v=4'
+        // }
 
-        if(x.files.length > 0){
-            // log(3)
-            posts.push(new Post(posts.length, currentBookID, BooksList[currentBookID].name, null, userType,
-            url, img, postContent, date, 0))
-        }else{
-            posts.push(new Post(posts.length, 0, 'Solaris', null, 'user',
-            url, null, postContent, date, 0))
-        }
-        displayPosts();
-        const postContentInput = document.getElementById('postContent')
-        postContentInput.value = 'add successfully!'
-        postContentInput.style = 'color: red'
-        document.getElementById('myFile').value = null
-        document.getElementById('demo').innerHTML = ''
-        setTimeout(()=>{
-            postContentInput.value = '';
-            postContentInput.style = 'color: black'
-        }, 3 * 1000)
+        // if(x.files.length > 0){
+        //     // log(3)
+        //     posts.push(new Post(bookID, userID, posts.length, currentBookID, BooksList[currentBookID].name, null, userType,
+        //     url, img, postContent, date, 0))
+        // }else{
+        //     posts.push(new Post(bookID, userID,  posts.length, 0, 'Solaris', null, 'user',
+        //     url, null, postContent, date, 0))
+        // }
+        // displayPosts();
+        // const postContentInput = document.getElementById('postContent')
+        // postContentInput.value = 'add successfully!'
+        // postContentInput.style = 'color: red'
+        // document.getElementById('myFile').value = null
+        // document.getElementById('demo').innerHTML = ''
+        // setTimeout(()=>{
+        //     postContentInput.value = '';
+        //     postContentInput.style = 'color: black'
+        // }, 3 * 1000)
     }
 }
 
@@ -761,20 +962,6 @@ function getUserID(){
 // helper: get book id
 function getBookID(){
     return window.location.href.split('?')[1].split('&')[0].split('=')[1]
-}
-
-// helper: check the user type, return 'User' or 'Admin'?
-function checkUserType(userID){
-    // need more dynamic way to search user database, check type
-    // phase 2 task
-
-    if (userID === 0){ 
-        return('User')
-    } else if (userID === 1) {
-        return('Admin')
-    } else {
-        return 'guest'
-    }
 }
 
 function ifNeedaddButton(userID){
@@ -837,5 +1024,142 @@ function modifyDescription(id, target, content){
     })
 }
 
+function modifyLike(id, operation){
+    // const book = BooklistsList.filter((list)=> list.booklistID == id )
+    const url = '/api/post/'+id
+
+    let data = {
+        operation: operation
+    }
+    const request = new Request(url, {
+        method: 'PATCH', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('updated')    
+        } else {
+            console.log('Failed to updated')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+function modifyPost(bid, uid, bookName, username, posterProfile, pic, content, time){
+    const url = '/api/addPost'
+    let data = {
+        bookID: bid,
+        userID: uid,
+		booktitle: bookName,
+        username: username,
+		posterProfile: posterProfile,
+		pic: pic,
+        content: content,
+        time: time,
+    }
+    const request = new Request(url, {
+        method: 'post', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('added book')    
+        } else {
+            console.log('Failed to add')
+        }
+        // log(res)
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+function addFormForDelete(){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='deleteForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit_delete'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit_delete'){
+            const ID =document.getElementById("deleteForm").name
+            const list = posts.filter((post)=> post.postID == ID )
+            log(ID)
+            const url = '/api/posts/'+ID
+        
+            let data = {
+                _id: list[0].postID
+            }
+            const request = new Request(url, {
+                method: 'delete', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            fetch(request)
+            .then(function(res) {
+                if (res.status === 200) {
+                    console.log('delete booklist')    
+                } else {
+                    console.log('Failed to delete the booklist')
+                }
+                log(res)
+            }).catch((error) => {
+                log(error)
+            })
+
+            for (let i=0; i<posts.length; i++){
+                if (posts[i].postID == ID){
+                    posts.splice(i, 1)
+                    // BooklistsNum--
+                }
+            }
+            log(posts)
+            //renewPage()
+            document.getElementById("deleteForm").style.display="none"
+            location.reload()
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("deleteForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
+}
 
 getBooks();
+getPosts();
+flipPage(1,3)

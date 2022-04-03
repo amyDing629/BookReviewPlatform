@@ -372,8 +372,8 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	if (req.body.pic){
 		newPost.pic = req.body.pic
 	}
-	if (req.body.bookTitle){
-		newPost.bookTitle = req.body.bookTitle
+	if (req.body.booktitle){
+		newPost.booktitle = req.body.booktitle
 	}
 	if (req.body.username){
 		newPost.username = req.body.username
@@ -765,6 +765,53 @@ app.patch('/api/book/:bookID', async (req, res)=>{
 	
 })
 
+app.patch('/api/post/:postID', async (req, res)=>{
+	const post = req.params.postID
+    if (!ObjectID.isValid(post)) {
+		res.status(404).send('invalid booklist id type') 
+		return
+	}
+	
+	// const target = req.body.target
+	const operation = req.body.operation
+	const fieldsToUpdate = {}
+	let curr = 0
+	try {
+		const item = await Post.findOne({_id: post})
+		if (!item) {
+			res.status(404).send("no such a book")
+		} else {   
+			curr = item['likes']
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find booklist")
+	}
+
+	if (operation == 'add'){
+		fieldsToUpdate['likes'] = curr+1
+	} else if(operation == 'reduce'){
+		fieldsToUpdate['likes'] = curr-1
+	} else {
+		res.status(404).send('invalid request body') 
+		return;
+ 	}
+	try {
+		const list = await Post.findOneAndUpdate({_id: post}, {$set: fieldsToUpdate}, {new: true})
+		if (!list) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.send(list)
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // bad request for changing the student.
+		}
+	}
+})
 
 /*************************************************/
 // get all book and lists
