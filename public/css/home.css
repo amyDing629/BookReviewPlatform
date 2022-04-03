@@ -217,6 +217,11 @@ a {
   .postdropdown {
     position: relative;
     display: inline-block;
+    font-size: small;
+  }
+
+  .postdropdown #myInput {
+    font-size: small;
   }
   
   /* Dropdown Content (Hidden by Default) */
@@ -292,8 +297,6 @@ a {
     margin-bottom:20px;
 }
 
-
-/* Rest are trash */
 .bookTitle {
 	padding: 3px;
 	background-color: white;
@@ -315,7 +318,6 @@ a {
     height: 70%;
 }
 
-/* trash */
 
 /********** Posts **********/
 #posts{
@@ -401,6 +403,7 @@ a {
     width: 500px;
 }
 
+
 #modify_post_button{
     float:right;
     margin-top:5px;
@@ -420,25 +423,10 @@ a {
     color:black;
 } 
 
-/* Trash */
-/* #posts .delete{
-    margin-top:2px;
-    margin-bottom: 3px;
-    background-color: red;
-    color: white;
-    font-size: medium;
-    float:right;
-    border: 2px solid #ccc;
-    border-radius: 10%;
-} */
-
 #posts .delete:hover {
     background-color: red;
   }
-/*   */
 
-
-/**** NEW ADDED ****/
 /*
     * Footer
  */
