@@ -1,7 +1,5 @@
-
-/******************* Index Book *******************/
 const log = console.log
-
+/******************* Index Book *******************/
 let user;
 let usertype;
 let username;
@@ -55,7 +53,6 @@ try {
                 console.log("not found")
            }                
         }).then((json) => {  //pass json into object locally
-            log(json)
             const books = json.books
             for (each of books){
                 allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
@@ -67,21 +64,17 @@ try {
 
             // handle links
             for (let i=0; i<allBooks.length; i++){
-                allBooks[i].link = blinkHandler(allBooks[i].bookId, usertype)
+                allBooks[i].link = blinkHandler(allBooks[i].bookId, usertype, user)
             }
             for (let i=0; i<BooklistsList.length; i++){
-                BooklistsList[i].link = llinkHandler(BooklistsList[i].booklistID, usertype)
+                BooklistsList[i].link = llinkHandler(BooklistsList[i].booklistID, usertype, user)
             }  
 
             /******************* Index Book *******************/
             welcome(username)
-            displayMenu(usertype, username, user)
-            displaySearchbox()
             RecommendBooksCreate()
             displayTop()
             displayRecommendations()
-
-
             })
         }).catch((error) => {
         log(error)})
@@ -96,7 +89,6 @@ try {
             console.log("not found")
        }                
     }).then((json) => {  //pass json into object locally
-        log(json)
         const books = json.books
         for (each of books){
             allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
@@ -115,8 +107,6 @@ try {
         }  
 
         /******************* Index Book *******************/
-        displayMenu(usertype, username, user)
-        displaySearchbox()
         RecommendBooksCreate()
         displayTop()
         displayRecommendations()
@@ -124,46 +114,6 @@ try {
         })
     .catch((error) => {
     log(error)})
-}
-
-
-
-/*************** Menu Handler ********************/
-function displayMenu(usertype, username, userid){
-    const ul = document.querySelector("#topMenu").children[0]
-    const lis = ul.children
-    const homea = lis[1].firstChild
-    const booksa = lis[2].firstChild
-    const booklistsa = lis[3].firstChild
-    const li = document.createElement("li")
-    const a = document.createElement("a")   
-    const li2 = document.createElement("li")
-    li2.className = 'addUserIdToLink'
-    li2.id = 'userLoginInfo'
-    const a2 = document.createElement("a")   
-    if (usertype == 'guest'){
-        homea.setAttribute('href', '/index.html')
-        booksa.setAttribute('href', '/public/html/BookMainPage.html') // here
-        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html') // here
-        a.setAttribute("href", "/public/html/login.html")
-        a.innerText = 'Login/Register'
-        li.appendChild(a)
-        ul.appendChild(li)
-    }
-    else{
-        homea.setAttribute('href', '/index.html?userID='+userid) // here 
-        booksa.setAttribute('href', '/public/html/BookMainPage.html?userID='+userid) // here
-        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html?userID='+userid) // here
-        a.setAttribute("href","/logout")
-        a.innerText = 'QUIT'
-        li.append(a)
-        li.className = 'quit'
-        a2.setAttribute("href", "../user/user.html") // user link?
-        a2.innerText = username // dynamic?
-        li2.append(a2)
-        ul.appendChild(li)
-        ul.appendChild(li2)
-    }
 }
 
 /*************** Welcome Section ********************/
@@ -189,7 +139,7 @@ function welcome(username){
     top.parentElement.insertBefore(div, top.nextElementSibling)
 }
 
-/*************** Books & Booklists Data ********************/
+/*************** link handler ********************/
 
 function blinkHandler(bid, usertype, userid){
     // handler for book *Detail* page link
@@ -219,87 +169,13 @@ function ulinkHandler(uid, usertype, userid){
     // handler for book *Detail* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BookDetail.html?bookID='+uid // need to change
+        result = '/public/html/login.html'
     }
     else{
-        result = '/public/html/BookDetail.html?bookID='+uid+"&userID="+userid // need to change
+        result = '/public/html/user.html?visitID='+userid+'&'+'userID='+uid 
     }
     return result; 
 }      
-
-
-function displaySearchbox(){
-    const bookoptionfield = document.querySelector(".search-book #myDropdown")
-    for (let i=0; i<allBooks.length; i++){
-        if (allBooks[i] != null){
-            const id1 = allBooks[i].bookId
-            const name1 = allBooks[i].title
-            const a1 = document.createElement("a")
-            // HERE!
-            let link1 = blinkHandler(id1, usertype)
-
-            a1.setAttribute("href", link1)
-            a1.innerText = name1
-            bookoptionfield.appendChild(a1)
-        }
-    }
-
-    const listoptionfield = document.querySelector('.search-list #myDropdown')
-    for (let i=0; i<BooklistsList.length; i++){
-        if (BooklistsList[i] != null){
-            const id2 = BooklistsList[i].booklistID
-            const name2 = "[" + BooklistsList[i].listName + "] -- " +BooklistsList[i].creator
-            const a2 = document.createElement("a")
-            // HERE!
-            let link2 = llinkHandler(id2, usertype)
-            a2.setAttribute("href", link2)
-            a2.innerText = name2
-            listoptionfield.appendChild(a2)
-        }
-    }
-}
-
-function bookFunction() {
-    const bookdropdown = document.querySelector(".search-book #myDropdown")
-    if (bookdropdown.classList.contains("hide")){
-        bookdropdown.classList.remove("hide")
-        bookdropdown.classList.add("dropdown-content")
-    }
-    else{
-        bookdropdown.classList.remove("dropdown-content")
-        bookdropdown.classList.add("hide")
-    }  
-}
-
-function listFunction() {
-    const listdropdown = document.querySelector(".search-list #myDropdown")
-    if (listdropdown.classList.contains("hide")){
-        listdropdown.classList.remove("hide")
-        listdropdown.classList.add("dropdown-content")
-    }
-    else{
-        listdropdown.classList.remove("dropdown-content")
-        listdropdown.classList.add("hide")
-    } 
-}
-
-function filterFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    div = document.getElementById("myDropdown");
-    a = div.getElementsByTagName("a");
-    for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        a[i].style.display = "";
-        } else {
-        a[i].style.display = "none";
-        }
-    }
-}
-
-
 
 /********** Recommendation book display **********/
 
@@ -445,139 +321,3 @@ function displayRecommendations(){
     }
 }
 
-/************************ Posts display ************************/
-
-// function homepostsCreate(){
-//     for (let i=0; i<posts.length; i++){
-//         homeposts.push(posts[i])
-//     }
-// }
-
-// function displayPosts(userType){
-
-//     for (let i=0; i<3; i++){
-//         if (homeposts[i] != null){
-//             let li = postul.children[i]
-            
-//             /*clean all before display */
-//             for (let j =0; j<li.children.length; j++){
-//                 li.removeChild(li.children[j])
-//             }
-
-//             let postDiv = document.createElement('div')
-//             postDiv.className = 'post'
-//             let userDiv = document.createElement('div')
-//             userDiv.className = 'userProfileContainer'
-//             let contentDiv = document.createElement('div')
-//             contentDiv.className ='postContent'
-
-//             let title = posts[i].booktitle
-//             let userName = posts[i].poster
-//             let userProfile = posts[i].posterProfile
-//             let pic = posts[i].pic
-//             let content = posts[i].content
-//             let time = posts[i].time
-//             let likes = posts[i].likes
-//             let plink = posts[i].posterlink
-//             let pid = posts[i].postID
-//             let bid = posts[i].bookID
-//             let userid = posts[i].userid
-//             let blink = posts[i].booklink
-
-//             let img1 = document.createElement('img')
-//             img1.className='userProfile'
-//             img1.setAttribute('src', userProfile)
-//             img1.setAttribute('alt', 'profile')
-//             userDiv.appendChild(img1)
-
-//             let userh3 = document.createElement('h3')
-//             let a1 = document.createElement('a')
-//             a1.className = 'linkColor'
-
-//             a1.setAttribute('href', plink)
-//             a1.innerText = userName
-//             a1.onclick = function open(e){
-//                 e.preventDefault();
-//                 window.location.href=(a1.href) // need to handle user link
-//             }
-//             let spanid2 = document.createElement('span')
-//             spanid2.className = 'postId'
-//             spanid2.innerText = pid
-//             userh3.appendChild(a1)
-//             userh3.appendChild(spanid2) // Post id is here
-
-//             contentDiv.appendChild(userh3)
-
-//             let pbook = document.createElement('p')
-//             pbook.innerText = 'Book Name: '
-//             let span1 = document.createElement('span')
-//             let a2 = document.createElement('a')
-//             a2.className = 'linkColor'
-//             a2.setAttribute('href', blink)
-//             a2.innerText = title
-//             a2.onclick = function open(e){
-//                 e.preventDefault();
-//                 window.location.href=(a2.href)
-//             }
-//             span1.appendChild(a2)
-//             let span2 = document.createElement('span')
-//             span2.className = 'postTime'
-//             span2.innerText = time
-
-//             let spanid3 = document.createElement('span')
-//             spanid3.className = 'bookId'
-//             spanid3.innerText = ' bookID: '
-//             let spanid4 = document.createElement('span')
-//             spanid4.className = 'bookId'
-//             spanid4.innerText = bid
-
-//             pbook.appendChild(span1)
-//             pbook.appendChild(span2)
-//             pbook.appendChild(spanid3) 
-//             pbook.appendChild(spanid4) // Book id is here
-//             contentDiv.appendChild(pbook)
-
-//             let p = document.createElement('p')
-//             p.innerText = content
-//             contentDiv.appendChild(p)
-
-//             if (pic != null){
-//                 let img2 = document.createElement('img')
-//                 img2.className='postContentPicture'
-//                 img2.setAttribute('src', pic)
-//                 img2.setAttribute('alt', 'pic')
-//                 contentDiv.appendChild(img2)
-//             }
-
-//             let br = document.createElement('br')
-//             contentDiv.appendChild(br)
-
-//             // ADMIN & USER
-//             if (userType != 'guest'){
-//                 let likeh5 = document.createElement('h5')
-//                 let icon = document.createElement('i')
-//                 icon.className = 'fa fa-heart'
-//                 icon.innerText = ' '+likes
-//                 let button = document.createElement('button')
-//                 button.className = 'btn btn-outline-primary'
-//                 button.classList.add('like')
-//                 button.innerText = 'Like'
-//                 let button2 = document.createElement('button')
-//                 button2.className = 'btn btn-outline-success'
-//                 button2.classList.add('collect')
-//                 button2.innerText = 'Collect'
-
-//                 likeh5.appendChild(icon)
-//                 likeh5.appendChild(button2)
-//                 likeh5.appendChild(button)
-//                 contentDiv.appendChild(likeh5)
-//             }
-
-//             postDiv.appendChild(userDiv)
-//             postDiv.appendChild(contentDiv)
-
-//             li.appendChild(postDiv)
-            
-//         }
-//     }
-// }

@@ -29,8 +29,8 @@ const postul = document.querySelector('#posts ul');
 try { 
     puser= String(window.location.href.split('?')[1].split('=')[1])
     //try puser = String ...
-    const url3 = '/api/users/'+puser
-    fetch(url3).then((res) => { 
+    const url = '/api/users/'+puser
+    fetch(url).then((res) => { 
         if (res.status === 200) {
            return res.json() 
        } else {
@@ -39,8 +39,8 @@ try {
     }).then((json) => {  //pass json into object locally
         pusertype = json.user.type.toLowerCase()
         pusername = json.user.username
-        const url4 = '/api/posts'
-        fetch(url4).then((res) => { 
+        const url2 = '/api/posts'
+        fetch(url2).then((res) => { 
             if (res.status === 200) {
                return res.json() 
            } else {
@@ -51,10 +51,9 @@ try {
             for (each of jsonposts){
                 posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
             }
-            log(posts)
             // handle links
             for (let i=0; i<posts.length; i++){
-                posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype)
+                posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, puser)
                 posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
             }
             homepostsCreate()
@@ -72,7 +71,6 @@ try {
         log(error)})
 } catch { 
     pusertype= 'guest'
-    log(pusertype)
     const url5 = '/api/posts'
     fetch(url5).then((res) => { 
         if (res.status === 200) {
@@ -86,8 +84,7 @@ try {
         for (each of jsonposts){
             posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
         }
-        log(posts)
-        
+       
         // handle links
         for (let i=0; i<posts.length; i++){
             posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, puser)
@@ -103,58 +100,7 @@ try {
 
 
 
-
-
-
-
-// helper for index.html & index.html?userID=0 & index.html?userID=0
-// function getUserID(){
-//     try { 
-//         return parseInt(window.location.href.split('?')[1].split('=')[1])
-//     } catch { 
-//         return 'guest'
-//     }
-// }
-
-// // helper: check the user type, return 'User' or 'Admin'?
-// function checkUserType(userID){
-//     // need more dynamic way to search user database, check type
-//     // phase 2 task
-
-//     if (userID === 0){ 
-//         return('user')
-//     } else if (userID === 1) {
-//         return('admin')
-//     } else {
-//         return 'guest'
-//     }
-// }
-
-// const postid = getUserID()
-// const postuser = checkUserType(postid)
-
-/************************ Posts display ************************/
-
-
-// function blinkHandlerinPost(bid, user){
-//     // handler for book Detail page link
-//         for (let i =0; i<posts.length; i++){
-//             if (posts[i].bookID == bid){
-//                 // HERE!
-//                 let result;
-//                 if (user == 'guest'){
-//                     result = '../BookDetail/'+posts[i].bookID+'/BookDetail-'+posts[i].bookID+'.html'
-//                 }
-//                 else if (user == 'user'){
-//                     result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_end_after.html'
-//                 }
-//                 else{
-//                     result = '../BookDetail/'+allBooks[i].bookId+'/'+allBooks[i].bookId+'_admin_after.html'
-//                 }
-//                 return result;
-//             }
-//         }  
-//     }
+/************************ link handlers ************************/
 
 function blinkHandlerinPost(bid, usertype, userid){
         // handler for book *Detail* page link
@@ -182,15 +128,7 @@ function ulinkHandler(uid, usertype, userid){
     }      
 
 
-
-
-
-
-//const postul = document.querySelector('#posts ul');
-//postCallBack()
-//homepostsCreate()
-//displayPosts(postuser)
-
+/************************ display ************************/
 
 function homepostsCreate(){
     for (let i=0; i<posts.length; i++){
@@ -200,9 +138,9 @@ function homepostsCreate(){
 
 
 function displayPosts(userType){
-
-    for (let i=0; i<5; i++){
-        if (homeposts[i] != null){
+    console.log(homeposts)
+    for (let i=0; i<3; i++){
+        if (homeposts[i]!= null){
             let li = postul.children[i]
             
             /*clean all before display */
@@ -217,18 +155,18 @@ function displayPosts(userType){
             let contentDiv = document.createElement('div')
             contentDiv.className ='postContent'
 
-            let title = posts[i].booktitle
-            let userName = posts[i].poster
-            let userProfile = posts[i].posterProfile
-            let pic = posts[i].pic
-            let content = posts[i].content
-            let time = posts[i].time
-            let likes = posts[i].likes
-            let plink = posts[i].posterlink
-            let pid = posts[i].postID
-            let bid = posts[i].bookID
-            let userid = posts[i].userid
-            let blink = posts[i].booklink
+            let title = homeposts[i].booktitle
+            let userName = homeposts[i].poster
+            let userProfile = homeposts[i].posterProfile
+            let pic = homeposts[i].pic
+            let content = homeposts[i].content
+            let time = homeposts[i].time
+            let likes = homeposts[i].likes
+            let plink = homeposts[i].posterlink
+            let pid = homeposts[i].postID
+            let bid = homeposts[i].bookID
+            let userid = homeposts[i].userid
+            let blink = homeposts[i].booklink
 
             let img1 = document.createElement('img')
             img1.className='userProfile'
@@ -240,13 +178,11 @@ function displayPosts(userType){
             let a1 = document.createElement('a')
             a1.className = 'linkColor'
 
-
-        
             a1.setAttribute('href', plink)
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.href=(a1.href) // need to handle user link
+                window.location.href=(a1.href)
             }
             let spanid2 = document.createElement('span')
             if (userType == 'admin'){
@@ -337,120 +273,100 @@ function displayPosts(userType){
 }
 
 // ADMIN & USER
-    function likeHandler(){
+function likeHandler(){
         const likefield = document.querySelector('#posts ul')
         likefield.addEventListener('click', like)     
-    }
+}
 
 
     function like(e){
         e.preventDefault(); // prevent default action
-
-        const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                if (e.target.classList.contains('like')) {
-                    posts[i].likes ++
-                    let length = contentDiv.children.length
-                    length -= 1
-                    const target = contentDiv.children[length]
-                    const icon = target.children[0]
-                    icon.innerText = ' '+ posts[i].likes
-                    e.target.classList.remove('like');
-                    e.target.classList.add('dislike');
-                    e.target.innerText = 'Dislike';
-                    break;
+        if (e.target.classList.contains('like') || e.target.classList.contains('dislike')){
+            console.log("like")
+            const contentDiv = e.target.parentElement.parentElement
+            const h3 = contentDiv.children[0]
+            const pid = h3.children[1].innerText
+            console.log(pid)
+            for (let i=0; i<posts.length; i++){
+                if(posts[i].postID == pid){
+                    console.log("yes")
+                    if (e.target.classList.contains('like')) {
+                        console.log("yes")
+                        posts[i].likes ++
+                        let length = contentDiv.children.length
+                        length -= 1
+                        const target = contentDiv.children[length]
+                        const icon = target.children[0]
+                        icon.innerText = ' '+ posts[i].likes
+                        e.target.classList.remove('like');
+                        e.target.classList.add('dislike');
+                        e.target.innerText = 'Dislike';
+                        break;
+                    }
+                    else if (e.target.classList.contains('dislike')){
+                        posts[i].likes --
+                        let length = contentDiv.children.length
+                        length -= 1
+                        const target = contentDiv.children[length]
+                        const icon = target.children[0]
+                        icon.innerText = ' '+ posts[i].likes
+                        e.target.classList.remove('dislike');
+                        e.target.classList.add('like');
+                        e.target.innerText = 'Like';
+                        break;
+                    }
                 }
-                else if (e.target.classList.contains('dislike')){
-                    posts[i].likes --
-                    let length = contentDiv.children.length
-                    length -= 1
-                    const target = contentDiv.children[length]
-                    const icon = target.children[0]
-                    icon.innerText = ' '+ posts[i].likes
-                    e.target.classList.remove('dislike');
-                    e.target.classList.add('like');
-                    e.target.innerText = 'Like';
-                    break;
-                }
-            }
-            } 
+                } 
+        }
         }
 
-    function collectHandler(){
-        const collectfield = document.querySelector('#posts ul')
-        collectfield.addEventListener('click', collect);
-    }
+function collectHandler(){
+    const collectfield = document.querySelector('#posts ul')
+    collectfield.addEventListener('click', collect);
+}
 
     function collect(e){
         e.preventDefault(); // prevent default action
-
-        const contentDiv = e.target.parentElement.parentElement
-        const h3 = contentDiv.children[0]
-        const pid = h3.children[1].innerText
-        for (let i=0; i<posts.length; i++){
-            if(parseInt(posts[i].postID) == pid){
-                if (e.target.classList.contains('collect')) {
-                    collectedPosts.push(posts[i])
-                    const h5 = contentDiv.children[contentDiv.children.length-1]
-                    h5.children[1].innerText='Collected!'
-                    e.target.classList.remove('collect');
-                    e.target.classList.add('collected');
-                    break;
-                }
-                else if (e.target.classList.contains('collected')){
-                    //collectedPosts.remove(posts[i])
-                    for (let j=0; i<collectedPosts.length; i++){
-                        if (collectedPosts[j] == posts[i]){
-                            collectedPosts.splice(j, 1)
-                            break;
-                        }
+        if (e.target.classList.contains('collect') || e.target.classList.contains('collected')){
+            console.log("collect")
+            const contentDiv = e.target.parentElement.parentElement
+            const h3 = contentDiv.children[0]
+            const pid = h3.children[1].innerText
+            for (let i=0; i<posts.length; i++){
+                if(posts[i].postID == pid){
+                    if (e.target.classList.contains('collect')) {
+                        collectedPosts.push(posts[i])
+                        const h5 = contentDiv.children[contentDiv.children.length-1]
+                        h5.children[1].innerText='Collected!'
+                        e.target.classList.remove('collect');
+                        e.target.classList.add('collected');
+                        break;
                     }
-                    const h5 = contentDiv.children[contentDiv.children.length-1]
-                    h5.children[1].innerText='Collect'
-                    e.target.classList.remove('collected');
-                    e.target.classList.add('collect');
-                    break;
+                    else if (e.target.classList.contains('collected')){
+                        //collectedPosts.remove(posts[i])
+                        for (let j=0; i<collectedPosts.length; i++){
+                            if (collectedPosts[j] == posts[i]){
+                                collectedPosts.splice(j, 1)
+                                break;
+                            }
+                        }
+                        const h5 = contentDiv.children[contentDiv.children.length-1]
+                        h5.children[1].innerText='Collect'
+                        e.target.classList.remove('collected');
+                        e.target.classList.add('collect');
+                        break;
+                    }
+                    
                 }
-                
-            }
-        } 
+            } 
+        }
+        
     }
     
 
 
 
 /************************ Admin manage bar ************************/
-
-
-    //displayPostManagerBar()
-
-    // function post1Function() {
-    //     log('yes')
-    //     const bookdropdown = document.querySelector("#modify_post1 #myDropdown")
-    //     if (bookdropdown.classList.contains("hide")){
-    //         bookdropdown.classList.remove("hide")
-    //         bookdropdown.classList.add("postdropdown-content")
-    //     }
-    //     else{
-    //         bookdropdown.classList.remove("postdropdown-content")
-    //         bookdropdown.classList.add("hide")
-    //     }  
-    // }
-    
-    // function post2Function() {
-    //     const listdropdown = document.querySelector("#modify_post2 #myDropdown")
-    //     if (listdropdown.classList.contains("hide")){
-    //         listdropdown.classList.remove("hide")
-    //         listdropdown.classList.add("postdropdown-content")
-    //     }
-    //     else{
-    //         listdropdown.classList.remove("postdropdown-content")
-    //         listdropdown.classList.add("hide")
-    //     } 
-    // }
     
     function adminfilterFunction(type) {
         let input, filter, ul, li, a, i;
@@ -497,7 +413,7 @@ function displayPosts(userType){
             }  
         })
         button.className = 'dropbtn'
-        button.innerText = 'Modify Post#...'
+        button.innerText = 'Modify Post ID...'
 
         const div2 = document.createElement("div")
         div2.id = 'myDropdown'
@@ -510,12 +426,13 @@ function displayPosts(userType){
         input.onkeyup = function(){
             adminfilterFunction(1)
         }
-    
         div2.appendChild(input)
 
         div1.appendChild(button)
         div1.appendChild(div2)
-        ///////
+
+        ///////////////////////////////////
+
         const div3 = document.createElement("div")
         div3.id = 'modify_post2'
         div3.className = 'postdropdown'
@@ -560,9 +477,20 @@ function displayPosts(userType){
             // new
             const value1 = toreplace.value
             const value2 = replacedwith.value
-            const targetpost = posts[value2]
-            homeposts[value1] = targetpost  
-            displayPosts()
+            let targetpost
+            for (let i=0; i<posts.length; i++){
+                if (posts[i].postID == value2){
+                    targetpost = posts[i] // const targetpost = posts[value2]
+                }
+            }
+            console.log(targetpost)
+            for (let j=0; j<homeposts.length; j++){
+                if (homeposts[j].postID == value1){
+                    homeposts[j] = targetpost // homeposts[value1] = targetpost 
+                }
+            }
+            console.log(homeposts) 
+            displayPosts('admin')
         })
 
         divadmin.appendChild(h5)
@@ -579,7 +507,7 @@ function displayPosts(userType){
             if (homeposts[i] != null){
                 const postid = homeposts[i].postID
                 const option1 = document.createElement("option")
-                option1.value = postid;
+                option1.value = i; // postid
                 option1.innerText = postid
                 option1.addEventListener('click', function(){
                     const input = document.querySelector('#modify_post1 #myInput')
@@ -594,7 +522,7 @@ function displayPosts(userType){
             if (posts[j] != null){
                 const postid = posts[j].postID
                 const option2 = document.createElement("option")
-                option2.value = postid;
+                option2.value = j; // postid
                 option2.innerText = postid
                 option2.addEventListener('click', function(){
                     const input = document.querySelector('#modify_post2 #myInput')

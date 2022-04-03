@@ -4,25 +4,24 @@ const moment = require('moment');
 const PostSchema = new mongoose.Schema({
     bookID: {
         type: mongoose.Schema.Types.ObjectId,
-        // type: String,
 		required: true
     },
     userID: {
         type: mongoose.Schema.Types.ObjectId,
-        // type: String,
 		required: true
     },
     booktitle: {
         type: String,
-        required: false,
+        required: true, // false
     },
     username: {
         type: String,
-        required: false,
+        required: true, // false
     },
     posterProfile: {
         type: String,
         required: false,
+        default:""
     },
     pic: {
         type: String,
@@ -31,7 +30,7 @@ const PostSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true,
+        required: false,
         default:""
     },
     time: {

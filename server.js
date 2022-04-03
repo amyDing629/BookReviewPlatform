@@ -5,7 +5,6 @@ const log = console.log
 const path = require('path')
 
 const express = require('express')
-//const exphbs = require('express-handlebars');
 // starting the express server
 const app = express();
 
@@ -16,12 +15,6 @@ const { Post } = require('./models/post')
 const { Book, BookList } = require('./models/book')
 const { User } = require('./models/user')
 
-/*** handlebars: server-side templating engine ***/
-//const hbs = require('hbs')
-// Set express property 'view engine' to be 'hbs'
-//app.set('view engine', 'hbs')
-// setting up partials directory
-//hbs.registerPartials(path.join(__dirname, '/views/partials'))
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
 const bodyParser = require('body-parser') 
@@ -77,7 +70,6 @@ const authenticate = (req, res, next) => {
 /*** Session handling **************************************/
 // express-session for managing user sessions
 const session = require('express-session');
-const async = require('hbs/lib/async');
 
 /// Middleware for creating sessions and session cookies.
 // A session is created on every request, but whether or not it is saved depends on the option flags provided.
@@ -162,6 +154,7 @@ app.get('/login/:username/:password', mongoChecker, async (req, res) => {
 		}
     }
 })
+
 /*********** USERs ************/
 // get all users
 app.get('/api/users', mongoChecker, async (req, res)=>{
@@ -318,6 +311,7 @@ app.get('/api/posts', mongoChecker, async (req, res) => {
 	}
 })
 
+
 app.get('/api/posts/:postID', mongoChecker, async (req, res) => {
 	const postID = req.params.postID
 
@@ -363,30 +357,28 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	const newPost = new Post({
 		bookID: req.body.bookID,
 		userID: req.body.userID,
-		content: req.body.content
+		booktitle: req.body.booktitle,
+		username: req.body.username,
 	})
 	if (req.body.pic){
 		newPost.pic = req.body.pic
 	}
-	if (req.body.booktitle){
-		newPost.booktitle = req.body.booktitle
-	}
-	if (req.body.username){
-		newPost.username = req.body.username
-	}
+	// if (req.body.booktitle){
+	// 	newPost.booktitle = req.body.booktitle
+	// }
+	// if (req.body.username){
+	// 	newPost.username = req.body.username
+	// }
 	if (req.body.posterProfile){
 		newPost.posterProfile = req.body.posterProfile
 	}
 	if (req.body.content){
 		newPost.content = req.body.content
 	}
-	if (req.body.time){
-		newPost.time = req.body.time
-	}
 
     try {
 		const result = await newPost.save()	
-		res.send(result)
+		res.send({result})
 	} catch(error) {
 		log(error) // log server error to the console, not to the client.
 		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
@@ -808,6 +800,7 @@ app.patch('/api/post/:postID', async (req, res)=>{
 		}
 	}
 })
+
 
 /*************************************************/
 // get all book and lists
