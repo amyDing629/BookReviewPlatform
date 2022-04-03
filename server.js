@@ -252,7 +252,7 @@ app.get('/user/:id', mongoChecker, async (req, res)=>{
 		return;
 	}
 	try {
-		const user = await User.findOne({_id: id})
+		const user = await User.findOne({_id: id}) 
 		if (!user) {
 			res.status(404).send('Resource not found')  // could not find this user
 		} else { 

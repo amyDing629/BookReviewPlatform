@@ -938,7 +938,6 @@ function displayUserBooklists(user) {
     // TODO: flip page
     for (booklistID of user.booklistList) {
         let url = 'http://localhost:50001/api/booklists/' + booklistID;
-        console.log(url);
         fetch(url).then((res) => {
             if (res.status === 200) {
                 return res.json() 
@@ -946,7 +945,6 @@ function displayUserBooklists(user) {
                  console.log("Could not get this post.")
             }  
         }).then((booklist) => {
-            console.log(booklist);
             let li = document.createElement('li');
             li.appendChild(_createBooklistDiv(booklist));
             ul.appendChild(li);
@@ -963,18 +961,29 @@ function displayUserBooklists(user) {
 function displayCollectedPost(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    if (user.postCollectionList.length == 0) {
+    if (user.postCollection.length == 0) {
         content.innerHTML = "Don't have any post collection.";
         return;
     }
 
     let ul = document.createElement('ul');
-    let postCollection;
-    for (postCollection of user.postCollectionList) {
-        let li = document.createElement('li');
-        li.appendChild(_createPostDiv(postCollection));
-        ul.appendChild(li);
+    let postCollectionID;
+    for (postCollectionID of user.postCollection) {
+        let url = 'http://localhost:50001/api/posts/' + postCollectionID;
+        console.log(url);
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json() 
+            } else {
+                 console.log("Could not get this post.")
+            }  
+        }).then((post) => {
+            let li = document.createElement('li');
+            li.appendChild(_createPostDiv(post));
+            ul.appendChild(li);
+        })
     }
+
     content.appendChild(ul); 
     let pageFliper = document.createElement('div');
     pageFliper.id = 'pageFliper';
@@ -985,17 +994,26 @@ function displayCollectedPost(user){
 function displayCollectedBooklist(user){
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    if (user.booklistCollectionList.length == 0) {
+    if (user.booklistCollection.length == 0) {
         content.innerHTML = "Don't have any booklist collection.";
         return;
     }
 
     let ul = document.createElement('ul');
-    let booklistCollection;
-    for (booklistCollection of user.booklistCollectionList) {
-        let li = document.createElement('li');
-        li.appendChild(_createBooklistDiv(booklistCollection));
-        ul.appendChild(li);
+    let booklistCollectionID;
+    for (booklistCollectionID of user.booklistCollection) {
+        let url = 'http://localhost:50001/api/booklists/' + booklistCollectionID;
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                return res.json() 
+            } else {
+                 console.log("Could not get this post.")
+            }  
+        }).then((booklist) => {
+            let li = document.createElement('li');
+            li.appendChild(_createBooklistDiv(booklist));
+            ul.appendChild(li);
+        })        
     }
     content.appendChild(ul); 
     let pageFliper = document.createElement('div');
@@ -1217,14 +1235,14 @@ booklists.push(novelBooklist);
 booklists.push(spanishBooklist);
 booklists.push(before20list);
 
-regularUser.postCollectionList.push(postSolarisWithoutImg);
-regularUser.booklistCollectionList.push(spanishBooklist);
-regularUser.booklistCollectionList.push(novelBooklist);
-adminUser.postCollectionList.push(postSolarisWithImg);
-adminUser.postCollectionList.push(postSongOfSolomon);
-adminUser.postCollectionList.push(postWarAndPeace);
-adminUser.booklistCollectionList.push(novelBooklist);
-adminUser.booklistCollectionList.push(before20list);
+// regularUser.postCollectionList.push(postSolarisWithoutImg);
+// regularUser.booklistCollectionList.push(spanishBooklist);
+// regularUser.booklistCollectionList.push(novelBooklist);
+// adminUser.postCollectionList.push(postSolarisWithImg);
+// adminUser.postCollectionList.push(postSongOfSolomon);
+// adminUser.postCollectionList.push(postWarAndPeace);
+// adminUser.booklistCollectionList.push(novelBooklist);
+// adminUser.booklistCollectionList.push(before20list);
 
 users.push(adminUser);
 users.push(regularUser);
