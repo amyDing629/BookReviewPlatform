@@ -78,6 +78,7 @@ class Booklist {
 
 /********************** Functions On Click ***********************/
 function menuButtonsOnClick(e) {
+    console.log(e.target)
     // Change button color
     changeButtonColor(e.target);
     let userID = window.location.href.split('?')[1].split('=')[1];
@@ -193,20 +194,20 @@ function displayUserInfo(isVisit) {
                 if (user.profilePhoto != null) {
                     userInfo.getElementsByClassName('profilePic')[0].src = user.profilePhoto;
                 }
-                console.log(user.type);
-                console.log(isVisit);
                 if (user.type == 'Admin' && isVisit == false) {
                     let buttons = document.getElementById('menubar').children[0];
                     let manageButtonLi = document.createElement("li");
                     let manageButton = document.createElement("button");
                     manageButton.innerHTML = 'Manage';
                     manageButton.className = 'btn btn-light';
+                    manageButton.addEventListener('click', menuButtonsOnClick);
                     manageButtonLi.appendChild(manageButton);
                     buttons.appendChild(manageButtonLi);
                     let editBookButtonLi = document.createElement("li");
                     let editBookButton = document.createElement("button");
                     editBookButton.className = 'btn btn-light';
                     editBookButton.innerHTML = 'Edit Books';
+                    editBookButton.addEventListener('click', menuButtonsOnClick);
                     editBookButtonLi.appendChild(editBookButton);
                     buttons.appendChild(editBookButtonLi);
                 }
@@ -1024,15 +1025,31 @@ function displayCollectedBooklist(user){
 
 
 function _getRegularUserList() {
-    let user;
+    const url = '/api/users';
     let regularUserList = [];
-    for (user of users) {
-        if (user.type == 'Admin') {
-            regularUserList.push(user);
+    fetch(url).then((res) => {
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get users.")
+               }                
+            }).then((users) => {
+                users = users.users
+                let user;
+                for (user of users) {
+                    if (user.type == 'User') {
+                        regularUserList.push(user);
+                    }
+                }
+            })
         }
-    }
+    })
     return regularUserList;
-}
+    
+}        
+    
 
 function displayManageWindow() {
     function manageButtonOnClick(e) {
@@ -1055,41 +1072,58 @@ function displayManageWindow() {
 
     let ul = document.createElement('ul');
     ul.id = 'userManage';
-    let user;
-    for (user of _getRegularUserList()) {
-        let li = document.createElement('li');
 
-        let userInfoDiv = document.createElement('div');
-        userInfoDiv.className = 'userInfo';
-        let h3 = document.createElement('h3');
-        let a = document.createElement('a');
-        a.className = 'userLink linkColor';
-        a.href = 'admin.html?visit=' + user.userID;
-        a.innerHTML = user.username + '&nbsp#' + user.userID.toString();
-        let span1 = document.createElement('span');
-        span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
-        let span2 = document.createElement('span');
-        span2.className = 'green';
-        span2.innerHTML = '&nbsp; active';
-        h3.appendChild(a);
-        h3.appendChild(span1);
-        h3.appendChild(span2);
-        userInfoDiv.appendChild(h3);
+    const url = '/api/users';
+    fetch(url).then((res) => {
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get users.")
+               }                
+            }).then((users) => {
+                users = users.users
+                let user;
+                for (user of users) {
+                    if (user.type == 'User') {
+                        let li = document.createElement('li');
 
-        let inActivateButton = document.createElement('button');
-        inActivateButton.className = 'manageButton btn btn-outline-primary';
-        inActivateButton.innerHTML = 'inactivate';
-        inActivateButton.addEventListener('click', manageButtonOnClick);
+                        let userInfoDiv = document.createElement('div');
+                        userInfoDiv.className = 'userInfo';
+                        let h3 = document.createElement('h3');
+                        let a = document.createElement('a');
+                        a.className = 'userLink linkColor';
+                        a.href = 'user.html?visit=' + user._id;
+                        a.innerHTML = user.username;
+                        let span1 = document.createElement('span');
+                        span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
+                        let span2 = document.createElement('span');
+                        span2.className = 'green';
+                        span2.innerHTML = '&nbsp; active';
+                        h3.appendChild(a);
+                        h3.appendChild(span1);
+                        h3.appendChild(span2);
+                        userInfoDiv.appendChild(h3);
 
-        li.appendChild(userInfoDiv);
-        li.appendChild(inActivateButton);
-        ul.appendChild(li);
-    }
-    content.appendChild(ul);
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 8);
+                        let inActivateButton = document.createElement('button');
+                        inActivateButton.className = 'manageButton btn btn-outline-primary';
+                        inActivateButton.innerHTML = 'inactivate';
+                        inActivateButton.addEventListener('click', manageButtonOnClick);
+
+                        li.appendChild(userInfoDiv);
+                        li.appendChild(inActivateButton);
+                        ul.appendChild(li);
+                    }
+                }
+                content.appendChild(ul);
+                let pageFliper = document.createElement('div');
+                pageFliper.id = 'pageFliper';
+                content.appendChild(pageFliper);
+                filpPage(1, 8);
+            })
+        }
+    })
 }
 
 function displayEditBooksWindow() {
