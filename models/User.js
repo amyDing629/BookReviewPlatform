@@ -27,19 +27,19 @@ const UserSchema = new mongoose.Schema({
         default: ''
     },
     postList: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     booklistList: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     postCollection: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     booklistCollection: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     type:{

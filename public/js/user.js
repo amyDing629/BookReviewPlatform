@@ -81,7 +81,12 @@ function menuButtonsOnClick(e) {
     console.log(e.target)
     // Change button color
     changeButtonColor(e.target);
-    let userID = window.location.href.split('?')[1].split('=')[1];
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[0].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
+    }
     const url = '/api/users/' + userID;
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -132,21 +137,16 @@ function profileButtonsOnClick(e) {
     }
     else if (e.target.innerHTML == 'Submit') {
         let signature = document.getElementById('sigForm').value;
-        let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
-        let user;
-        for (user in users) {
-            if (user.userID == userID) {
-                user.signature = signature;
-            }
-        }
+        
         userInfo.removeChild(document.getElementById('sigForm'));
         let newSignature = document.createElement('div');
         newSignature.id = 'signature';
         newSignature.innerHTML = signature;
         userInfo.insertBefore(newSignature, profileButton);
         profileButton.innerHTML = 'Edit Signature';
-
-        let url = '/api/users/' + window.location.href.split('?')[1].split('=')[1]
+        
+        let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
+        let url = '/api/users/' + userID
         let request = new Request(url, {
             method: 'PATCH',
             body: JSON.stringify({'operation': 'signature', 'value': signature}),
@@ -170,7 +170,12 @@ function profileButtonsOnClick(e) {
 
 /********************** DOM Functions ************************/
 function displayUserInfo(isVisit) {
-    let currentUserID = window.location.href.split('?')[1].split('=')[1];
+    let currentUserID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        currentUserID = window.location.href.split('?')[1].split('&')[0].split('=')[1];
+    } else{
+        currentUserID = window.location.href.split('?')[1].split('=')[1];
+    }
     const url = '/api/users/' + currentUserID;
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -360,7 +365,6 @@ function _createPostDiv(post) {
                     post = post.post
                     if (e.target.classList.contains('like')){
                         console.log(post.likes);
-                        post.likes ++;
                         icon.innerText = ' '+ post.likes; //TODO: update db
                         e.target.classList.remove('like');
                         e.target.classList.add('dislike');
@@ -463,15 +467,6 @@ function _createPostDiv(post) {
     let likes = post.likes;
     let pid = post._id;
     let bid = post.bookID;
-    
-    let blink;
-    if (window.location.href.indexOf('user.html') != -1) {
-        blink = '../BookDetail/'+bid+'/'+bid+'_end_after.html';
-    }else if (window.location.href.indexOf('admin.html') != -1) {
-        blink = '../BookDetail/'+bid+'/'+bid+'_admin_after.html';
-    }else{
-        blink = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
-    }
 
     let img1 = document.createElement('img');
     img1.className='userProfile';
@@ -485,16 +480,19 @@ function _createPostDiv(post) {
     a1.innerText = username;
     a1.onclick = function open(e){
         e.preventDefault();
-        if (window.location.href.indexOf(username+'.html') != -1){
-            window.location.href = username + ".html";
-        }else{
-            if (window.location.href.indexOf('user.html') != -1) {
-                window.location.href = "user.html?visit=" + _getUserByName('admin').userID;
-            }else {
-                window.location.href = "admin.html?visit=" + _getUserByName('user').userID;
-            }
-            
-
+        let userID;
+        if (window.location.href.indexOf('visitID') !== -1) {
+            userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+        } else{
+            userID = window.location.href.split('?')[1].split('=')[1];
+        }
+        
+        console.log(userID);
+        console.log(post.userID);
+        if (userID == post.userID){
+            window.location.href = '/public/html/user.html?userID=' + userID; 
+        } else{
+            window.location.href = '/public/html/user.html?visitID=' + post.userID + '&userID=' + userID;
         }
     }
     let spanid2 = document.createElement('span');
@@ -510,6 +508,16 @@ function _createPostDiv(post) {
     let span1 = document.createElement('span');
     let a2 = document.createElement('a');
     a2.className = 'linkColor';
+
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
+    }
+
+    let blink = '/public/html/BookDetail.html?bookID=' + bid + '&userID=' + userID;
+    
     a2.setAttribute('href', blink);
     a2.innerText = title;
     a2.onclick = function open(e){
@@ -565,16 +573,29 @@ function _createPostDiv(post) {
     button2.innerText = 'Collect'
     button2.addEventListener('click', collectOnClick);
     // end user: delete button only for lists created by self
-    const userInfo = document.querySelector('#userLoginInfo').innerText
+    
     likeh5.appendChild(icon)
-    if (userInfo.toLowerCase() === post.username.toLowerCase() || userInfo.toLowerCase() == 'admin') {
-        let button3 = document.createElement('button');
-        button3.className = "btn btn-outline-danger";
-        button3.classList.add('delete');
-        button3.addEventListener('click', deletePostButtonOnClick);
-        button3.innerText = 'Delete';
-        likeh5.appendChild(button3);
-    }
+    const url = '/api/users/' + userID;
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {
+                if (userID == post.userID || user.type == 'Admin') {
+                    let button3 = document.createElement('button');
+                    button3.className = "btn btn-outline-danger";
+                    button3.classList.add('delete');
+                    button3.addEventListener('click', deletePostButtonOnClick);
+                    button3.innerText = 'Delete';
+                    likeh5.appendChild(button3);
+                }
+            })
+        }
+    })
     likeh5.appendChild(button2)
     likeh5.appendChild(button)
     contentDiv.appendChild(likeh5)
@@ -582,7 +603,6 @@ function _createPostDiv(post) {
     postDiv.appendChild(userDiv);
     postDiv.appendChild(contentDiv);
     return postDiv;
-
 }
 function displayUserPosts(user) {
     console.log(user);
@@ -733,23 +753,39 @@ function _createBooklistDiv(booklist) {
     IDcontent.appendChild(document.createTextNode(booklist._id))
     id.appendChild(IDcontent)
     div.appendChild(id)
-
-    // end user: delete button only for lists created by self
-    const userInfo = document.querySelector('#userLoginInfo').innerText
-    if (userInfo.toLowerCase() === booklist.creator.toLowerCase() || userInfo.toLowerCase() == 'admin') {
-        const div1 = document.createElement('div')
-        div1.className = 'delete'
-        const button3 = document.createElement('button')
-        button3.className = "deleteButton, btn btn-danger" 
-        button3.appendChild(document.createTextNode("Delete this list"))
-        button3.addEventListener('click', deleteBooklistButtonOnClick);
-        div1.appendChild(button3)
-        id.appendChild(div1)
-
-
-        div.appendChild(id)
+    
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
     }
 
+    const url = '/api/users/' + userID;
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {
+                user = user.user
+                if (user.username.toLowerCase() == booklist.creator.toLowerCase() || user.type == 'Admin'){
+                    const div1 = document.createElement('div')
+                    div1.className = 'delete'
+                    const button3 = document.createElement('button')
+                    button3.className = "deleteButton btn btn-danger" 
+                    button3.appendChild(document.createTextNode("Delete this list"))
+                    button3.addEventListener('click', deleteBooklistButtonOnClick);
+                    div1.appendChild(button3)
+                    id.appendChild(div1)
+                }
+            })
+        }
+    })
+    div.appendChild(id);
     // infoWrap
     const ul1 = document.createElement('ul')
     ul1.className = "infoWrap"
@@ -763,13 +799,11 @@ function _createBooklistDiv(booklist) {
     const span1 = document.createElement('span')
     const a1 = document.createElement('a')
     a1.className = "linkColor"
-    if (window.location.href.indexOf('user.html') != -1) {
-        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID + '&userID=0.html';
-    }else if (window.location.href.indexOf('admin.html') != -1){
-        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID + '&userID=1.html';
-    }else{
-        a1.href = "../BooklistDetail/BooklistDetail.html?booklistID=" + booklist.booklistID;
-    }
+    
+
+    a1.href = '/public/html/BooklistDetail.html?booklistID=' + booklist._id + '&userID=' + userID;
+
+
     const nameContent = document.createTextNode(booklist.listName)
     a1.appendChild(nameContent)
     span1.appendChild(a1)
@@ -786,15 +820,28 @@ function _createBooklistDiv(booklist) {
     const span2 = document.createElement('span')
     const a2 = document.createElement('a')
     a2.className = "linkColor"
-    if (window.location.href.indexOf(booklist.creator + '.html') != -1){
-            a2.href = booklist.creator + ".html";
-    }else{
-        if (window.location.href.indexOf('user.html') != -1) {
-            a2.href = "user.html?visit=" + _getUserByName('admin').userID;
-        }else {
-            a2.href = "admin.html?visit=" + _getUserByName('user').userID;
+    
+
+    // TODO: creatorID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+            fetch(url).then((res) => { 
+                if (res.status === 200) {
+                   return res.json() 
+               } else {
+                    console.log("Could not get this user.")
+               }                
+            }).then((user) => {
+                user = user.user;
+                if (user.username.toLowerCase() == booklist.creator.toLowerCase()) { 
+                    a2.href = "/public/html/user.html?userID=" + userID;
+                } else {
+                    a2.href = "/public/html/user.html?visitID=" + booklist.creatorID + "&userID=" + userID;
+                    // TODO: booklist creator id.
+                }
+            })
         }
-    }
+    })
     
     const creatorContent = document.createTextNode(booklist.creator)
     a2.appendChild(creatorContent)
@@ -844,6 +891,7 @@ function _createBooklistDiv(booklist) {
     const tr2 = document.createElement('tr')
     
     // TODO: flip pages
+    let bookNum;
     if (booklist.books.length <= 4){
         bookNum = booklist.books.length
     } else {
@@ -861,13 +909,7 @@ function _createBooklistDiv(booklist) {
         const bookLink = document.createElement('a')
         bookLink.className = "book"
         let bid = book.bookID;
-        if (window.location.href.indexOf('user.html') != -1) {
-            bookLink.href = '../BookDetail/'+bid+'/'+bid+'_end_after.html';
-        }else if (window.location.href.indexOf('admin.html') != -1) {
-            bookLink.href = '../BookDetail/'+bid+'/'+bid+'_admin_after.html';
-        }else{
-            bookLink.href = '../BookDetail/'+bid+'/BookDetail-'+bid+'.html';
-        }
+        bookLink.href = '/public/html/BookDetail.html?bookID=' + bid + '&userID=' + userID;
 
         bookLink.appendChild(document.createTextNode(book.name))
         newBookLink.appendChild(bookLink)
@@ -943,7 +985,7 @@ function displayUserBooklists(user) {
             if (res.status === 200) {
                 return res.json() 
             } else {
-                 console.log("Could not get this post.")
+                 console.log("Could not get this booklist.")
             }  
         }).then((booklist) => {
             let li = document.createElement('li');
@@ -1134,7 +1176,15 @@ function displayManageWindow() {
                         spanId.className = 'manageUserId';
                         let a = document.createElement('a');
                         a.className = 'userLink linkColor';
-                        a.href = 'user.html?visit=' + user._id;
+
+                        let currUserID;
+                        if (window.location.href.indexOf('visitID') !== -1) {
+                            currUserID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+                        } else{
+                            currUserID = window.location.href.split('?')[1].split('=')[1];
+                        }
+
+                        a.href = '/public/html/user.html?visitID=' + user._id + '&userID=' + currUserID;
                         a.innerHTML = user.username;
                         let divName = document.createElement('div');
                         divName.className = 'userNameDiv';
@@ -1185,11 +1235,14 @@ function displayManageWindow() {
 function displayEditBooksWindow() {
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    if (window.location.href.indexOf('user.html') != -1) {
-        window.location.href = "../BookMainPage/BookMainPage_end_after.html";
-    }else if (window.location.href.indexOf('admin.html') != -1) {
-        window.location.href = "../BookMainPage/BookMainPage_admin_after.html";
+
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
     }
+    window.location.href = "/public/html/BookMainPage.html?userID=" + userID;
 }
 
 // page flip
@@ -1364,7 +1417,8 @@ users.push(regularAmy);
 //         }
 //     }
 // }
-displayUserInfo(false);
+
+displayUserInfo(window.location.href.indexOf('visitID') !== -1);
 
 
 // Setup onclick

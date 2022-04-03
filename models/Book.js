@@ -46,6 +46,10 @@ const BooklistSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    creatorID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     books: {
         type: [BookSchema]
     },
