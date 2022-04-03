@@ -50,6 +50,7 @@ const sessionChecker = (req, res, next) => {
 
 // Middleware for authentication of resources
 const authenticate = (req, res, next) => {
+
 	if (req.session.user) {
 		User.findById(req.session.user).then((user) => {
 			if (!user) {
@@ -63,6 +64,18 @@ const authenticate = (req, res, next) => {
 		})
 	} else {
 		res.status(401).send("Unauthorized")
+	}
+}
+
+// Middleware for update booklist operation checking
+const booklistModifyValidation = (req, res, next) =>{
+	const validTargets =['likedBy','collectedBy','listDescription','books']
+	const validOperation = ['add', 'reduce', 'new']
+	if (!validTargets.includes(req.body.target) | !validOperation.includes(req.body.operation)){
+		res.status(400).send("bad request on checking booklistModifyValidation")
+		return Promise.reject() 
+	} else {
+		next()
 	}
 }
 
@@ -572,9 +585,7 @@ app.post('/api/booklist', async (req, res)=>{
 			listName: req.body.listName,
 			listDescription: req.body.listDescription,
 			creator: req.body.creator,
-			books: books,
-			likes: 0,
-			collect: 0
+			books: books
 		})
 	}
 	log(booklist)
@@ -612,17 +623,19 @@ app.delete('/api/booklist/:booklistID', async (req, res)=>{
 })
 
 // update like/collect
-app.patch('/api/booklist/:booklistID', async (req, res)=>{
+app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res)=>{
     const booklist = req.params.booklistID
     if (!ObjectID.isValid(booklist)) {
 		res.status(404).send('invalid booklist id type') 
 		return
 	}
-	
 	const target = req.body.target
 	const operation = req.body.operation
 	const fieldsToUpdate = {}
+	//let curr = 0
 	let curr = 0
+
+	// check booklist validation
 	try {
 		const item = await BookList.findOne({_id: booklist})
 		if (!item) {
@@ -634,17 +647,33 @@ app.patch('/api/booklist/:booklistID', async (req, res)=>{
 		log(error)
 		res.status(500).send("server error on find booklist")
 	}
-    // target = likes/collect
-	if (operation == 'add'){
-		fieldsToUpdate[target] = curr+1
-	} else if(operation == 'reduce'){
-		fieldsToUpdate[target] = curr-1
-	} else if(operation == 'new'){
-		fieldsToUpdate[target] = req.body.value
-	} else {
-		res.status(404).send('invalid request body') 
-		return;
- 	}
+
+	// check the validation of the user who performs this update
+	try {
+		const who = req.body.who
+		const user = await User.findOne({_id: who})
+		if (!user) {
+			res.status(404).send("no such a book")
+		} else { // valid user, do valid operation
+			// target = likedBy/collectedBy
+			if (operation == 'add'){
+				fieldsToUpdate[target] = curr.push(who)
+			} else if(operation == 'reduce'){
+				const newValue = curr.filter((userID)=> userID != who)
+				fieldsToUpdate[target] = newValue
+			} else if(operation == 'new'){
+				fieldsToUpdate[target] = req.body.value
+			} else {
+				res.status(404).send('invalid request body') 
+				return;
+			}
+			//log(who)
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find user")
+	}
+    
 	try {
 		const list = await BookList.findOneAndUpdate({_id: booklist}, {$set: fieldsToUpdate}, {new: true})
 		if (!list) {
@@ -654,10 +683,10 @@ app.patch('/api/booklist/:booklistID', async (req, res)=>{
 		}
 	} catch (error) {
 		log(error)
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+		if (isMongoError(error)) {
 			res.status(500).send('Internal server error')
 		} else {
-			res.status(400).send('Bad Request') // bad request for changing the student.
+			res.status(400).send('Bad Request')
 		}
 	}
 })
@@ -827,7 +856,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 50001
+const port = process.env.PORT || 5001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 

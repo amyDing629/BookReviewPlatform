@@ -115,7 +115,7 @@ function searchList(e){
 
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection, id, likes, collect) {
+	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
@@ -126,10 +126,9 @@ class Booklist {
         this.books = bookCollection; // list of Book object
 		this.booklistID = id;
 		BooklistsNum++;
-        this.likes = likes;
-        this.collect = collect;
-        const date = new Date() 
-        this.createTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        this.likedBy = likedBy;
+        this.collectedBy = collectedBy;
+        this.createTime = createTime
 	}
 }
 
@@ -147,7 +146,7 @@ function getBooklists(){
     }).then((json) => {  //pass json into object locally
         const booklists = json.booklists
         for (each of booklists){
-            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likes, each.collect))
+            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likedBy, each.collectedBy, each.createTime))
         }
         displaySearchbox() // for search bar function 
         displayAllBooklists(BooklistsList, getUserID())
@@ -165,9 +164,7 @@ function displayAllBooklists(BooklistsList, userID) {
        } else {
             log('faild to get user info. as guest.')
        }                
-    }).then((json) => {  //pass json into object locally
-        //log(JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0])
-        //return JSON.stringify(json).split("\"type\":\"")[1].split("\"")[0]
+    }).then((json) => { 
         return JSON.stringify(json)
     }).then((userInfo)=>{
         try {
@@ -325,7 +322,6 @@ function sortByAtoZ(){
             }
         }
     }
-    log(sortedBooklistsList)
     const nowBooks = document.querySelector('#tableResultTBODY')
     const allBooklists = document.querySelectorAll('.booklist')
     for (each of allBooklists){
@@ -475,7 +471,10 @@ function addBookShelf(books, userID, userType){
 }
 
 // helper for addBooklistCard: like/collect icon
-function addIconBar(userType, likes, collect){
+function addIconBar(userType, booklist){
+    // <new> likedBy length and likedBy length
+    const likes = booklist.likedBy.length
+    const collect = booklist.collectedBy.length
     // icon wrap
     const ul2 = document.createElement('ul')
     ul2.className = "iconWrap"
@@ -490,10 +489,14 @@ function addIconBar(userType, likes, collect){
     iconImgLike.src = "../img/static/like_icon.png"
 
     if (userType === 'Admin' | userType === 'User'){
-        if (likes > 0){ // need fix on phase 2 // already liked status
+        /* if (likes > 0){ // need fix on phase 2 // already liked status
             iconImgLike.src = "../img/static/heart_icon.png"
             button1.className = "likeButton, btn btn-outline-success"
-        } 
+        }  */
+        if (_hasLikedOrCollected(booklist,"likedBy")){
+            iconImgLike.src = "../img/static/heart_icon.png"
+            button1.className = "likeButton, btn btn-outline-success"
+        }
     }
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
@@ -502,7 +505,10 @@ function addIconBar(userType, likes, collect){
     spanLike.className = "likeNum"
     let likeNum = document.createTextNode("Likes: "+likes)
     if (userType === 'Admin' | userType === 'User'){
-        if (likes > 0){ // need fix on phase 2 // already liked status
+        /* if (likes > 0){ // need fix on phase 2 // already liked status
+            likeNum = document.createTextNode("Liked: "+likes)
+        } */
+        if (_hasLikedOrCollected(booklist,"likedBy")){
             likeNum = document.createTextNode("Liked: "+likes)
         }
     } else {
@@ -520,9 +526,12 @@ function addIconBar(userType, likes, collect){
     iconImgCollect.className = "collectIcon"
     iconImgCollect.src = "../img/static/click-&-collect.png"
     if (userType === 'Admin' | userType === 'User'){
-        if (collect > 0){ // need fix on phase 2 // already collect status
+        /* if (collect > 0){ // need fix on phase 2 // already collect status
             button2.className = "collectButton, btn btn-success"
-        } 
+        }  */
+        if (_hasLikedOrCollected(booklist,"collectedBy")){
+            button2.className = "collectButton, btn btn-success"
+        }
     }
     button2.appendChild(iconImgCollect)
     liCollect.appendChild(button2)
@@ -532,7 +541,10 @@ function addIconBar(userType, likes, collect){
     let collectNum = document.createTextNode("Collected: " + collect)
     if (userType === 'Admin' | userType === 'User'){
         collectNum = document.createTextNode("Collects: " + collect)
-        if (collect > 0){ // need fix on phase 2 // already collect status
+        /* if (collect > 0){ // need fix on phase 2 // already collect status
+            collectNum = document.createTextNode("Collected: " + collect)
+        } */
+        if (_hasLikedOrCollected(booklist,"collectedBy")){
             collectNum = document.createTextNode("Collected: " + collect)
         }
     }
@@ -587,7 +599,7 @@ function addBooklistCard(booklist, userID, userType){
     const li2 = addCreator(booklist.creator, selfName, userType)
     ul1.appendChild(li2)
 
-    // li3: creat time
+    // li3: create time
     const li3 = document.createElement('li')
     li3.className = "createTime"
     const strong3 = document.createElement('strong')
@@ -621,7 +633,7 @@ function addBooklistCard(booklist, userID, userType){
     div.appendChild(table)
 
     // icon bar for like and collect
-    const ul2 = addIconBar(userType, booklist.likes, booklist.collect)
+    const ul2 = addIconBar(userType, booklist)
     div.appendChild(ul2)
 
     tr.appendChild(div)
@@ -639,30 +651,36 @@ function increaseLikeOrCollect(e){
         for (let i = 0; i < allBooklists.length; i++){
             const pageIndex = (allBooklists[i].children[0].children[0].innerHTML)
             const type = e.target.parentElement.nextSibling.innerText
+            const selfUserID = getUserID()
             if (pageIndex === index && iconName == 'collectIcon' && type.includes("Collects")){ // haven't collected
-                selectedBookList[0].collect++
                 // put a collect add
-                modifyLikeOrCollect(index, "collect", "add")
-                allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collect
+                modifyLikeOrCollect(index, "collectedBy", "add", selfUserID)
+                selectedBookList[0].collectedBy.push(getUserID())
+                allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collectedBy.length
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
-                selectedBookList[0].likes++
+                //selectedBookList[0].likes++
                 // put a like add
-                modifyLikeOrCollect(index, "likes", "add")
-                allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likes
+                modifyLikeOrCollect(index, "likedBy", "add", selfUserID)
+                selectedBookList[0].likedBy.push(getUserID())
+                allBooklists[i].children[4].children[0].children[1].innerText = "Liked: " + selectedBookList[0].likedBy.length
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/heart_icon.png"
             } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
-                selectedBookList[0].collect--
+                //selectedBookList[0].collect--
                 // put a collect reduce
-                modifyLikeOrCollect(index, "collect", "reduce")
-                allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collect
+                modifyLikeOrCollect(index, "collectedBy", "reduce", selfUserID)
+                const newCollect = selectedBookList[0].collectedBy.filter((user)=> user != selfUserID)
+                selectedBookList[0].collectedBy = newCollect[0]
+                allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collectedBy.length
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
-                selectedBookList[0].likes--
+                //selectedBookList[0].likes--
                 // put a like reduce
-                modifyLikeOrCollect(index, "likes", "reduce")
-                allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likes
+                modifyLikeOrCollect(index, "likedBy", "reduce", selfUserID)
+                const newLike = selectedBookList[0].likedBy.filter((user)=> user != selfUserID)
+                selectedBookList[0].likedBy = newLike[0]
+                allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likedBy.length
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/like_icon.png"
             }
@@ -672,13 +690,20 @@ function increaseLikeOrCollect(e){
 }
 
 // patch modify
-function modifyLikeOrCollect(id, target, operation){
-    const book = BooklistsList.filter((list)=> list.booklistID == id )
+function modifyLikeOrCollect(id, target, operation, who){
+    const booklist = BooklistsList.filter((list)=> list.booklistID == id )
+    if(!_hasLikedOrCollected(booklist[0], target) && operation == 'reduce'){
+        log('error: invalid reduce')
+        return
+    } else if (_hasLikedOrCollected(booklist[0], target) && operation == 'add'){
+        log('error: invalid add')
+        return
+    }
     const url = '/api/booklist/'+id
-
     let data = {
         target: target,
-        operation: operation
+        operation: operation,
+        who: who
     }
     const request = new Request(url, {
         method: 'PATCH', 
@@ -699,6 +724,29 @@ function modifyLikeOrCollect(id, target, operation){
     }).catch((error) => {
         log(error)
     })
+}
+
+// helper: checking if the current user has liked/collected for certain booklist
+function _hasLikedOrCollected(booklistItem, target){
+    const self = getUserID()
+    log(target)
+    log(booklistItem[target].includes(self))
+    const contains = booklistItem[target].includes(self)
+    /* if (contains && operation == 'reduce'){
+        log('has self, then reduce')
+        return true
+    } else if (!contains && operation == 'add'){
+        log('not has self, then add')
+        return true
+    }else {
+        log('invalid')
+        return false
+    } */
+    if(contains){
+        return true
+    } else {
+        return false
+    }
 }
 
 // admin & creator only: delete list

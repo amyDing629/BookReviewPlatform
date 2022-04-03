@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const PostSchema = mongoose.model('Post').schema
 
 
@@ -48,24 +49,23 @@ const BooklistSchema = new mongoose.Schema({
     books: {
         type: [BookSchema]
     },
-    likes: {
-        type: Number,
-        required: true,
-        minlength: 1
-    },
     createTime: {
-        type: String,
-        required: true,
-        default: Date.now()
+        type: String
     },
-    collect: {
-        type: Number,
-        required: true,
-        minlength: 1
-
+    likedBy:{
+        type: [mongoose.Schema.Types.ObjectId],
+        default:[]
+    },
+    collectedBy:{
+        type: [mongoose.Schema.Types.ObjectId],
+        default:[]
     }
 });
 
+BooklistSchema.pre('save', function(next) {
+    this.createTime = moment(this.createTime).format('MM-DD-YYYY');
+    next();
+});
 
 const Book = mongoose.model("Book", BookSchema);
 const BookList = mongoose.model("Booklist", BooklistSchema);
