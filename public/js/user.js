@@ -1054,16 +1054,53 @@ function _getRegularUserList() {
 function displayManageWindow() {
     function manageButtonOnClick(e) {
         if (e.target.innerHTML == 'inactivate'){
-            e.target.className = 'activate btn btn-outline-primary';
+            e.target.className = 'manageButton activate btn btn-outline-primary';
             e.target.innerHTML = 'activate';
-            e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactive';
+            e.target.parentElement.getElementsByClassName('green')[0].innerHTML = '&nbsp; inactivate';
             e.target.parentElement.getElementsByClassName('green')[0].className = 'red';
+            let userID = e.target.parentElement.getElementsByClassName('manageUserId')[0].innerHTML;
+            let url = '/api/users/' + userID
+            let request = new Request(url, {
+                method: 'PATCH',
+                body: JSON.stringify({'operation': 'isActivate', 'value': false}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+
+            });
+            fetch(request).then(function(res){
+                if (res.status === 200) {
+                    console.log('updated')
+                } else {
+                    console.log('failed to update')
+                }
+            })
+
         }else{
-            e.target.className = 'inactivate btn btn-outline-primary';
+            e.target.className = 'manageButton inactivate btn btn-outline-primary';
             e.target.innerHTML = 'inactivate';
 
-            e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; active';
+            e.target.parentElement.getElementsByClassName('red')[0].innerHTML = '&nbsp; activate';
             e.target.parentElement.getElementsByClassName('red')[0].className = 'green';
+            let userID = e.target.parentElement.getElementsByClassName('manageUserId')[0].innerHTML;
+            let url = '/api/users/' + userID
+            let request = new Request(url, {
+                method: 'PATCH',
+                body: JSON.stringify({'operation': 'isActivate', 'value': true}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+
+            });
+            fetch(request).then(function(res){
+                if (res.status === 200) {
+                    console.log('updated')
+                } else {
+                    console.log('failed to update')
+                }
+            })
         }
         
     }   
@@ -1092,27 +1129,46 @@ function displayManageWindow() {
                         let userInfoDiv = document.createElement('div');
                         userInfoDiv.className = 'userInfo';
                         let h3 = document.createElement('h3');
+                        spanId = document.createElement('div');
+                        spanId.innerHTML = user._id;
+                        spanId.className = 'manageUserId';
                         let a = document.createElement('a');
                         a.className = 'userLink linkColor';
                         a.href = 'user.html?visit=' + user._id;
                         a.innerHTML = user.username;
+                        let divName = document.createElement('div');
+                        divName.className = 'userNameDiv';
+                        divName.appendChild(a);
+                        
                         let span1 = document.createElement('span');
-                        span1.innerHTML = '&nbsp;&nbsp;&nbsp; status:'
+                        span1.innerHTML = 'status:'
                         let span2 = document.createElement('span');
-                        span2.className = 'green';
-                        span2.innerHTML = '&nbsp; active';
-                        h3.appendChild(a);
+                        if (user.isActivate == true){
+                            span2.innerHTML = '&nbsp; activate';
+                            span2.className = 'green';
+                        } else if (user.isActivate == false){
+                            span2.innerHTML = '&nbsp; inactivate';
+                            span2.className = 'red';
+                        }
+                        h3.appendChild(spanId);
+                        h3.appendChild(divName);
                         h3.appendChild(span1);
                         h3.appendChild(span2);
                         userInfoDiv.appendChild(h3);
-
-                        let inActivateButton = document.createElement('button');
-                        inActivateButton.className = 'manageButton btn btn-outline-primary';
-                        inActivateButton.innerHTML = 'inactivate';
-                        inActivateButton.addEventListener('click', manageButtonOnClick);
-
+                        
+                        let manageButton = document.createElement('button');
+                        if (user.isActivate == true){
+                            manageButton.className = 'manageButton inactivate btn btn-outline-primary';
+                            manageButton.innerHTML = 'inactivate';
+                            manageButton.addEventListener('click', manageButtonOnClick);
+                        } else if (user.isActivate == false){
+                            manageButton.className = 'manageButton activate btn btn-outline-primary';
+                            manageButton.innerHTML = 'activate';
+                            manageButton.addEventListener('click', manageButtonOnClick);
+                        }
+                        
                         li.appendChild(userInfoDiv);
-                        li.appendChild(inActivateButton);
+                        li.appendChild(manageButton);
                         ul.appendChild(li);
                     }
                 }
