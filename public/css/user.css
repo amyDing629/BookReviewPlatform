@@ -34,6 +34,10 @@
 	
 }
 
+.manageUserId {
+	color: transparent;
+}
+
 #id {
 	color: transparent;
 	float: right;
@@ -127,14 +131,16 @@
 }
 
 /** Manage Users **/
+.userNameDiv {
+    width: 200px;
+}
 
 .userInfo {
-	margin-top: 60px;
 	display: inline-block;
-	width: 500px;
 }
 .manageButton {
 	display: inline-block;
+	margin-left: 40px;
 }
 #userManage {
 	margin-left: 100px;

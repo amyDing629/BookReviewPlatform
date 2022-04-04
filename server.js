@@ -250,9 +250,8 @@ app.get('/user/template', mongoChecker, async (req, res)=>{
 })
 
 // get user by id
-app.get('/user/:id', mongoChecker, async (req, res)=>{
-	const id = req.params.id
-
+app.get('/user/:userID', mongoChecker, async (req, res)=>{
+	const id = req.params.userID
 	if (!ObjectId.isValid(id)) {
 		res.status(404).send() 
 		return;
@@ -268,6 +267,11 @@ app.get('/user/:id', mongoChecker, async (req, res)=>{
 		log(error)
 		res.status(500).send('Internal Server Error')  // server error
 	}
+})
+
+//todo
+app.get('/user/:userID/:visitID', mongoChecker, async (req, res)=>{
+
 })
 
 // update user information (signature, profilePhoto, post/booklist, post/booklist collection, isActivate)
@@ -403,6 +407,9 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 })
 
 // update post likes
+// target: likes, collects
+// operation: add, reduce
+// value: userID
 app.patch('/api/posts/:postID', async (req, res)=>{
     const postID = req.params.postID
     if (!ObjectId.isValid(postID)) {
@@ -410,19 +417,40 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 		return
 	}
 	const operation = req.body.operation
+	const value = req.body.value
+	const target = req.body.target
 	
 	try {
 		const post = await Post.findOne({_id: postID})
 		if (!post) {
 			res.status(404).send("no such a book")
-		} else {   
-			if (operation == 'add'){
-				post.likes += 1
-			} else if (operation == 'reduce'){
-				post.likes -= 1
+		} else { 
+			if (target == 'likes') {
+				if (operation == 'add'){
+					post.likedBy.push(value);
+				} else if (operation == 'reduce'){
+					let user_index = post.likedBy.indexOf(value);
+					if (user_index != -1){
+						post.likedBy.splice(user_index, 1);
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}	
+			} else if (target == 'collects') {
+				if (operation == 'add') {
+					post.collectedBy.push(value);
+				} else if (operation == 'reduce') {
+					user_index = post.collectedBy.indexOf(value);
+					if (user_index != -1) {
+						post.collectedBy.splice(user_index, 1)
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}
 			} else {
-				res.status(404).send('invalid operation in request body')
-			}	
+				res.status(404).send('invalid target in request body')
+			}
+			
 		}
 		post.save().then((updatedPost) => {
 			res.send({updatedPost})
@@ -856,7 +884,7 @@ app.get('*', (req, res) => {
 
 /*************************************************/
 // Express server listening...
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 50001
 app.listen(port, () => {
 	log(`Listening on port ${port}...`)
 }) 

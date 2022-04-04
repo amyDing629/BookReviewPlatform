@@ -37,10 +37,13 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    likes: {
-        type: Number,
-        required: true,
-        default: 0
+    likedBy:{
+        type: [mongoose.Schema.Types.ObjectId],
+        default:[]
+    },
+    collectedBy:{
+        type: [mongoose.Schema.Types.ObjectId],
+        default:[]
     }
 });
 

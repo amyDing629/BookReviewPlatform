@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt')
-
-const Post = mongoose.model('Post').schema
-const BookList = mongoose.model('Booklist').schema;
+const bcrypt = require('bcrypt');
 
 
 const UserSchema = new mongoose.Schema({
@@ -27,19 +24,19 @@ const UserSchema = new mongoose.Schema({
         default: ''
     },
     postList: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     booklistList: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     postCollection: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     booklistCollection: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     type:{
