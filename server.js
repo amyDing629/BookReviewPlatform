@@ -11,10 +11,19 @@ const app = express();
 // mongoose and mongo connection
 const { ObjectID, ObjectId } = require('mongodb')
 const { mongoose } = require('./db/mongoose');
-const { Post } = require('./models/post')
+const { Post, Image } = require('./models/post')
 const { Book, BookList } = require('./models/book')
 const { User } = require('./models/user')
 
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
+
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: 'dp3ndonmv',
+    api_key: '264429449941826',
+    api_secret: 'zkXIf4zbe0uJDkrTTogQEIlFtNg'
+});
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
 const bodyParser = require('body-parser') 
@@ -913,53 +922,44 @@ app.patch('/api/book/:bookID', async (req, res)=>{
 	
 })
 
-app.patch('/api/post/:postID', async (req, res)=>{
-	const post = req.params.postID
-    if (!ObjectID.isValid(post)) {
-		res.status(404).send('invalid booklist id type') 
-		return
-	}
-	
-	// const target = req.body.target
-	const operation = req.body.operation
-	const fieldsToUpdate = {}
-	let curr = 0
-	try {
-		const item = await Post.findOne({_id: post})
-		if (!item) {
-			res.status(404).send("no such a book")
-		} else {   
-			curr = item['likes']
-		}
-	} catch(error) {
-		log(error)
-		res.status(500).send("server error on find booklist")
-	}
+/*************************************************/
+// a POST route to *create* an image
+app.post("/api/images", multipartMiddleware, (req, res) => {
 
-	if (operation == 'add'){
-		fieldsToUpdate['likes'] = curr+1
-	} else if(operation == 'reduce'){
-		fieldsToUpdate['likes'] = curr-1
-	} else {
-		res.status(404).send('invalid request body') 
-		return;
- 	}
-	try {
-		const list = await Post.findOneAndUpdate({_id: post}, {$set: fieldsToUpdate}, {new: true})
-		if (!list) {
-			res.status(404).send('Resource not found')
-		} else {   
-			res.send(list)
-		}
-	} catch (error) {
-		log(error)
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') // bad request for changing the student.
-		}
-	}
-})
+    // Use uploader.upload API to upload image to cloudinary server.
+    cloudinary.uploader.upload(
+        req.files.image.path, // req.files contains uploaded files
+        function (result) {
+
+            // Create a new image using the Image mongoose model
+            var img = new Image({
+                image: result.public_id, // image id on cloudinary server
+                image_url: result.url, // image url on cloudinary server
+            });
+
+            // Save image to the database
+            img.save().then(
+                saveRes => {
+                    res.send(saveRes);
+                },
+                error => {
+                    res.status(400).send(error); // 400 for bad request
+                }
+            );
+        });
+});
+
+// a GET route to get all images
+app.get("/images", (req, res) => {
+    Image.find().then(
+        images => {
+            res.send({ images }); // can wrap in object if want to add more properties
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
 
 
 /*************************************************/
