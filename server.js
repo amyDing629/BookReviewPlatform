@@ -387,6 +387,7 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 		booktitle: req.body.booktitle,
 		username: req.body.username,
 	})
+	const id = newPost._id
 	if (req.body.pic){
 		newPost.pic = req.body.pic
 	}
@@ -404,7 +405,7 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	}
 
     try {
-		const result = await newPost.save()	
+		const result = await newPost.save()
 		res.send({result})
 	} catch(error) {
 		log(error)
@@ -933,8 +934,9 @@ app.post("/api/images", multipartMiddleware, (req, res) => {
 
             // Create a new image using the Image mongoose model
             var img = new Image({
-                image: result.public_id, // image id on cloudinary server
+                imageID: result.public_id, // image id on cloudinary server
                 image_url: result.url, // image url on cloudinary server
+				created_at: new Date(),
             });
 
             // Save image to the database
@@ -950,7 +952,7 @@ app.post("/api/images", multipartMiddleware, (req, res) => {
 });
 
 // a GET route to get all images
-app.get("/images", (req, res) => {
+app.get("/api/images", (req, res) => {
     Image.find().then(
         images => {
             res.send({ images }); // can wrap in object if want to add more properties
