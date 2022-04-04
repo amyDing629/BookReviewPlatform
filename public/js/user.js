@@ -348,6 +348,12 @@ function _getUserByName(username) {
 
 function _createPostDiv(post) {
     post = post.post;
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
+    }
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
@@ -359,16 +365,10 @@ function _createPostDiv(post) {
                     if (res.status === 200) {
                        return res.json() 
                    } else {
-                        console.log("Could not get this user.")
+                        console.log("Could not get this post.")
                    }                
                 }).then((post) => {
                     post = post.post
-                    let userID;
-                    if (window.location.href.indexOf('visitID') !== -1) {
-                        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
-                    } else{
-                        userID = window.location.href.split('?')[1].split('=')[1];
-                    }
                     if (e.target.classList.contains('like')){
                         likeNum = post.likedBy.length + 1
                         icon.innerText = ' '+ likeNum; //TODO: update db
@@ -434,11 +434,44 @@ function _createPostDiv(post) {
             e.target.classList.remove('collect');
             e.target.classList.add('collected');
             e.target.innerText = 'Collected!';
+            let request = new Request('/api/posts/' + post._id, {
+                method: 'PATCH',
+                body: JSON.stringify({'operation': 'add', 'target': 'collects', 'value': String(userID)}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+
+            });
+            fetch(request).then(function(res){
+                if (res.status === 200) {
+                    console.log('updated')
+                } else {
+                    console.log('failed to updated')
+                }
+            })    
         }
         else if (e.target.classList.contains('collected')){
             e.target.classList.remove('collected');
             e.target.classList.add('collect');
             e.target.innerText = 'Collect';
+            let request = new Request('/api/posts/' + post._id, {
+                method: 'PATCH',
+                body: JSON.stringify({'operation': 'reduce', 'target': 'collects', 'value': String(userID)}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+
+            });
+            fetch(request).then(function(res){
+                if (res.status === 200) {
+                    console.log('updated')
+                } else {
+                    console.log('failed to updated')
+                }
+
+            })    
         }    
     }
 
@@ -518,13 +551,6 @@ function _createPostDiv(post) {
     let a2 = document.createElement('a');
     a2.className = 'linkColor';
 
-    let userID;
-    if (window.location.href.indexOf('visitID') !== -1) {
-        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
-    } else{
-        userID = window.location.href.split('?')[1].split('=')[1];
-    }
-
     let blink = '/public/html/BookDetail.html?bookID=' + bid + '&userID=' + userID;
     
     a2.setAttribute('href', blink);
@@ -572,7 +598,9 @@ function _createPostDiv(post) {
     icon.className = 'fa fa-heart'
     icon.innerText = ' '+likes
     let button = document.createElement('button')
+    let button2 = document.createElement('button')
     button.className = 'btn btn-outline-primary'
+    button2.className = 'btn btn-outline-success'
     if (post.likedBy.indexOf(userID) != -1){
         button.classList.add('dislike')
         button.innerText = 'Dislike'
@@ -580,13 +608,23 @@ function _createPostDiv(post) {
         button.classList.add('like')
         button.innerText = 'Like'
     }
+
+    if (post.collectedBy.indexOf(userID) != -1){
+        button2.classList.add('collected')
+        button2.innerText = 'Collected!'    
+    } else {
+        button2.classList.add('collect')
+        button2.innerText = 'Collect'
+    }
+
+
     
     button.addEventListener('click', likeOnClick);
-    let button2 = document.createElement('button')
-    button2.className = 'btn btn-outline-success'
-    button2.classList.add('collect')
-    button2.innerText = 'Collect'
     button2.addEventListener('click', collectOnClick);
+    
+    
+    
+    
     // end user: delete button only for lists created by self
     
     likeh5.appendChild(icon)
@@ -656,89 +694,143 @@ function displayUserPosts(user) {
 }
 
 function _createBooklistDiv(booklist) {
+    console.log(booklist);
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
+    }
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
-        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('likeNum')[0];
         let url = '/api/booklists/' + booklist._id
         fetch(url).then((res) => {
             if (res.status === 200) {
-                return res.json() 
-            } else {
-                console.log("Could not get this user.")
-            }                
-        }).then((booklist) => {
-            if (e.target.parentElement.classList.contains('likeButton')){
-                booklist.likes ++;
-                likeNum.innerText = 'Liked: '+ booklist.likes;
-                e.target.parentElement.classList.remove('likeButton');
-                e.target.parentElement.classList.add('dislikeButton');
-                let url = '/api/booklist/' + booklist._id
-                let request = new Request(url, {
-                    method: 'PATCH',
-                    body: JSON.stringify({'operation': 'add', 'target': 'likes'}),
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                fetch(request).then(function(res){
+                fetch(url).then((res) => {
                     if (res.status === 200) {
-                        console.log('updated')
+                        return res.json() 
                     } else {
-                        console.log('failed to update')
-                    }
-                })
+                        console.log("Could not get this booklist.")
+                    }                
+                }).then((booklist) => {
+                    if (e.target.parentElement.classList.contains('likeButton')){
+                        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('likeNum')[0];
+                        let likeNumData = booklist.likedBy.length + 1;
+                        likeNum.innerText = 'Liked: '+ likeNumData
+                        e.target.parentElement.classList.remove('likeButton');
+                        e.target.parentElement.classList.add('dislikeButton');
+                        
+                        let request = new Request('/api/booklists/' + booklist._id, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'add', 'target': 'likes', 'value': String(userID)}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to update')
+                            }
+                        })
 
+                    }
+                    else if (e.target.parentElement.classList.contains('dislikeButton')){
+                        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('likeNum')[0];
+                        let likeNumData = booklist.likedBy.length - 1;
+                        likeNum.innerText = 'Liked: '+ likeNumData
+                        e.target.parentElement.classList.remove('dislikeButton');
+                        e.target.parentElement.classList.add('likeButton');
+                        let request = new Request('/api/booklists/' + booklist._id, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'reduce', 'target': 'likes', 'value': String(userID)}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to update')
+                            }
+                        })
+                    }   
+                }).catch((error) => {
+                    console.log(error)
+                })
             }
-            else if (e.target.parentElement.classList.contains('dislikeButton')){
-                booklist.likes --;
-                likeNum.innerText = 'Liked: '+ booklist.likes;
-                e.target.parentElement.classList.remove('dislikeButton');
-                e.target.parentElement.classList.add('likeButton');
-                let url = '/api/booklist/' + booklist._id
-                let request = new Request(url, {
-                    method: 'PATCH',
-                    body: JSON.stringify({'operation': 'reduce', 'target': 'likes'}),
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                fetch(request).then(function(res){
-                    if (res.status === 200) {
-                        console.log('updated')
-                    } else {
-                        console.log('failed to update')
-                    }
-                })  
-            }   
         })
     } 
 
     function collectOnClick(e){
         e.preventDefault(); // prevent default action
-        let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        let booklistID = booklistDiv.getElementsByClassName('listID')[0].children[0].innerHTML;
-        let booklist;
-        let likeNum = e.target.parentElement.parentElement.getElementsByClassName('collectNum')[0];
-        for (booklist of booklists){
-            if (parseInt(booklist.booklistID) == booklistID){
-                if (e.target.parentElement.classList.contains('collectButton')){
-                    booklist.collect ++;
-                    likeNum.innerText = 'Collected: '+ booklist.collect;
-                    e.target.parentElement.classList.remove('collectButton');
-                    e.target.parentElement.classList.add('uncollectButton');
-                    break;
-                }
-                else if (e.target.parentElement.classList.contains('uncollectButton')){
-                    booklist.collect --;
-                    likeNum.innerText = 'Collected: '+ booklist.collect;
-                    e.target.parentElement.classList.remove('uncollectButton');
-                    e.target.parentElement.classList.add('collectButton');
-                    break;
-                }    
-            } 
-        }
+        let url = '/api/booklists/' + booklist._id
+        fetch(url).then((res) => {
+            if (res.status === 200) {
+                fetch(url).then((res) => {
+                    if (res.status === 200) {
+                        return res.json() 
+                    } else {
+                        console.log("Could not get this booklist.")
+                    }                
+                }).then((booklist) => {
+                    if (e.target.parentElement.classList.contains('collectButton')){
+                        let collectNum = e.target.parentElement.parentElement.getElementsByClassName('collectNum')[0];
+                        let collectNumData = booklist.collectedBy.length + 1;
+                        collectNum.innerText = 'Collected: '+ collectNumData;
+                        e.target.parentElement.classList.remove('collectButton');
+                        e.target.parentElement.classList.add('uncollectButton');
+                        
+                        let request = new Request('/api/booklists/' + booklist._id, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'add', 'target': 'collects', 'value': String(userID)}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to update')
+                            }
+                        })
+
+                    }
+                    else if (e.target.parentElement.classList.contains('uncollectButton')){
+                        let collectNum = e.target.parentElement.parentElement.getElementsByClassName('collectNum')[0];
+                        let collectNumData = booklist.collectedBy.length - 1;
+                        collectNum.innerText = 'Collected: '+ collectNumData;
+                        e.target.parentElement.classList.remove('uncollectButton');
+                        e.target.parentElement.classList.add('collectButton');
+                        
+                        let request = new Request('/api/booklists/' + booklist._id, {
+                            method: 'PATCH',
+                            body: JSON.stringify({'operation': 'reduce', 'target': 'collects', 'value': String(userID)}),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        fetch(request).then(function(res){
+                            if (res.status === 200) {
+                                console.log('updated')
+                            } else {
+                                console.log('failed to update')
+                            }
+                        })
+                    }   
+                }).catch((error) => {
+                    console.log(error)
+                })
+            }
+        })
+       
     }
 
     function deleteBooklistButtonOnClick(e) {
@@ -769,12 +861,6 @@ function _createBooklistDiv(booklist) {
     id.appendChild(IDcontent)
     div.appendChild(id)
     
-    let userID;
-    if (window.location.href.indexOf('visitID') !== -1) {
-        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
-    } else{
-        userID = window.location.href.split('?')[1].split('=')[1];
-    }
 
     const url = '/api/users/' + userID;
     fetch(url).then((res) => { 
@@ -906,12 +992,6 @@ function _createBooklistDiv(booklist) {
     const tr2 = document.createElement('tr')
     
     // TODO: flip pages
-    let bookNum;
-    if (booklist.books.length <= 4){
-        bookNum = booklist.books.length
-    } else {
-        bookNum = 4
-    }
     let book;
     for (book of booklist.books){
         const newImg = document.createElement('th')
@@ -943,17 +1023,23 @@ function _createBooklistDiv(booklist) {
     const liLike = document.createElement('li')
     liLike.className = "infoElement"
     const button1 = document.createElement('button')
-    button1.className = "likeButton"
+    if (booklist.likedBy.indexOf(userID) != -1){
+        button1.className = "dislikeButton"
+
+    } else {
+        button1.className = "likeButton";
+    }
+    
     button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
-    iconImgLike.className = "likeIcon"
+    iconImgLike.className = "likeIcon"   
     iconImgLike.src = 'http://localhost:50001/public/img/static/like_icon.png'
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
 
     const spanLike = document.createElement('span')
     spanLike.className = "likeNum"
-    const likeNum = document.createTextNode("Liked: "+booklist.likes)
+    const likeNum = document.createTextNode("Liked: "+booklist.likedBy.length)
     spanLike.appendChild(likeNum)
     liLike.appendChild(spanLike)
 
@@ -961,7 +1047,12 @@ function _createBooklistDiv(booklist) {
     const liCollect = document.createElement('li')
     liCollect.className = "infoElement"
     const button2 = document.createElement('button')
-    button2.className = "collectButton" 
+    if (booklist.collectedBy.indexOf(userID) != -1){
+        button2.classList.add("uncollectButton")
+
+    } else {
+        button2.classList.add("collectButton");
+    }
     button2.addEventListener('click', collectOnClick);
     const iconImgCollect = document.createElement('img')
     iconImgCollect.className = "collectIcon"
@@ -971,7 +1062,7 @@ function _createBooklistDiv(booklist) {
 
     const spanCollect = document.createElement('span')
     spanCollect.className = "collectNum"
-    const collectNum = document.createTextNode("Collected: " + booklist.collect)
+    const collectNum = document.createTextNode("Collected: " + booklist.collectedBy.length)
     spanCollect.appendChild(collectNum)
     liCollect.appendChild(spanCollect)
     
@@ -993,7 +1084,6 @@ function displayUserBooklists(user) {
     }
     let ul = document.createElement('ul');
     let booklistID;
-    // TODO: flip page
     for (booklistID of user.booklistList) {
         let url = 'http://localhost:50001/api/booklists/' + booklistID;
         fetch(url).then((res) => {
@@ -1060,6 +1150,7 @@ function displayCollectedBooklist(user){
     let ul = document.createElement('ul');
     let booklistCollectionID;
     for (booklistCollectionID of user.booklistCollection) {
+        console.log(booklistCollectionID);
         let url = 'http://localhost:50001/api/booklists/' + booklistCollectionID;
         fetch(url).then((res) => {
             if (res.status === 200) {
