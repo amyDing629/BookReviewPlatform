@@ -3,126 +3,16 @@ const log = console.log
 let BooklistsNum = 0; 
 let BooklistsList = [] 
 
-// temp hardcode for all books:
-var BooksNum = 0; 
-var BooksList = [] 
-class Book {
-	constructor(name, author, year, coverURL, description) {
-		this.name = name;
-		this.author = author;
-		this.year = year;
-		this.coverURL = coverURL;
-        this.description = description       
-        this.postCollection = [] // collection of post ids associated with the book
-		this.bookID = BooksNum;
-		BooksNum++;
-	}
-}
-BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
-
-BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
-'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
-'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
-
-BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014,
-'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg',
-'The fourth of Elena Ferrante\'s celebrated Neapolitan novels, has a lot to deliver on.'))
-
-BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
-'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg',
-'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.'))
-
-BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
-'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
-'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
-// temp [end]
-
-/************** temp for book [END] ******************/
-
-
-/************** temp for search bar ******************/
-function displaySearchbox(){
-    const searchbookArea = document.querySelector('.search-book')
-    const t = searchbookArea.children[0]
-    for (let i=0; i<BooksNum; i++){
-        if (BooksList[i] != null){
-            const id = BooksList[i].bookID
-            const name = BooksList[i].name
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            t.appendChild(option)
-        }
-    }
-    const searchlistArea = document.querySelector('.search-list')
-    const column = searchlistArea.children[0]
-    for (let i=0; i<BooklistsNum; i++){
-        if (BooklistsList[i] != null){
-            const id = BooklistsList[i].booklistID
-            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            column.appendChild(option)
-        }
-    }
-}
-
-/********** Search Book **********/
-const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        const select = document.getElementById('search-book');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = document.querySelector('.right').innerText
-            let link = '../BookDetail/'
-            if (user.length === 1){ // ['Login/Register']
-                link+=value+'/BookDetail-'+value+'.html'
-            } else if (user === 'Admin'){
-                link+=value+'/'+value+'_admin_after.html'
-            } else if (user === 'User'){
-                link+=value+'/'+value+'_end_after.html'
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-
-/********** Search List **********/
-const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        const select = document.getElementById('search-list');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = getUserID()
-            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
-            if (!isNaN(user)){
-                link += ("&userID="+user)
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-/************** temp for search bar [END] ******************/
-
-
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime) {
+	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime, createrID) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
         } else {
             this.listDescription = listDescription
         }
-		this.creator = creator // username, temp
+		this.creator = creator // username
+        this.createrID = createrID // user id
         this.books = bookCollection; // list of Book object
 		this.booklistID = id;
 		BooklistsNum++;
@@ -146,9 +36,13 @@ function getBooklists(){
     }).then((json) => {  //pass json into object locally
         const booklists = json.booklists
         for (each of booklists){
-            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likedBy, each.collectedBy, each.createTime))
+            BooklistsList.push(
+                new Booklist(each.listName, each.listDescription, 
+                    each.creator, each.books, 
+                    each._id, each.likedBy, 
+                    each.collectedBy, each.createTime,
+                    each.createrID))
         }
-        displaySearchbox() // for search bar function 
         displayAllBooklists(BooklistsList, getUserID())
         addFormForDelete()
     }).catch((error) => {
@@ -174,54 +68,56 @@ function displayAllBooklists(BooklistsList, userID) {
             const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
             endUserActionsWrap.addEventListener('click', addNewBooklist)
             // change navi bar username
-            document.querySelector('#userLoginInfo').innerText = username
+            //document.querySelector('#userLoginInfo').innerText = username
 
             // set navi bar link
-            document.querySelector('#home').href = "../HomeAndLogin/index.html?userID="+userID
-            document.querySelector('#bookmain').href = "../BookMainPage/BookMainPage.html?userID="+userID
-            document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
-            document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+userID // need check
-
-            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden'
-            document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
-            const tableResultTBODY = document.querySelector('#tableResultTBODY')
-            for(let i = 0; i < BooklistsNum; i++) {
-                const tr = addBooklistCard(BooklistsList[i],userID, userType)
-                tableResultTBODY.appendChild(tr)
-            }
-        } catch {
-            const tableResultTBODY = document.querySelector('#tableResultTBODY')
-            for(let i = 0; i < BooklistsNum; i++) {
-                const tr = addBooklistCard(BooklistsList[i],"", "guest")
-                tableResultTBODY.appendChild(tr)
+            /* document.querySelector('#home').href = "/index.html?userID="+userID
+            document.querySelector('#bookmain').href = "/BookMainPage?userID="+userID
+            //document.querySelector('#booklistmain').href = "./BooklistMainPage.html?userID="+userID
+            document.querySelector('#userLoginInfo').href = "/user/"+userID   */    
+            _loadCards(BooklistsList, userID, userType)
+        } catch (error){ // guest 
+            document.querySelector('#endUserActionsWrap').style.visibility = 'hidden' // hide create booklist bar
+            _loadCards(BooklistsList, "", "guest")
+            try{
+                document.querySelector('.quit').parentElement.removeChild(document.querySelector('.quit'))
+            } catch{
+                log('no need remove quit button')
             }
         }
-        flipPage(1,3)
     }).catch((error) => {
         log(error)
     })
     
 }
 
+// helper for displayAllBooklists 
+function _loadCards(lists, userID, userType){
+    const tableResultTBODY = document.querySelector('#tableResultTBODY')
+    const num = lists.length
+    for(let i = 0; i < num; i++) {
+        const tr = addBooklistCard(lists[i],userID, userType)
+        tableResultTBODY.appendChild(tr)
+    }
+    flipPage(1,3)
+}
 
-function alertLike(e){
+
+function alertGuestToLogin(e){
     e.preventDefault();
-    if (e.target.className == 'collectIcon') {
-        if (confirm("Please login to complete the collect action.") == true) {
-            window.location.href = "../HomeAndLogin/login.html"
-        } 
+    if (e.target.className == 'collectIcon' | e.target.className == 'likeIcon') {
+        _alertPop()
     }
     
 }
 
-function alertCollect(e){
-    e.preventDefault();
-    if (e.target.className == 'likeIcon') {
-        if (confirm("Please login to complete the like action.") == true) {
-            window.location.href = "../HomeAndLogin/login.html"
-        } 
+// helper for guiding guest to login and perform action
+function _alertPop(){
+    if (confirm("Please login to complete the action.") == true) {
+        window.location.href = "/login"
+    } else {
+        return
     }
-    
 }
 
 function flipPage(pageNo, pageLimit) {
@@ -331,16 +227,6 @@ function sortByAtoZ(){
     addFormForDelete()
 }
 
-function renewPage() {
-    BooklistsList = []
-    getBooklists()
-    if (document.querySelector("#sort_a_z").className === 'btn btn-secondary active'){
-        sortByAtoZ()
-    } else { // sort by default
-        sortDefault()
-    }
-}
-
 // helper: get user id
 function getUserID(){
     try{
@@ -362,8 +248,8 @@ function addDeleteButton(){
 }
 
 //helper: get user name by user id
-function getUserName(userID){
-    return document.querySelector('#userLoginInfo').innerText 
+function getUserName(){
+    return document.querySelector('.addUserIdToLink').innerText 
 }
 
 // helper for addBooklistCard: li element for booklist info
@@ -377,9 +263,9 @@ function addBooklistInfo(booklistID, listName, userID, userType){
     const a1 = document.createElement('a')
     a1.className = "linkColor"
     if (userType === 'Admin' | userType === 'User'){
-        a1.href = "./public/html/BooklistDetail.html?booklistID=" + booklistID + "&userID="+ userID+".html"
+        a1.href = "/Booklist/Detail?booklistID=" + booklistID + "&userID="+ userID
     } else {
-        a1.href = "./public/html/BooklistDetail.html?booklistID=" + booklistID + ".html"
+        a1.href = "/Booklist/Detail?booklistID=" + booklistID
     }
     a1.onclick = function open(e){e.preventDefault(); window.location.href = a1.href}
     const nameContent = document.createTextNode(listName)
@@ -391,7 +277,7 @@ function addBooklistInfo(booklistID, listName, userID, userType){
 }
 
 // helper for addBooklistCard: li element for creator info (className=listCreator)
-function addCreator(creatorName, selfName, userType){
+function addCreator(creatorName, selfName, userType, authorID){
     const li2 = document.createElement('li')
     li2.className = "listCreator"
     const strong2 = document.createElement('strong')
@@ -400,23 +286,17 @@ function addCreator(creatorName, selfName, userType){
     const span2 = document.createElement('span')
     const a2 = document.createElement('a')
     a2.className = "linkColor"
-    if (userType === 'Admin'){
+    if (userType === 'Admin' | userType === 'User'){
         if (creatorName === selfName){ 
-            a2.href = "../user/admin.html" // need modify, go to self-user-main-page
+            a2.href = "/user/"+getUserID() // go to self-main-page
         } else { // visit other user
-            a2.href = "../user/user.html?visit=0" // need more dynamically fix on phase 2
+            a2.href = "user/"+getUserID()+"/"+authorID
         }
-    } else if (userType === 'User'){
-        a2.href = "../user/user.html"
-        if (creatorName === selfName){// need more dynamically fix on phase 2
-            a2.href = "../user/user.html"
-        } else {
-            a2.href = "../user/user.html?visit=1" // need fix
-        }   
+        a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
     } else { // guest
-        a2.href = "../HomeAndLogin/login.html" //// need fix later 
+        a2.href = ""
+        a2.onclick = function alert(e){e.preventDefault(); _alertPop()} // redirect to login
     }
-    a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
     const creatorContent = document.createTextNode(creatorName)
     a2.appendChild(creatorContent)
     span2.appendChild(a2)
@@ -450,9 +330,9 @@ function addBookShelf(books, userID, userType){
         const bookLink = document.createElement('a')
         bookLink.className = "book"
         if (userType === 'Admin' | userType === 'User'){
-            bookLink.href = "./public/html/BookDetail.html?bookID=" + books[j]._id +"&userID="+ getUserID() // need check phase 2
+            bookLink.href = "/BookDetail/Detail?bookID=" + books[j]._id +"&userID="+ getUserID() // need check phase 2
         } else {
-            bookLink.href = "./public/html/BookDetail.html?bookID=" + books[j]._id
+            bookLink.href = "/BookDetail/Detail?bookID=" + books[j]._id //need check
         }
         bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
         bookLink.appendChild(document.createTextNode(books[j].name))
@@ -489,10 +369,6 @@ function addIconBar(userType, booklist){
     iconImgLike.src = "../img/static/like_icon.png"
 
     if (userType === 'Admin' | userType === 'User'){
-        /* if (likes > 0){ // need fix on phase 2 // already liked status
-            iconImgLike.src = "../img/static/heart_icon.png"
-            button1.className = "likeButton, btn btn-outline-success"
-        }  */
         if (_hasLikedOrCollected(booklist,"likedBy")){
             iconImgLike.src = "../img/static/heart_icon.png"
             button1.className = "likeButton, btn btn-outline-success"
@@ -505,15 +381,10 @@ function addIconBar(userType, booklist){
     spanLike.className = "likeNum"
     let likeNum = document.createTextNode("Likes: "+likes)
     if (userType === 'Admin' | userType === 'User'){
-        /* if (likes > 0){ // need fix on phase 2 // already liked status
-            likeNum = document.createTextNode("Liked: "+likes)
-        } */
         if (_hasLikedOrCollected(booklist,"likedBy")){
             likeNum = document.createTextNode("Liked: "+likes)
         }
-    } else {
-        likeNum = document.createTextNode("Liked: "+likes)
-    }
+    } 
     spanLike.appendChild(likeNum)
     liLike.appendChild(spanLike)
 
@@ -526,9 +397,6 @@ function addIconBar(userType, booklist){
     iconImgCollect.className = "collectIcon"
     iconImgCollect.src = "../img/static/click-&-collect.png"
     if (userType === 'Admin' | userType === 'User'){
-        /* if (collect > 0){ // need fix on phase 2 // already collect status
-            button2.className = "collectButton, btn btn-success"
-        }  */
         if (_hasLikedOrCollected(booklist,"collectedBy")){
             button2.className = "collectButton, btn btn-success"
         }
@@ -541,9 +409,6 @@ function addIconBar(userType, booklist){
     let collectNum = document.createTextNode("Collected: " + collect)
     if (userType === 'Admin' | userType === 'User'){
         collectNum = document.createTextNode("Collects: " + collect)
-        /* if (collect > 0){ // need fix on phase 2 // already collect status
-            collectNum = document.createTextNode("Collected: " + collect)
-        } */
         if (_hasLikedOrCollected(booklist,"collectedBy")){
             collectNum = document.createTextNode("Collected: " + collect)
         }
@@ -558,8 +423,7 @@ function addIconBar(userType, booklist){
     if (userType === 'Admin' | userType === 'User'){
         booklistTable.addEventListener('click', increaseLikeOrCollect)
     } else { // guest
-        booklistTable.addEventListener('click', alertLike);
-        booklistTable.addEventListener('click', alertCollect)
+        booklistTable.addEventListener('click', alertGuestToLogin)
     }
     return ul2
 }
@@ -578,10 +442,10 @@ function addBooklistCard(booklist, userID, userType){
     IDcontent.appendChild(document.createTextNode(booklist.booklistID))
     id.appendChild(IDcontent)
 
-    const userInfo = getUserName(userID)
-    if (userInfo === booklist.creator){ // both users, creator is self
+    const userInfo = getUserName()
+    if (userInfo == booklist.creator){ // both users, creator is self
         id.appendChild(addDeleteButton())
-    } else if (userType === 'Admin'){// admin only: delete booklist
+    } else if (userType == 'Admin'){// admin only: delete booklist
         id.appendChild(addDeleteButton())
     } 
     div.appendChild(id)
@@ -595,8 +459,8 @@ function addBooklistCard(booklist, userID, userType){
     ul1.appendChild(li1)
 
     // li2: list creator
-    const selfName = getUserName(userID)
-    const li2 = addCreator(booklist.creator, selfName, userType)
+    const selfName = getUserName()
+    const li2 = addCreator(booklist.creator, selfName, userType, booklist.createrID)
     ul1.appendChild(li2)
 
     // li3: create time
@@ -659,7 +523,6 @@ function increaseLikeOrCollect(e){
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collected: " + selectedBookList[0].collectedBy.length
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-success' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes("Likes")){ // haven't liked
-                //selectedBookList[0].likes++
                 // put a like add
                 modifyLikeOrCollect(index, "likedBy", "add", selfUserID)
                 selectedBookList[0].likedBy.push(getUserID())
@@ -667,19 +530,17 @@ function increaseLikeOrCollect(e){
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-outline-success' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/heart_icon.png"
             } else if (pageIndex === index && iconName == 'collectIcon' && type.includes('Collected')){ // collected already
-                //selectedBookList[0].collect--
                 // put a collect reduce
                 modifyLikeOrCollect(index, "collectedBy", "reduce", selfUserID)
                 const newCollect = selectedBookList[0].collectedBy.filter((user)=> user != selfUserID)
-                selectedBookList[0].collectedBy = newCollect[0]
+                selectedBookList[0].collectedBy = newCollect
                 allBooklists[i].children[4].children[1].children[1].innerText = "Collects: " + selectedBookList[0].collectedBy.length
                 allBooklists[i].children[4].children[1].children[1].previousSibling.className = 'collectedButton, btn btn-light' // for button color change
             } else if (pageIndex === index && iconName == 'likeIcon' && type.includes('Liked')){ // liked already
-                //selectedBookList[0].likes--
                 // put a like reduce
                 modifyLikeOrCollect(index, "likedBy", "reduce", selfUserID)
                 const newLike = selectedBookList[0].likedBy.filter((user)=> user != selfUserID)
-                selectedBookList[0].likedBy = newLike[0]
+                selectedBookList[0].likedBy = newLike
                 allBooklists[i].children[4].children[0].children[1].innerText = "Likes: " + selectedBookList[0].likedBy.length
                 allBooklists[i].children[4].children[0].children[1].previousSibling.className = 'likedButton, btn btn-light' // for button color change
                 allBooklists[i].children[4].children[0].children[1].previousSibling.children[0].src = "../img/static/like_icon.png"
@@ -729,19 +590,7 @@ function modifyLikeOrCollect(id, target, operation, who){
 // helper: checking if the current user has liked/collected for certain booklist
 function _hasLikedOrCollected(booklistItem, target){
     const self = getUserID()
-    log(target)
-    log(booklistItem[target].includes(self))
     const contains = booklistItem[target].includes(self)
-    /* if (contains && operation == 'reduce'){
-        log('has self, then reduce')
-        return true
-    } else if (!contains && operation == 'add'){
-        log('not has self, then add')
-        return true
-    }else {
-        log('invalid')
-        return false
-    } */
     if(contains){
         return true
     } else {
@@ -841,6 +690,9 @@ function openForm() {
   
 function closeForm() {
     document.getElementById("myForm").style.display = "none"
+    document.getElementById('booklistNameInput').value =''
+    description = document.getElementById('descriptionInput').value = ''
+    document.getElementById('booklists').value = ''
     document.querySelector('#bookInputHelp').innerText = "Please enter book ID list and using ; to seperate"
 }
 
@@ -907,17 +759,21 @@ function addNewBooklist(e){
         if (listName.length === 0){
             const bookInputHelp = document.querySelector('#bookInputHelp')
             bookInputHelp.innerText = ("No list name, your booklist name cannot be empty.")
-            //return;
+            return;
         }
         const description = document.getElementById('descriptionInput').value
         let result = document.getElementById('booklists').value
+        if (result.length === 0){
+            bookInputHelp.innerText = ("No book loaded, your booklist must has at least one book.")
+            return;
+        }
         let ids = []
         const url = '/api/books'
         fetch(url).then((res) => { 
             if (res.status === 200) {
             return res.json() 
         } else {
-                res.status(500).send("Internal Server Error") // not sure
+                res.status(500).send("Internal Server Error")
         }                
         }).then((json) => {
             const all = json.books
@@ -929,12 +785,14 @@ function addNewBooklist(e){
             }
             return ids
         }).then((ids)=>{
-            const books = result.split(";").pop()
-            log(books)
+            const books = result.split(";")
+            if (books[books.length-1] == ''){
+                books.pop()
+            }
             // check id validation
             let validInputs = []
             for (item of books) {
-                const valid = ids.filter((each) => item == each.bookID)
+                const valid = ids.filter((each) => each.bookID === item)
                 if (valid.length === 1) {
                     validInputs.push(valid[0])
                 }
@@ -950,7 +808,7 @@ function addNewBooklist(e){
                 location.reload() 
             } else {
                 document.querySelector('#bookInputHelp').innerText = ("Invalid input! Please re-check all your book IDs.")
-                //return
+                return
             }
         }).catch((error)=>{
             log(error)
@@ -963,11 +821,13 @@ function addBooklist(bookname, description, books){
     let data = {
         listName: bookname,
         listDescription: description,
-        creator: getUserName(getUserID()),
+        creator: getUserName(),
+        creatorID: getUserID(),
         books: books
     }
+    log(data)
     const request = new Request(url, {
-        method: 'post', 
+        method: 'POST', 
         body: JSON.stringify(data),
         headers: {
             'Accept': 'application/json, text/plain, */*',
@@ -977,9 +837,9 @@ function addBooklist(bookname, description, books){
     fetch(request)
     .then(function(res) {
         if (res.status === 200) {
-            console.log('added book')    
+            console.log('added booklist')    
         } else {
-            console.log('Failed to add')
+            console.log('Failed to add booklist')
         }
         log(res)
     }).catch((error) => {

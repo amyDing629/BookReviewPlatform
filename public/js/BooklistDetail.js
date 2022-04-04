@@ -1,141 +1,27 @@
 const log = console.log
 // global variables
-var BooklistsNum = 0; 
-var BooklistsList = [] 
+let BooklistsNum = 0; 
+let BooklistsList = [] 
 
-/************** temp hardcode for all books ******************/
-var BooksNum = 0; 
-var BooksList = [] 
-class Book {
-	constructor(name, author, year, coverURL, description) {
-		this.name = name;
-		this.author = author;
-		this.year = year;
-		this.coverURL = coverURL;
-        this.description = description       
-        this.postCollection = [] // collection of post ids associated with the book
-		this.bookID = BooksNum;
-		BooksNum++;
-	}
-}
-BooksList.push(new Book('Solaris', 'Stanisław Herman Lem', 1970, 
-'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg', 
-'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.'))
-
-BooksList.push(new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 1971,
-'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png',
-'It is a highly experimental, Joycean novel, playful and rich in literary allusions.'))
-
-BooksList.push(new Book('The Story of the Lost Child', 'Elena Ferrante', 2014,
-'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg',
-'The fourth of Elena Ferrante\'s celebrated Neapolitan novels, has a lot to deliver on.'))
-
-BooksList.push(new Book('War and Peace', 'Leo Tolstoy', 1869,
-'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg',
-'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.'))
-
-BooksList.push(new Book('Song of Solomon', 'Toni Morrison', 1977,
-'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg',
-'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.'))
-/************** temp for book [END] ******************/
-
-
-/************** temp for search bar ******************/
-function displaySearchbox(){
-    const searchbookArea = document.querySelector('.search-book')
-    const t = searchbookArea.children[0]
-    for (let i=0; i<BooksNum; i++){
-        if (BooksList[i] != null){
-            const id = BooksList[i].bookID
-            const name = BooksList[i].name
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            t.appendChild(option)
-        }
-    }
-    const searchlistArea = document.querySelector('.search-list')
-    const column = searchlistArea.children[0]
-    for (let i=0; i<BooklistsNum; i++){
-        if (BooklistsList[i] != null){
-            const id = BooklistsList[i].booklistID
-            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            column.appendChild(option)
-        }
-    }
-}
-
-/********** Search Book **********/
-const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        const select = document.getElementById('search-book');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = document.querySelector('.right').innerText
-            let link = '../BookDetail/'
-            if (user.length === 1){ // ['Login/Register']
-                link+=value+'/BookDetail-'+value+'.html'
-            } else if (user === 'Admin'){
-                link+=value+'/'+value+'_admin_after.html'
-            } else if (user === 'User'){
-                link+=value+'/'+value+'_end_after.html'
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-
-/********** Search List **********/
-const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        const select = document.getElementById('search-list');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = getUserID()
-            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
-            if (!isNaN(user)){
-                link += ("&userID="+user)
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-/************** temp for search bar [END] ******************/
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection, id, likes, collect) {
+	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime, creatorID) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
         } else {
             this.listDescription = listDescription
         }
-		this.creator = creator // username, temp
+		this.creator = creator // username 
+        this.creatorID = creatorID // user id
         this.books = bookCollection; // list of Book object
 		this.booklistID = id;
 		BooklistsNum++;
-        this.likes = likes;
-        this.collect = collect;
-        const date = new Date() 
-        this.createTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        this.likedBy = likedBy;
+        this.collectedBy = collectedBy;
+        this.createTime = createTime
 	}
 }
-
-/* // Load default booklist data
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
-BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
-
- */
 
 // get all booklist
 function getBooklists(){
@@ -149,9 +35,13 @@ function getBooklists(){
     }).then((json) => {  //pass json into object locally
         const booklists = json.booklists
         for (each of booklists){
-            BooklistsList.push(new Booklist(each.listName, each.listDescription, each.creator, each.books, each._id, each.likes, each.collect))
+            BooklistsList.push(
+                new Booklist(each.listName, each.listDescription, 
+                    each.creator, each.books, 
+                    each._id, each.likedBy, 
+                    each.collectedBy, each.createTime,
+                    each.creatorID))
         }
-        displaySearchbox() // for navi bar search function
         selectBooklistToPlay()
     }).catch((error) => {
         log(error)
@@ -188,10 +78,10 @@ function displayBooklistDetail(booklist, user) {
     // fill like and collect number
     const likes = document.querySelector('.likes')
     const collects = document.querySelector('.collects')
-    const likeContent = document.createTextNode(booklist.likes)
+    const likeContent = document.createTextNode(booklist.likedBy.length)
     likeContent.id = 'likeContent'
     likes.appendChild(likeContent)
-    const collectContent = document.createTextNode(booklist.collect)
+    const collectContent = document.createTextNode(booklist.collectedBy.length)
     collectContent.id = 'collectContent'
     collects.appendChild(collectContent)
 
@@ -216,13 +106,9 @@ function fillBooklistBooks(booklist, user){
         // <a> content
         const a = document.createElement('a')
         a.className = "book"
-        a.href = '../BookDetail/'+ booklist.books[i].bookID +"/"+ booklist.books[i].bookID
-        if(user === 'User'){ // end user
-            a.href+='_end_after.html'
-        } else if (user === 'Admin'){ // admin  
-            a.href+='_admin_after.html'
-        } else { // guest
-            a.href='../BookDetail/'+booklist.books[i].bookID+'/BookDetail-' + booklist.books[i].bookID+ '.html'
+        a.href = "/BookDetail/Detail?bookID=" + String((booklist.books[i])._id) //need check
+        if(user === 'User' | user === 'Admin'){ // current user type
+            a.href+= ("&userID="+getUserID())
         }
         a.onclick = function open(e){e.preventDefault(); window.location.href = a.href}
         a.appendChild(document.createTextNode(booklist.books[i].name))
@@ -240,7 +126,7 @@ function selectBooklistToPlay(){
         const currentListID = query.split('booklistID=')[1].split('.')[0]
         const list = BooklistsList.filter((list) => list.booklistID == currentListID)
         displayBooklistDetail(list[0], 'guest')
-        selectNarviBarUser('guest','')
+        //selectNarviBarUser('guest','')
     } else { // admin & user
         const currentListID = getBooklistID()
         const currentUser = getUserID()
@@ -256,13 +142,13 @@ function selectBooklistToPlay(){
             } else {
                     log('faild to get user info. as guest.')
             }                
-            }).then((json) => {  //pass json into object locally
+            }).then((json) => {
                 return JSON.stringify(json)
             }).then((userInfo)=>{
                 const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
                 const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
                 displayBooklistDetail(list[0], userType)
-                selectNarviBarUser(userType, username)
+                //selectNarviBarUser(userType, username)
                 editBooklist(username)
             }).catch((error)=>{
                 log(error)
@@ -272,8 +158,8 @@ function selectBooklistToPlay(){
     }
 }
 
-function selectNarviBarUser(userType,userName){
-    const userColumn = document.querySelector('.right')
+/* function selectNarviBarUser(userType,userName){
+    const userColumn = document.querySelector('.addUserIdToLink')
     if (userType === 'User'){//end user
         userColumn.innerHTML =''
         const newLI = document.createElement('li')
@@ -309,18 +195,15 @@ function selectNarviBarUser(userType,userName){
         document.querySelector('#booklistmain').href = "../BooklistMainPage/BooklistMainPage.html?userID="+getUserID()
         document.querySelector('#userLoginInfo').href = "../user/user.html?userID="+getUserID() // need check
     } //else guest
-}
+} */
 
 // edit booklist
 function editBooklist(user){
     // get self info (for booklist exist reference)
-    let entireBooklist = document.querySelectorAll('.bookli')
     const listID = BooklistsList.filter((booklist) => 
         booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
     )
     let currList = ''
-    //const currIDs = BooklistsList[listID[0].booklistID].books.filter((book) => currList += (book.bookID+";"))
-    
     const creator = listID[0].creator
     const description = document.querySelector('#descriptionText')
     const bookUL = document.querySelector('#bookUL')
@@ -435,7 +318,7 @@ function editDescription(e){
         }
         textSpan.innerText = request
         const self = BooklistsList.filter((booklist)=>
-            booklist.booklistID === (document.querySelector(".listId").innerText.split(': ')[1])
+            booklist.booklistID === getBooklistID()
         )
         modiEditNewValue(self[0].booklistID, "listDescription", "new", request)
         document.getElementById("myForm_editDescription").style.display="none";
@@ -735,19 +618,21 @@ function checkUserType(userID){
 
 // patch modify
 function modiEditNewValue(id, target, operation, value){
-    const url = '/api/booklist/'+id
+    const url = '/api/booklist/content/'+id
     let data = {
         target: target,
         operation: operation,
         value: value
     }
+    log(data)
+    log(id)
     const request = new Request(url, {
         method: 'PATCH', 
-        body: JSON.stringify(data),
         headers: {
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         },
+        body: JSON.stringify(data)
     });
     fetch(request)
     .then(function(res) {

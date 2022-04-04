@@ -16,101 +16,6 @@ class Book {
 	}
 }
 
-/************** temp for search bar ******************/
-
-// temp booklist data
-var BooklistsNum = 0; 
-var BooklistsList = []  
-class Booklist {
-	constructor(listName, listDescription, creator, bookCollection) {
-		this.listName = listName;
-        if (listDescription.length === 0){
-            this.listDescription = '__The creator hasn\'t add description yet...__'
-        } else {
-            this.listDescription = listDescription
-        }
-		this.creator = creator // username, temp
-        this.books = bookCollection; // list of Book object
-		this.booklistID = BooklistsNum;
-		BooklistsNum++;
-        this.likes = 0;
-        this.collect = 0;
-        const date = new Date() 
-        this.createTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-	}
-}
-BooklistsList.push(new Booklist('novels', 'All novels liked.', 'Admin',[BooksList[0],BooksList[1]]))
-BooklistsList.push(new Booklist('All spanish', 'All Spanish novels.', 'Admin',[BooksList[1]]))
-BooklistsList.push(new Booklist('Before 20th', '', 'User',[BooksList[1], BooksList[3], BooksList[4],BooksList[0]]))
-// temp booklist data [END]
-
-function displaySearchbox(){
-    //new 
-    const searchArea1 = document.querySelector('#search-button1')
-    searchArea1.addEventListener('click', searchBook)
-    const searchArea2 = document.querySelector('#search-button2')
-    searchArea2.addEventListener('click', searchList)
-    //end
-    const searchbookArea = document.querySelector('.search-book')
-    const t = searchbookArea.children[0]
-    for (let i=0; i<BooksNum; i++){
-        if (BooksList[i] != null){
-            const id = BooksList[i].bookID
-            const name = BooksList[i].name
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            t.appendChild(option)
-        }
-    }
-    const searchlistArea = document.querySelector('.search-list')
-    const column = searchlistArea.children[0]
-    for (let i=0; i<BooklistsNum; i++){
-        if (BooklistsList[i] != null){
-            const id = BooklistsList[i].booklistID
-            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            column.appendChild(option)
-        }
-    }
-}
-
-/********** Search Book **********/
-
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        const select = document.getElementById('search-book');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const link = '../BookDetail/'+value+'/BookDetail-'+value+'.html'
-            window.location.href = (link)
-        }
-    }  
-}
-
-/********** Search List **********/
-
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        const select = document.getElementById('search-list');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = getUserID()
-            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
-            if (!isNaN(user)){
-                link += ("&userID="+user)
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-/************** temp for search bar [END] ******************/
-
-
 // get all books 
 function getBooks(){
     const url = '/api/books'
@@ -126,7 +31,6 @@ function getBooks(){
         for (each of books){
             BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
         }
-        displaySearchbox()//for search bar function
         ifNeedDeleteForm(getUserID())
         displayAllBooks(BooksList,getUserID())
     }).catch((error) => {
@@ -184,10 +88,10 @@ function displayAllBooks(BooksList, userID) {
             document.querySelector('#userLoginInfo').innerText = username
 
             // set navi bar link
-            document.querySelector('#home').href = "./public/html/index.html?userID="+userID
-            document.querySelector('#bookmain').href = "./public/html/BookMainPage.html?userID="+userID
-            document.querySelector('#booklistmain').href = "./public/html/BooklistMainPage.html?userID="+userID
-            document.querySelector('#userLoginInfo').href = "./public/html/user.html?userID="+userID // need check
+            /* document.querySelector('#home').href = "/index.html?userID="+userID
+            //document.querySelector('#bookmain').href = "./public/html/BookMainPage.html?userID="+userID
+            document.querySelector('#booklistmain').href = "/BooklistMain?userID="+userID
+            document.querySelector('#userLoginInfo').href = "./public/html/user.html?userID="+userID // need check */
             if(userType === 'Admin'){
                 document.querySelector('#tableResult').addEventListener('click', deleteBook)
                 document.querySelector('#addButton').addEventListener('click', addNewBook)
@@ -206,7 +110,7 @@ function displayAllBooks(BooksList, userID) {
         for(let i = 0; i < BooksNum; i++) {
             const tr = document.createElement('tr')
             const div = document.createElement('div')
-            div.className = 'book'
+            div.className = 'book_card'
 
             if (userType === 'Admin'){// admin only: admin delete button
             const div1 = document.createElement('div')
@@ -232,13 +136,9 @@ function displayAllBooks(BooksList, userID) {
             span1.className="bookTitle"
             const a = document.createElement('a')
             a.className = "linkColor"
-            a.href = "../BookDetail/"+BooksList[i].bookID +"/BookDetail-" + BooksList[i].bookID + ".html"
-            if (userType === 'Admin'){
-                a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_admin_after.html" // need new link
-            } else if (userType === 'User'){
-                a.href = "../BookDetail/" + BooksList[i].bookID +"/"+ BooksList[i].bookID+"_end_after.html" // need new link
-            } else {
-                a.href = "../BookDetail/"+ BooksList[i].bookID+"/BookDetail-" + BooksList[i].bookID + ".html"
+            a.href = "/BookDetail/Detail?bookID=" + String(BooksList[i].bookID) //need check
+            if (userType === 'Admin' | userType === 'User'){
+                a.href += ("&userID="+getUserID()) // need check
             }
             a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
             const nameContent = document.createTextNode(BooksList[i].name)

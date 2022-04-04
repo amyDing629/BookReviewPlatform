@@ -491,8 +491,6 @@ app.get('/BookMain/:userID?', async (req, res) => {
 			res.status(500).send("server error on find a book")
 		}
 	}
-	//res.sendFile(__dirname + '/public/html/BookMainPage.html')
-
 })
 
 // find one book
@@ -613,10 +611,10 @@ app.post('/api/booklist', async (req, res)=>{
 			listName: req.body.listName,
 			listDescription: req.body.listDescription,
 			creator: req.body.creator,
+			creatorID: req.body.creatorID,
 			books: books
 		})
 	}
-	log(booklist)
     try {
 		const result = await booklist.save()	
 		res.send(result)
@@ -661,13 +659,13 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 	const operation = req.body.operation
 	const fieldsToUpdate = {}
 	//let curr = 0
-	let curr = 0
+	let curr = []
 
 	// check booklist validation
 	try {
 		const item = await BookList.findOne({_id: booklist})
 		if (!item) {
-			res.status(404).send("no such a book")
+			res.status(404).send("no such a booklist")
 		} else {   
 			curr = item[target]
 		}
@@ -685,9 +683,10 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 		} else { // valid user, do valid operation
 			// target = likedBy/collectedBy
 			if (operation == 'add'){
-				fieldsToUpdate[target] = curr.push(who)
+				curr.push(user._id)
+				fieldsToUpdate[target] = curr
 			} else if(operation == 'reduce'){
-				const newValue = curr.filter((userID)=> userID != who)
+				const newValue = curr.filter((userID) => !userID.equals(user._id))
 				fieldsToUpdate[target] = newValue
 			} else if(operation == 'new'){
 				fieldsToUpdate[target] = req.body.value
@@ -695,7 +694,6 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 				res.status(404).send('invalid request body') 
 				return;
 			}
-			//log(who)
 		}
 	} catch(error) {
 		log(error)
@@ -734,7 +732,6 @@ app.get('/BooklistMain', async (req, res) => {
 			res.status(500).send("server error on find a book")
 		}
 	}
-	//res.sendFile(__dirname + '/public/html/BooklistMainPage.html')
 
 })
 
@@ -742,15 +739,57 @@ app.get('/BooklistMain', async (req, res) => {
 app.get('/Booklist/Detail', async (req, res) => {
 	const query = req.query
 	const booklist = query.booklistID
-	const user = query.userID
+	try{
+		const user = query.userID
+		if (!booklist){
+			res.status(500).send("server error on display booklist detail page")
+		}
+		else { 
+			res.sendFile(__dirname + '/public/html/BooklistDetail.html')
+		}
+	} catch {
+			res.sendFile(__dirname + '/public/html/BooklistDetail.html')
+		}
+		
+	})
 
-	if (!booklist){
-		res.status(500).send("server error on display booklist detail page")
-	}else {
-		res.sendFile(__dirname + '/public/html/BooklistDetail.html')
+app.patch('/api/booklist/content/:booklistID', booklistModifyValidation, async(req, res)=>{
+	const booklist = req.params.booklistID
+    if (!ObjectID.isValid(booklist)) {
+		res.status(404).send('invalid booklist id type') 
+		return
 	}
-	//res.sendFile(__dirname + '/public/html/BooklistDetail.html')
-
+	const target = req.body.target
+	const operation = req.body.operation
+	const fieldsToUpdate = {}
+	try {
+		const value = req.body.value
+		if (!value) {
+			res.status(404).send("no value")
+		} else { // valid user, do valid operation
+			// target = listDescription / books
+			fieldsToUpdate[target] = value
+		}
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find user")
+	}
+	
+	try {
+		const list = await BookList.findOneAndUpdate({_id: booklist}, {$set: fieldsToUpdate}, {new: true})
+		if (!list) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.send(list)
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) {
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request')
+		}
+	}
 })
 
 /*********** Book detail ************/

@@ -211,3 +211,6 @@ a.book {
 .bookIDhide{
     display: none;
 }
+#dom_display{
+    display: none;
+}

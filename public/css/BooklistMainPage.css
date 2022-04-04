@@ -267,6 +267,6 @@
     border: transparent !important;
 }
 
-.bookIDhide{
+.bookIDhide, #dom_display{
     display: none;
 }

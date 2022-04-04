@@ -162,15 +162,33 @@ function filterFunction() {
 /*************** display ********************/
 
 try { 
+
     if (String(window.location.href).includes("&")){
         // ./public/html/BooklistDetail.html?booklistID=<int>&userID=<int>
-        t_user= String(window.location.href.split('?')[1].split('&')[1].split('='))
+        t_user = (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
     }
     else{
-        // /index.html?userID=<int>
+        // /index.html?userID=<int> 
         t_user= String(window.location.href.split('?')[1].split('=')[1])
+
+        // ToCheck: /Booklist/Detail?booklistID=<int>
     }
+    console.log(t_user)
     
+    /******* * NOT SURE: booklist detail guest check ********/
+    const url_try_booklist = '/api/booklists/'+t_user
+    fetch(url_try_booklist).then((res) => { 
+        if (res.status === 200) {
+            return res.json() 
+        } else {
+            return
+        }
+    }).then((json)=>{
+        t_usertype = ''
+        t_usertype = "guest"
+    }) 
+    /******* * NOT SURE [END]: booklist detail guest check ********/
+
     const url = '/api/users/'+t_user
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -215,7 +233,8 @@ try {
             })
         }).catch((error) => {
         log(error)})
-} catch { 
+} catch(error) {
+    console.log(error) 
     t_usertype= 'guest'
     console.log(t_usertype)
     const url0 = '/api/two'
