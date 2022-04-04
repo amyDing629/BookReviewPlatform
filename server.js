@@ -407,6 +407,9 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 })
 
 // update post likes
+// target: likes, collects
+// operation: add, reduce
+// value: userID
 app.patch('/api/posts/:postID', async (req, res)=>{
     const postID = req.params.postID
     if (!ObjectId.isValid(postID)) {
@@ -414,19 +417,40 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 		return
 	}
 	const operation = req.body.operation
+	const value = req.body.value
+	const target = req.body.target
 	
 	try {
 		const post = await Post.findOne({_id: postID})
 		if (!post) {
 			res.status(404).send("no such a book")
-		} else {   
-			if (operation == 'add'){
-				post.likes += 1
-			} else if (operation == 'reduce'){
-				post.likes -= 1
+		} else { 
+			if (target == 'likes') {
+				if (operation == 'add'){
+					post.likedBy.push(value);
+				} else if (operation == 'reduce'){
+					let user_index = post.likedBy.indexOf(value);
+					if (user_index != -1){
+						post.likedBy.splice(user_index, 1);
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}	
+			} else if (target == 'collects') {
+				if (operation == 'add') {
+					post.collectedBy.push(value);
+				} else if (operation == 'reduce') {
+					user_index = post.collectedBy.indexOf(value);
+					if (user_index != -1) {
+						post.collectedBy.splice(user_index, 1)
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}
 			} else {
-				res.status(404).send('invalid operation in request body')
-			}	
+				res.status(404).send('invalid target in request body')
+			}
+			
 		}
 		post.save().then((updatedPost) => {
 			res.send({updatedPost})

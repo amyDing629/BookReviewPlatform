@@ -363,16 +363,22 @@ function _createPostDiv(post) {
                    }                
                 }).then((post) => {
                     post = post.post
+                    let userID;
+                    if (window.location.href.indexOf('visitID') !== -1) {
+                        userID = window.location.href.split('?')[1].split('&')[1].split('=')[1];
+                    } else{
+                        userID = window.location.href.split('?')[1].split('=')[1];
+                    }
                     if (e.target.classList.contains('like')){
-                        console.log(post.likes);
-                        icon.innerText = ' '+ post.likes; //TODO: update db
+                        likeNum = post.likedBy.length + 1
+                        icon.innerText = ' '+ likeNum; //TODO: update db
                         e.target.classList.remove('like');
                         e.target.classList.add('dislike');
                         e.target.innerText = 'Dislike';
-                        let url = '/api/posts/' + post._id
-                        let request = new Request(url, {
+
+                        let request = new Request('/api/posts/' + post._id, {
                             method: 'PATCH',
-                            body: JSON.stringify({'operation': 'add'}),
+                            body: JSON.stringify({'operation': 'add', 'target': 'likes', 'value': String(userID)}),
                             headers: {
                                 'Accept': 'application/json, text/plain, */*',
                                 'Content-Type': 'application/json'
@@ -385,18 +391,19 @@ function _createPostDiv(post) {
                             } else {
                                 console.log('failed to updated')
                             }
-                        })
+                            console.log(post.likedBy);
+
+                        })    
                     }
                     else if (e.target.classList.contains('dislike')){
-                        post.likes --;
-                        icon.innerText = ' '+ post.likes;
+                        likeNum = post.likedBy.length - 1;
+                        icon.innerText = ' '+ likeNum; //TODO: update db
                         e.target.classList.remove('dislike');
                         e.target.classList.add('like');
                         e.target.innerText = 'Like';
-                        let url = '/api/posts/' + post._id;
-                        let request = new Request(url, {
+                        let request = new Request('/api/posts/' + post._id, {
                             method: 'PATCH',
-                            body: JSON.stringify({'operation': 'reduce'}),
+                            body: JSON.stringify({'operation': 'reduce', 'target': 'likes', 'value': String(userID)}),
                             headers: {
                                 'Accept': 'application/json, text/plain, */*',
                                 'Content-Type': 'application/json'
@@ -409,7 +416,9 @@ function _createPostDiv(post) {
                             } else {
                                 console.log('failed to updated')
                             }
-                        })
+                            console.log(post.likedBy);
+
+                        })    
                     }    
                 }).catch((error) => {
                     console.log(error)
@@ -464,7 +473,7 @@ function _createPostDiv(post) {
     let pic = post.pic;
     let content = post.content;
     let time = post.time;
-    let likes = post.likes;
+    let likes = post.likedBy.length;
     let pid = post._id;
     let bid = post.bookID;
 
@@ -564,8 +573,14 @@ function _createPostDiv(post) {
     icon.innerText = ' '+likes
     let button = document.createElement('button')
     button.className = 'btn btn-outline-primary'
-    button.classList.add('like')
-    button.innerText = 'Like'
+    if (post.likedBy.indexOf(userID) != -1){
+        button.classList.add('dislike')
+        button.innerText = 'Dislike'
+    } else {
+        button.classList.add('like')
+        button.innerText = 'Like'
+    }
+    
     button.addEventListener('click', likeOnClick);
     let button2 = document.createElement('button')
     button2.className = 'btn btn-outline-success'

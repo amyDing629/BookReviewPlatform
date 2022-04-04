@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt')
-
-const Post = mongoose.model('Post').schema
-const BookList = mongoose.model('Booklist').schema;
+const bcrypt = require('bcrypt');
 
 
 const UserSchema = new mongoose.Schema({
