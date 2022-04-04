@@ -274,7 +274,7 @@ app.get('/user/:userID/:visitID', mongoChecker, async (req, res)=>{
 
 })
 
-// update user information (signature, profilePhoto, post/booklist, post/booklist collection, isActivate)
+// update user information (signature, profilePhoto, isActivate, lists)
 app.patch('/api/users/:userID', async (req, res)=>{
     const userID = req.params.userID
     if (!ObjectId.isValid(userID)) {
@@ -301,7 +301,7 @@ app.patch('/api/users/:userID', async (req, res)=>{
 				user.postCollection = value
 			} else if (operation == 'booklistCollection') {
 				user.booklistCollection = value
-			} else if (operation == 'isActivate') {
+			}else if (operation == 'isActivate') {
 				user.isActivate = value
 			} else {
 				res.status(404).send('invalid operation')
@@ -315,6 +315,7 @@ app.patch('/api/users/:userID', async (req, res)=>{
 		res.status(500).send("server error on find user")
 	}
 })
+
 
 
 /************** POSTS ************/
@@ -397,37 +398,38 @@ app.post('/api/addPost', mongoChecker, async (req, res)=>{
 		const result = await newPost.save()	
 		res.send({result})
 	} catch(error) {
-		log(error) // log server error to the console, not to the client.
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+		log(error)
+		if (isMongoError(error)) { 
 			res.status(500).send('Internal server error')
 		} else {
-			res.status(400).send('Bad Request hello') // 400 for bad request gets sent to client.
+			res.status(400).send('Bad Request') 
 		}
 	}  
 })
 
-// update post likes
-// target: likes, collects
-// operation: add, reduce
-// value: userID
+// update post
 app.patch('/api/posts/:postID', async (req, res)=>{
     const postID = req.params.postID
     if (!ObjectId.isValid(postID)) {
 		res.status(404).send('invalid post id type') 
 		return
 	}
-	const operation = req.body.operation
-	const value = req.body.value
-	const target = req.body.target
+	const operation = req.body.operation // operation: add, reduce
+	const value = req.body.value // value: userID
+	const target = req.body.target // target: likes, collects
 	
 	try {
 		const post = await Post.findOne({_id: postID})
-		if (!post) {
-			res.status(404).send("no such a book")
-		} else { 
+		const user = await User.findOne({_id:value})
+		if (!post || !user) {
+			res.status(404).send("no such a post or user")
+		}
+		 else { 
 			if (target == 'likes') {
 				if (operation == 'add'){
-					post.likedBy.push(value);
+					if (!post.likedBy.includes(value)){
+						post.likedBy.push(value);
+					}
 				} else if (operation == 'reduce'){
 					let user_index = post.likedBy.indexOf(value);
 					if (user_index != -1){
@@ -436,13 +438,19 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 				} else {
 					res.status(404).send('invalid operation in request body')
 				}	
-			} else if (target == 'collects') {
+			} 
+			else if (target == 'collects') {
 				if (operation == 'add') {
-					post.collectedBy.push(value);
+					if (!post.collectedBy.includes(value) && !user.postCollection.includes(postID)){
+						post.collectedBy.push(value);
+						user.postCollection.push(postID);
+					}
 				} else if (operation == 'reduce') {
 					let user_index = post.collectedBy.indexOf(value);
-					if (user_index != -1) {
+					let post_index = user.postCollection.indexOf(postID);
+					if ((user_index != -1) && (post_index != -1)) {
 						post.collectedBy.splice(user_index, 1)
+						user.postCollection.splice(post_index, 1)
 					}
 				} else {
 					res.status(404).send('invalid operation in request body')
@@ -453,7 +461,9 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 			
 		}
 		post.save().then((updatedPost) => {
-			res.send({updatedPost})
+			user.save().then((updatedUser) => {
+				res.send({post: updatedPost, user: updatedUser})
+			})
 		})
 	} catch(error) {
 		log(error)

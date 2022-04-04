@@ -1,11 +1,11 @@
 /****************** Index Post ******************/
 
 const posts = []; // all posts
-const homeposts = []; // for admin edit
-const collectedPosts = []; // collection of posts made by current user
+const homeposts = []; // for home page display
+//const collectedPosts = []; // collection of posts made by current user
 
 class Post {
-	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes) {
+	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes, collect) {
 		this.postID = pid;
         this.bookID = bid;
         this.booktitle = booktitle;
@@ -15,15 +15,16 @@ class Post {
         this.pic = pic;
         this.content = content; 
         this.time = time;
-        this.likes = likes; 
+        this.likes = likes;  // array contains users who liked this post
+        this.collectedUser = collect; // array contains users who collected this post
         this.booklink = null;
         this.posterlink = null;
     }
 }
 
-let puser;
-let pusertype;
-let pusername;
+let puser; // id
+let pusertype; // type
+let pusername; // name
 const postul = document.querySelector('#posts ul');
 
 try { 
@@ -49,7 +50,7 @@ try {
         }).then((json) => {  //pass json into object locally
             const jsonposts = json.posts
             for (each of jsonposts){
-                posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+                posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy))
             }
             // handle links
             for (let i=0; i<posts.length; i++){
@@ -57,9 +58,9 @@ try {
                 posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
             }
             homepostsCreate()
-            displayPosts(pusertype)
-            likeHandler()
-            collectHandler()
+            displayPosts(pusertype, puser)
+            likeHandler(puser)
+            collectHandler(puser)
 
             /////// Admin ///////
             if (pusertype == 'admin'){
@@ -91,7 +92,7 @@ try {
             posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
         }
         homepostsCreate()
-        displayPosts(pusertype)
+        displayPosts(pusertype, puser)
     })
     .catch((error) => {
     log(error)})
@@ -122,7 +123,13 @@ function ulinkHandler(uid, usertype, userid){
             result = '/public/html/login.html'
         }
         else{
-            result = '/public/html/BookDetail.html?bookID='+uid+"&userID="+userid // need to change
+            if (uid == userid){
+                // visit myself
+                result = "/public/html/user.html?userID="+userid
+            }
+            else{
+                result = '/public/html/user.html?visitID='+uid+"&userID="+userid
+            }
         }
         return result; 
     }      
@@ -131,13 +138,13 @@ function ulinkHandler(uid, usertype, userid){
 /************************ display ************************/
 
 function homepostsCreate(){
-    for (let i=0; i<posts.length; i++){
+    for (let i=0; i<3; i++){
         homeposts.push(posts[i])
     }
 }
 
 
-function displayPosts(userType){
+function displayPosts(userType, viewerid){
     console.log(homeposts)
     for (let i=0; i<3; i++){
         if (homeposts[i]!= null){
@@ -161,7 +168,8 @@ function displayPosts(userType){
             let pic = homeposts[i].pic
             let content = homeposts[i].content
             let time = homeposts[i].time
-            let likes = homeposts[i].likes
+            let likes = homeposts[i].likes // array contains users who liked this post
+            let collects = homeposts[i].collectedUser // array contains users who collected this post
             let plink = homeposts[i].posterlink
             let pid = homeposts[i].postID
             let bid = homeposts[i].bookID
@@ -186,7 +194,6 @@ function displayPosts(userType){
             }
             let spanid2 = document.createElement('span')
             if (userType == 'admin'){
-                log(userType)
                 spanid2.className = 'postIdadmin'
             }
             else{
@@ -244,18 +251,32 @@ function displayPosts(userType){
 
             // ADMIN & USER
             if (userType != 'guest'){
+                ////// like
                 let likeh5 = document.createElement('h5')
                 let icon = document.createElement('i')
                 icon.className = 'fa fa-heart'
-                icon.innerText = ' '+likes
+                icon.innerText = ' '+likes.length
                 let button = document.createElement('button')
                 button.className = 'btn btn-outline-primary'
-                button.classList.add('like')
-                button.innerText = 'Like'
+                if (likes.includes(viewerid)){
+                    button.classList.add('dislike')
+                    button.innerText = 'Dislike'
+                }
+                else{
+                    button.classList.add('like')
+                    button.innerText = 'Like'
+                }
+                ////// collect
                 let button2 = document.createElement('button')
                 button2.className = 'btn btn-outline-success'
-                button2.classList.add('collect')
-                button2.innerText = 'Collect'
+                if (collects.includes(viewerid)){
+                    button2.classList.add('collected')
+                    button2.innerText = 'Collected!'
+                }
+                else{
+                    button2.classList.add('collect')
+                    button2.innerText = 'Collect'
+                }
 
                 likeh5.appendChild(icon)
                 likeh5.appendChild(button2)
@@ -273,77 +294,99 @@ function displayPosts(userType){
 }
 
 // ADMIN & USER
-function likeHandler(){
+function likeHandler(userid){
         const likefield = document.querySelector('#posts ul')
-        likefield.addEventListener('click', like)     
-}
-
-
-    function like(e){
-        e.preventDefault(); // prevent default action
-        if (e.target.classList.contains('like') || e.target.classList.contains('dislike')){
-            console.log("like")
-            const contentDiv = e.target.parentElement.parentElement
-            const h3 = contentDiv.children[0]
-            const pid = h3.children[1].innerText
-            console.log(pid)
-            for (let i=0; i<posts.length; i++){
-                if(posts[i].postID == pid){
-                    console.log("yes")
-                    if (e.target.classList.contains('like')) {
-                        console.log("yes")
-                        posts[i].likes ++
-                        let length = contentDiv.children.length
-                        length -= 1
-                        const target = contentDiv.children[length]
-                        const icon = target.children[0]
-                        icon.innerText = ' '+ posts[i].likes
-                        e.target.classList.remove('like');
-                        e.target.classList.add('dislike');
-                        e.target.innerText = 'Dislike';
-                        break;
+        likefield.addEventListener('click', function(e){
+            if (e.target.classList.contains('like') || e.target.classList.contains('dislike')){
+                const contentDiv = e.target.parentElement.parentElement
+                const h3 = contentDiv.children[0]
+                const pid = h3.children[1].innerText
+                for (let i=0; i<posts.length; i++){
+                    if(posts[i].postID == pid){
+                        let likeoperation;
+                        if (e.target.classList.contains('like')) {
+                            likeoperation = "add"
+                            posts[i].likes.push(userid)
+                            let length = contentDiv.children.length
+                            length -= 1
+                            const target = contentDiv.children[length]
+                            const icon = target.children[0]
+                            icon.innerText = ' '+ posts[i].likes.length
+                            e.target.classList.remove('like');
+                            e.target.classList.add('dislike');
+                            e.target.innerText = 'Dislike';
+                        }
+                        else if (e.target.classList.contains('dislike')){
+                            likeoperation = "reduce"
+                            for (let j=0; i<(posts[i].likes).length; j++){
+                                if(posts[i].likes[j] == userid){
+                                    posts[i].likes.splice(j, 1);
+                                    break;
+                                }
+                            }
+                            let length = contentDiv.children.length
+                            length -= 1
+                            const target = contentDiv.children[length]
+                            const icon = target.children[0]
+                            icon.innerText = ' '+ posts[i].likes.length
+                            e.target.classList.remove('dislike');
+                            e.target.classList.add('like');
+                            e.target.innerText = 'Like';
+                        }
+                        // send request to server
+                        const likeurl = '/api/posts/'+pid;
+                        let likedata = {
+                            operation: likeoperation,
+                            value: userid,
+                            target: "likes"
+                        }
+                        log(likedata)
+                        const likerequest = new Request(likeurl, {
+                            method: 'PATCH', 
+                            body: JSON.stringify(likedata),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            },
+                        });
+                        fetch(likerequest)
+                        .then(function(res) {
+                            if (res.status === 200) {
+                                console.log('modify post liked')          
+                            } else {
+                                console.log('modify post liked failed')        
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                        })
                     }
-                    else if (e.target.classList.contains('dislike')){
-                        posts[i].likes --
-                        let length = contentDiv.children.length
-                        length -= 1
-                        const target = contentDiv.children[length]
-                        const icon = target.children[0]
-                        icon.innerText = ' '+ posts[i].likes
-                        e.target.classList.remove('dislike');
-                        e.target.classList.add('like');
-                        e.target.innerText = 'Like';
-                        break;
-                    }
-                }
                 } 
-        }
-        }
-
-function collectHandler(){
-    const collectfield = document.querySelector('#posts ul')
-    collectfield.addEventListener('click', collect);
+            }
+        })     
 }
 
-    function collect(e){
-        e.preventDefault(); // prevent default action
+
+function collectHandler(userid){
+    const collectfield = document.querySelector('#posts ul')
+    collectfield.addEventListener('click', function(e){
+        e.preventDefault();
         if (e.target.classList.contains('collect') || e.target.classList.contains('collected')){
-            console.log("collect")
             const contentDiv = e.target.parentElement.parentElement
             const h3 = contentDiv.children[0]
             const pid = h3.children[1].innerText
             for (let i=0; i<posts.length; i++){
                 if(posts[i].postID == pid){
+                    let collectoperation;
                     if (e.target.classList.contains('collect')) {
-                        collectedPosts.push(posts[i])
+                        collectoperation = "add"
+                        posts[i].collectedUser.push(userid) 
                         const h5 = contentDiv.children[contentDiv.children.length-1]
                         h5.children[1].innerText='Collected!'
                         e.target.classList.remove('collect');
                         e.target.classList.add('collected');
-                        break;
                     }
                     else if (e.target.classList.contains('collected')){
-                        //collectedPosts.remove(posts[i])
+                        collectoperation = "reduce"
                         for (let j=0; i<collectedPosts.length; i++){
                             if (collectedPosts[j] == posts[i]){
                                 collectedPosts.splice(j, 1)
@@ -354,17 +397,39 @@ function collectHandler(){
                         h5.children[1].innerText='Collect'
                         e.target.classList.remove('collected');
                         e.target.classList.add('collect');
-                        break;
                     }
-                    
+                    // send request to server
+                    const collecturl = '/api/posts/'+pid;
+                        let collectdata = {
+                            operation: collectoperation,
+                            value: userid,
+                            target: "collects"
+                        }
+                        log(collectdata)
+                        const collectrequest = new Request(collecturl, {
+                            method: 'PATCH', 
+                            body: JSON.stringify(collectdata),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            },
+                        });
+                        fetch(collectrequest)
+                        .then(function(res) {
+                            if (res.status === 200) {
+                                console.log('modify post collected') 
+                            }else{
+                                console.log('modify post collected failed')    
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    }
                 }
-            } 
-        }
-        
-    }
-    
-
-
+            }
+        })
+    }           
+                    
 
 /************************ Admin manage bar ************************/
     

@@ -80,7 +80,7 @@ function displayMenu(usertype, username, userid){
         a.innerText = 'QUIT'
         li.append(a)
         li.className = 'quit'
-        a2.setAttribute("href", "/user/"+userid+"/"+userid) // user link!!!!
+        a2.setAttribute("href", "/public/html/user.html?userID="+userid) // here
         a2.innerText = username // dynamic
         li2.append(a2)
         ul.appendChild(li)
@@ -160,9 +160,42 @@ function filterFunction() {
 }
 
 /*************** display ********************/
+// /Booklist/Detail?booklistID=<int>
+if (String(window.location.href).includes("Detail?booklistID") || !String(window.location.href).includes("?")){
+    t_usertype = "guest"
+    const url0 = '/api/two'
+    fetch(url0).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            console.log("not found")
+       }                
+    }).then((json) => {  //pass json into object locally
+        const books = json.books
+        for (each of books){
+            t_allBooks.push(new TBook(each._id, each.name, each.author, each.coverURL, each.description))
+        }
+        const lists = json.lists
+        for (each of lists){
+           t_booklistsList.push(new TDataBooklist(each._id, each.listName, each.creator, each.books))
+        }
 
-try { 
+        // handle links
+        for (let i=0; i<t_allBooks.length; i++){
+            t_allBooks[i].link = t_blinkHandler(t_allBooks[i].bookId, t_usertype, t_user)
+        }
+        for (let i=0; i<t_booklistsList.length; i++){
+            t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
+        }  
 
+        displayMenu(t_usertype, t_username, t_user)
+        displaySearchbox()
+
+        })
+    .catch((error) => {
+        console.log(error)})
+}
+else{
     if (String(window.location.href).includes("&")){
         // ./public/html/BooklistDetail.html?booklistID=<int>&userID=<int>
         t_user = (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
@@ -170,25 +203,7 @@ try {
     else{
         // /index.html?userID=<int> 
         t_user= String(window.location.href.split('?')[1].split('=')[1])
-
-        // ToCheck: /Booklist/Detail?booklistID=<int>
     }
-    console.log(t_user)
-    
-    /******* * NOT SURE: booklist detail guest check ********/
-    const url_try_booklist = '/api/booklists/'+t_user
-    fetch(url_try_booklist).then((res) => { 
-        if (res.status === 200) {
-            return res.json() 
-        } else {
-            return
-        }
-    }).then((json)=>{
-        t_usertype = ''
-        t_usertype = "guest"
-    }) 
-    /******* * NOT SURE [END]: booklist detail guest check ********/
-
     const url = '/api/users/'+t_user
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -233,40 +248,117 @@ try {
             })
         }).catch((error) => {
         log(error)})
-} catch(error) {
-    console.log(error) 
-    t_usertype= 'guest'
-    console.log(t_usertype)
-    const url0 = '/api/two'
-    fetch(url0).then((res) => { 
-        if (res.status === 200) {
-           return res.json() 
-       } else {
-            console.log("not found")
-       }                
-    }).then((json) => {  //pass json into object locally
-        const books = json.books
-        for (each of books){
-            t_allBooks.push(new TBook(each._id, each.name, each.author, each.coverURL, each.description))
-        }
-        const lists = json.lists
-        for (each of lists){
-           t_booklistsList.push(new TDataBooklist(each._id, each.listName, each.creator, each.books))
-        }
 
-        // handle links
-        for (let i=0; i<t_allBooks.length; i++){
-            t_allBooks[i].link = t_blinkHandler(t_allBooks[i].bookId, t_usertype, t_user)
-        }
-        for (let i=0; i<t_booklistsList.length; i++){
-            t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
-        }  
 
-        displayMenu(t_usertype, t_username, t_user)
-        displaySearchbox()
-
-        })
-    .catch((error) => {
-        console.log(error)})
 }
+
+
+
+// try { 
+//     if (String(window.location.href).includes("&")){
+//         // ./public/html/BooklistDetail.html?booklistID=<int>&userID=<int>
+//         t_user = (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+//     }
+//     else{
+//         // /index.html?userID=<int> 
+//         t_user= String(window.location.href.split('?')[1].split('=')[1])
+
+//         // ToCheck: /Booklist/Detail?booklistID=<int>
+//     }
+//     console.log(t_user)
+    
+//     /******* * NOT SURE: booklist detail guest check ********/
+//     const url_try_booklist = '/api/booklists/'+t_user
+//     fetch(url_try_booklist).then((res) => { 
+//         if (res.status === 200) {
+//             return res.json() 
+//         } else {
+//             return
+//         }
+//     }).then((json)=>{
+//         // t_usertype = ''
+//         t_usertype = "guest"
+//     }) 
+//     /******* * NOT SURE [END]: booklist detail guest check ********/
+
+//     const url = '/api/users/'+t_user
+//     fetch(url).then((res) => { 
+//         if (res.status === 200) {
+//            return res.json() 
+//        } else {
+//            alert('Could not get this user')
+//        }   
+//     }).then((json) => {  //pass json into object locally
+//         t_usertype = json.user.type.toLowerCase()
+//         t_username = json.user.username
+//         console.log(t_usertype)
+//         console.log(t_username)
+
+//         const url2 = '/api/two'
+//         fetch(url2).then((res) => { 
+//             if (res.status === 200) {
+//                return res.json() 
+//            } else {
+//                 console.log("not found")
+//            }                
+//         }).then((json) => {  //pass json into object locally
+//             const books = json.books
+//             for (each of books){
+//                 t_allBooks.push(new TBook(each._id, each.name, each.author, each.coverURL, each.description))
+//             }
+//             const lists = json.lists
+//             for (each of lists){
+//                 t_booklistsList.push(new TDataBooklist(each._id, each.listName, each.creator, each.books))
+//             }
+
+//             // handle links
+//             for (let i=0; i<t_allBooks.length; i++){
+//                 t_allBooks[i].link = t_blinkHandler(t_allBooks[i].bookId, t_usertype, t_user)
+//             }
+//             for (let i=0; i<t_booklistsList.length; i++){
+//                 t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
+//             }  
+
+//             displayMenu(t_usertype, t_username, t_user)
+//             displaySearchbox()
+
+//             })
+//         }).catch((error) => {
+//         log(error)})
+// } catch(error) {
+//     console.log(error) 
+//     t_usertype= 'guest'
+//     console.log(t_usertype)
+//     const url0 = '/api/two'
+//     fetch(url0).then((res) => { 
+//         if (res.status === 200) {
+//            return res.json() 
+//        } else {
+//             console.log("not found")
+//        }                
+//     }).then((json) => {  //pass json into object locally
+//         const books = json.books
+//         for (each of books){
+//             t_allBooks.push(new TBook(each._id, each.name, each.author, each.coverURL, each.description))
+//         }
+//         const lists = json.lists
+//         for (each of lists){
+//            t_booklistsList.push(new TDataBooklist(each._id, each.listName, each.creator, each.books))
+//         }
+
+//         // handle links
+//         for (let i=0; i<t_allBooks.length; i++){
+//             t_allBooks[i].link = t_blinkHandler(t_allBooks[i].bookId, t_usertype, t_user)
+//         }
+//         for (let i=0; i<t_booklistsList.length; i++){
+//             t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
+//         }  
+
+//         displayMenu(t_usertype, t_username, t_user)
+//         displaySearchbox()
+
+//         })
+//     .catch((error) => {
+//         console.log(error)})
+// }
 

@@ -25,13 +25,6 @@ const signin = document.querySelector('#signin');
 signin.addEventListener('click', change_page);
 
 // press key enter trigger
-const usernamefield = document.querySelector('#username')
-usernamefield.addEventListener("keyup", function(event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        change_page();
-    }
-});
 const passwordfield = document.querySelector('#password')
 passwordfield.addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
