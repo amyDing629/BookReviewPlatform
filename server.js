@@ -440,7 +440,7 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 				if (operation == 'add') {
 					post.collectedBy.push(value);
 				} else if (operation == 'reduce') {
-					user_index = post.collectedBy.indexOf(value);
+					let user_index = post.collectedBy.indexOf(value);
 					if (user_index != -1) {
 						post.collectedBy.splice(user_index, 1)
 					}
@@ -458,6 +458,60 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 	} catch(error) {
 		log(error)
 		res.status(500).send("server error on find post")
+	}
+})
+
+// update post likes
+// target: likes, collects
+// operation: add, reduce
+// value: userID
+app.patch('/api/booklists/:booklistID', async (req, res)=>{
+    const booklistID = req.params.booklistID;
+    if (!ObjectId.isValid(booklistID)) {
+		res.status(404).send('invalid booklist id type') 
+	}
+	const operation = req.body.operation
+	const value = req.body.value
+	const target = req.body.target
+	
+	try {
+		const booklist = await BookList.findOne({_id: booklistID})
+		if (!booklist) {
+			res.status(404).send("no such a book")
+		} else { 
+			if (target == 'likes') {
+				if (operation == 'add'){
+					booklist.likedBy.push(value);
+				} else if (operation == 'reduce'){
+					let user_index = booklist.likedBy.indexOf(value);
+					if (user_index != -1){
+						booklist.likedBy.splice(user_index, 1);
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}	
+			} else if (target == 'collects') {
+				if (operation == 'add') {
+					booklist.collectedBy.push(value);
+				} else if (operation == 'reduce') {
+					let user_index = booklist.collectedBy.indexOf(value);
+					if (user_index != -1) {
+						booklist.collectedBy.splice(user_index, 1)
+					}
+				} else {
+					res.status(404).send('invalid operation in request body')
+				}
+			} else {
+				res.status(404).send('invalid target in request body')
+			}
+			
+		}
+		booklist.save().then((updatedBooklist) => {
+			res.send({updatedBooklist})
+		})
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find booklist")
 	}
 })
 
