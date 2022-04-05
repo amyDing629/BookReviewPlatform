@@ -125,7 +125,7 @@ function displaySearchbox(){
     for (let i=0; i<t_booklistsList.length; i++){
         if (t_booklistsList[i] != null){
             const id2 = t_booklistsList[i].booklistID
-            const name2 = "[" + t_booklistsList[i].listName + "] -- " +t_booklistsList[i].creator
+            const name2 = t_booklistsList[i].listName +" -- " +t_booklistsList[i].creator
             const a2 = document.createElement("a")
             // HERE!
             // let link2 = t_llinkHandler(id2, t_usertype)
@@ -161,11 +161,31 @@ function listFunction() {
     } 
 }
 
-function filterFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myInput");
+function t_bookfilterFunction() {
+    let input, filter, ul, li, a, i;
+    input = document.querySelector(".search-book #myInput")
+    // input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
-    div = document.getElementById("myDropdown");
+    div = document.querySelector(".search-book #myDropdown")
+    // div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        a[i].style.display = "";
+        } else {
+        a[i].style.display = "none";
+        }
+    }
+}
+
+function t_listfilterFunction() {
+    let input, filter, ul, li, a, i;
+    input = document.querySelector(".search-list #myInput")
+    // input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.querySelector(".search-list #myDropdown")
+    // div = document.getElementById("myDropdown");
     a = div.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         txtValue = a[i].textContent || a[i].innerText;
