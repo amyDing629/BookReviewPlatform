@@ -184,9 +184,10 @@ app.get('/login/:username/:password', mongoChecker, async (req, res) => {
     } catch (error) {
     	if (isMongoError(error)) {
 			res.status(500).send(error)}
-		// } else {
-		// 	res.status(400).send(error)
-		// }
+		else {
+			console.log("does not match")
+			res.status(404).send("user")
+		}
     }
 })
 
@@ -642,6 +643,30 @@ app.delete('/api/book/:bookID', async (req, res)=>{
 		if (!deleteBook) {
 			res.status(404).send("no such a book")
 		} else {   
+			const allBooklist = await BookList.find() // delete book from all booklist involved
+			for (let i=0;i<allBooklist.length;i++){
+				const curr_books = allBooklist[i].books   
+				const newValue = curr_books.filter((curr_book) => !curr_book._id.equals(book))
+				const update = await BookList.findOneAndUpdate({_id: allBooklist[i]._id}, {$set: {books:newValue}}, {new: true})
+			}
+			let deletedPost = []
+			const allPosts = await Post.find() // delete book from all booklist involved
+			for (let i=0;i<allPosts.length;i++){
+				if (allPosts[i].bookID == book){
+					const update = await BookList.findOneAndDelete({_id: allPosts[i]._id}, {$set: {books:newValue}}, {new: true})
+					deletedPost.push(allPosts[i]._id)
+				}
+			}
+			const allUsers = await User.find() // delete book from all users postlist and post collection
+			for (let i=0;i<allUsers.length;i++){
+				const curr_post = allUsers[i].postList
+				const curr_post_collect = allUsers[i].postCollection
+				const new_post = curr_post.filter((post) => !post.equals(book))
+				const new_post_collect = curr_post_collect.filter((post) => !post.equals(book))
+				const update = await BookList.findOneAndUpdate({_id: allBooklist[i]._id}, 
+					{$set: {postList:new_post, postCollection:new_post_collect}}, 
+					{new: true})
+			}
 			res.send(deleteBook)
 		}
 	} catch(error) {
