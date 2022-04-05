@@ -112,8 +112,7 @@ function displaySearchbox(){
             const id1 = t_allBooks[i].bookId
             const name1 = t_allBooks[i].title
             const a1 = document.createElement("a")
-            // HERE!
-            // let link1 = t_blinkHandler(id1, t_usertype)
+
             let link1 = t_allBooks[i].link
             a1.setAttribute("href", link1)
             a1.innerText = name1
@@ -127,8 +126,7 @@ function displaySearchbox(){
             const id2 = t_booklistsList[i].booklistID
             const name2 = t_booklistsList[i].listName +" -- " +t_booklistsList[i].creator
             const a2 = document.createElement("a")
-            // HERE!
-            // let link2 = t_llinkHandler(id2, t_usertype)
+
             let link2 = t_booklistsList[i].link
             a2.setAttribute("href", link2)
             a2.innerText = name2
@@ -164,10 +162,8 @@ function listFunction() {
 function t_bookfilterFunction() {
     let input, filter, ul, li, a, i;
     input = document.querySelector(".search-book #myInput")
-    // input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
     div = document.querySelector(".search-book #myDropdown")
-    // div = document.getElementById("myDropdown");
     a = div.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         txtValue = a[i].textContent || a[i].innerText;
@@ -182,10 +178,8 @@ function t_bookfilterFunction() {
 function t_listfilterFunction() {
     let input, filter, ul, li, a, i;
     input = document.querySelector(".search-list #myInput")
-    // input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
     div = document.querySelector(".search-list #myDropdown")
-    // div = document.getElementById("myDropdown");
     a = div.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         txtValue = a[i].textContent || a[i].innerText;
@@ -208,7 +202,7 @@ if ((!String(window.location.href).includes("userID")) || !String(window.locatio
        } else {
             console.log("not found")
        }                
-    }).then((json) => {  //pass json into object locally
+    }).then((json) => { 
         const books = json.books
         for (each of books){
             t_allBooks.push(new TBook(each._id, each.name, each.author, each.coverURL, each.description))

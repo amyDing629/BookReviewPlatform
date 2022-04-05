@@ -70,7 +70,7 @@ try {
 
             })
         }).catch((error) => {
-        log(error)})
+        console.log(error)})
 } catch { 
     pusertype= 'guest'
     const url5 = '/api/posts'
@@ -80,8 +80,7 @@ try {
        } else {
             console.log("not found")
        }                
-    }).then((json) => {  //pass json into object locally
-        log(json)
+    }).then((json) => { 
         const jsonposts = json.posts
         for (each of jsonposts){
             posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy, each.order))
@@ -95,7 +94,7 @@ try {
         displayPosts(pusertype)
     })
     .catch((error) => {
-    log(error)})
+    console.log(error)})
 
 }
 
@@ -146,19 +145,15 @@ function homepostsCreate(){
             flag = 1;
         }
     }
-    console.log(flag)
     // brand new
     if (flag == 0){
         for (let i=0; i<3; i++){
-            // console.log(i)
             posts[i].order = i;
             homeposts.push(posts[i])
             const url = '/api/postsorder/'+posts[i].postID
-            // console.log(url)
             let data = {
                 value: i
             }
-            // console.log(data)
             const request = new Request(url, {
                 method: 'PATCH', 
                 body: JSON.stringify(data),
@@ -197,7 +192,7 @@ function homepostsCreate(){
 
 
 function displayPosts(userType, viewerid){
-    console.log(homeposts)
+
     for (let i=0; i<3; i++){
         if (homeposts[i]!= null){
             let li = postul.children[i]
@@ -591,7 +586,7 @@ function collectHandler(userid){
         modify.addEventListener('click', function(){
             const toreplace = document.querySelector('#modify_post1 #myInput')
             const replacedwith = document.querySelector('#modify_post2 #myInput')
-            // new
+
             const value1 = toreplace.value
             const value2 = replacedwith.value
             let replacedpost
@@ -607,6 +602,7 @@ function collectHandler(userid){
                     break;
                 }
             }
+            console.log(homeposts)
             for (let j=0; j<homeposts.length; j++){
                 if (homeposts[j].postID == value1){
                     replacedpost = homeposts[j]
@@ -617,7 +613,6 @@ function collectHandler(userid){
                     replacedpost.order = targetorder
                     posts[index].order = replacedorder
                     homeposts[j] = targetpost
-
                     // update order
                     for (let k=0; k<2; k++){
                         console.log(k)
@@ -657,7 +652,7 @@ function collectHandler(userid){
                             console.log(error)
                         })
                     }
-                    console.log(homeposts)
+                    // console.log(homeposts)
                     displayPosts('admin', puser)
                  }
             }
