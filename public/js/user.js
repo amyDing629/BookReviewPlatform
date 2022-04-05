@@ -834,18 +834,9 @@ function _createBooklistDiv(booklist) {
 
     function deleteBooklistButtonOnClick(e) {
         let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[0].removeChild(booklistDiv);
-        let url = '/api/booklist/' + booklist._id
-        let request = new Request(url, {
-            method: 'DELETE',
-        });
-        fetch(request).then(function(res){
-            if (res.status === 200) {
-                console.log('deleted')
-            } else {
-                console.log('failed to delete')
-            }
-        })
+        addFormForDelete('booklist', booklistDiv, booklist._id)
+        const form = document.getElementById("myForm")
+        form.style.display="block"
     }
 
     const div = document.createElement('div')
@@ -1419,7 +1410,7 @@ function filpPage(pageNo, pageLimit) {
 
 // admin only action: remove book---form for confirming delete
 // type: post/booklist
-function addFormForDelete(type, deletedPost, objectID){
+function addFormForDelete(type, deletedDiv, objectID){
     //// dialog modal
     const wrapper = document.createElement('div')
     wrapper.id ='myForm'
@@ -1439,13 +1430,12 @@ function addFormForDelete(type, deletedPost, objectID){
     submit.innerText='Confirm'
     submit.onclick = function confirmDelete(e){
         e.preventDefault();
+        document.getElementById('contents').children[0].removeChild(deletedDiv);
         let url;
         if (type == 'post'){
-            document.getElementById('contents').children[0].removeChild(deletedPost);
             url = '../../api/posts/' + objectID
         } else {
-            // TODO
-
+            url = '../../api/booklist/' + objectID
         }
         
         console.log(url);
