@@ -330,9 +330,9 @@ function addBookShelf(books, userID, userType){
         const bookLink = document.createElement('a')
         bookLink.className = "book"
         if (userType === 'Admin' | userType === 'User'){
-            bookLink.href = "/BookDetail/Detail?bookID=" + books[j]._id +"&userID="+ getUserID() // need check phase 2
+            bookLink.href = "/BookDetail?bookID=" + books[j]._id +"&userID="+ getUserID() // need check phase 2
         } else {
-            bookLink.href = "/BookDetail/Detail?bookID=" + books[j]._id //need check
+            bookLink.href = "/BookDetail?bookID=" + books[j]._id //need check
         }
         bookLink.onclick = function open(e){e.preventDefault(); window.location.href = bookLink.href}
         bookLink.appendChild(document.createTextNode(books[j].name))

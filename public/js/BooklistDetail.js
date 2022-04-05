@@ -106,7 +106,7 @@ function fillBooklistBooks(booklist, user){
         // <a> content
         const a = document.createElement('a')
         a.className = "book"
-        a.href = "/BookDetail/Detail?bookID=" + String((booklist.books[i])._id) //need check
+        a.href = "/BookDetail?bookID=" + String((booklist.books[i])._id) //need check
         if(user === 'User' | user === 'Admin'){ // current user type
             a.href+= ("&userID="+getUserID())
         }

@@ -136,7 +136,7 @@ function displayAllBooks(BooksList, userID) {
             span1.className="bookTitle"
             const a = document.createElement('a')
             a.className = "linkColor"
-            a.href = "/BookDetail/Detail?bookID=" + String(BooksList[i].bookID) //need check
+            a.href = "/BookDetail?bookID=" + String(BooksList[i].bookID) //need check
             if (userType === 'Admin' | userType === 'User'){
                 a.href += ("&userID="+getUserID()) // need check
             }

@@ -867,16 +867,22 @@ app.patch('/api/booklist/content/:booklistID', booklistModifyValidation, async(r
 })
 
 /*********** Book detail ************/
-app.get('/BookDetail/Detail', async (req, res) => {
+app.get('/BookDetail', async (req, res) => {
 	const query = req.query
 	const book = query.bookID
-	const user = query.userID
 
-	if (!book){
-		res.status(500).send("server error on display book detail page2")
-	}else {
-		res.sendFile(__dirname + '/public/html/BookDetail.html')
-	}
+	try{
+		const user = query.userID
+		if (!book){
+			res.status(500).send("server error on display booklist detail page")
+		}
+		else { 
+			res.sendFile(__dirname + '/public/html/BookDetail.html')
+		}
+	} catch {
+			res.sendFile(__dirname + '/public/html/BookDetail.html')
+		}
+
 })
 
 app.patch('/api/book/:bookID', async (req, res)=>{

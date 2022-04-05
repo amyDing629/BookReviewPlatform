@@ -3,6 +3,7 @@ const log = console.log;
 var BooklistsNum = 0;
 
 
+
 /************** temp hardcode for all books ******************/
 var BooksNum = 0; 
 let BooksList = [] 
@@ -108,7 +109,7 @@ function getPosts(){
                 }
                 // log(posts)
                 for (let i = 0; i < posts.length; i++) {
-                    posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype)
+                    posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, getUserID())
                     posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
                 }
                 homepostsCreate();
@@ -181,7 +182,13 @@ function ulinkHandler(uid, usertype, userid){
         result = '/public/html/login.html'
     }
     else{
-        result = '/public/html/BookDetail.html?bookID='+uid+"&userID="+userid // need to change
+        if (uid == userid){
+            // visit myself
+            result = "/public/html/user.html?userID="+userid
+        }
+        else{
+            result = '/public/html/user.html?visitID='+uid+"&userID="+userid
+        }
     }
     return result; 
 }  
@@ -331,7 +338,7 @@ function displayPosts(user, newposts){
             a1.innerText = userName
             a1.onclick = function open(e){
                 e.preventDefault();
-                window.location.replace("../../HomeAndLogin/login.html")
+                window.location.href=(a1.href)
             }
             let spanid2 = document.createElement('span')
             spanid2.className = 'postId'
@@ -696,7 +703,10 @@ function like(e){
     if(e.target.parentElement){
         i = Array.from(onePost.parentElement.children).indexOf(onePost)
     }
-    let postID = e.target.parentElement.parentElement.children[0].children[1].innerText
+    let postID
+    if(e.target.parentElement && e.target.parentElement.parentElement.children[0].children[1]){
+        postID = e.target.parentElement.parentElement.children[0].children[1].innerText
+    }
     // log(posts[i])
     if (e.target.classList.contains('like')) {
         posts[i].likes++;
@@ -747,9 +757,18 @@ function collectHandler(){
 
 function collect(e){
     e.preventDefault(); // prevent default action
-    const contentDiv = e.target.parentElement.parentElement
-    const h3 = contentDiv.children[0]
-    const pid = h3.children[1].innerText
+    let contentDiv
+    if(e.target.parentElement){
+        contentDiv = e.target.parentElement.parentElement
+    }
+    let h3
+    if(contentDiv && contentDiv.children[0]){
+        h3 = contentDiv.children[0]
+    }
+    let pid
+    if(h3 && h3.children[1]){
+        pid = h3.children[1].innerText
+    }
 
     if (e.target.classList.contains('collect')) {
         // log(1111)
@@ -846,17 +865,17 @@ function addNewPost(e){
     if (e.target.classList.contains('addSubmit,')){
         const postContent = document.getElementById('postContent').value
 
-        fetch(request).then(function (res) {
-            // Handle response we get from the API.
-            // Usually check the error codes to see what happened.
-            if (res.status === 200) {
-                log('success upload')
-            } else {
-                log('fail upload')
-            }
-        }).catch(error => {
-            console.log(error);
-        });
+        // fetch(request).then(function (res) {
+        //     // Handle response we get from the API.
+        //     // Usually check the error codes to see what happened.
+        //     if (res.status === 200) {
+        //         log('success upload')
+        //     } else {
+        //         log('fail upload')
+        //     }
+        // }).catch(error => {
+        //     console.log(error);
+        // });
 
         fetch(url).then((res) => { 
             if (res.status === 200) {
@@ -905,10 +924,15 @@ function addNewPost(e){
                         }
                     }
                     // log(filterPosts)
+                    // modifyUserpostList(filterPosts[0].postID, 'add')
+                    displayPosts(pusertype, posts)
                     const newPost = new Post(filterPosts[0].postID, currentBookID, booktitle, userID, pusername,posterProfile, pic, postContent, filterPosts[0].time, [], [])
+                    newPost.booklink = blinkHandlerinPost(currentBookID, pusertype, getUserID())
+                    newPost.posterlink = ulinkHandler(puser, pusertype, puser)
                     posts.push(newPost);
                     // log(posts)
                     displayPosts(pusertype, posts)
+                    modifyUserpostList(filterPosts[0].postID, 'add')
                     const postContentInput = document.getElementById('postContent')
                     postContentInput.value = 'add successfully!'
                     postContentInput.style = 'color: red'
@@ -1108,6 +1132,43 @@ function modifyPost(bid, uid, bookName, username, posterProfile, pic, content){
     })
 }
 
+function modifyUserpostList(postID, operation){
+    const url = '/api/users/' + getUserID();
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+           alert('Could not get this user')
+       }   
+    }).then((json) => {
+        let postList = json.user.postList
+        log(postList)
+        if(operation == 'add'){
+            postList.push(postID)
+        }else if(operation == 'reduce'){
+            postList.splice(postID, 1)
+        }
+        log(postList)
+        let request = new Request(url, {
+            method: 'PATCH',
+            body: JSON.stringify({'operation': 'postList', 'value': postList}),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+    
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('updated')
+            } else {
+                console.log('failed to updated')
+            }
+            // console.log(post.likedBy);
+        })
+    })
+}
+
 function addFormForDelete(){
     //// dialog modal
     const wrapper = document.createElement('div')
@@ -1152,7 +1213,7 @@ function addFormForDelete(){
                 } else {
                     console.log('Failed to delete the post')
                 }
-                log(res)
+                // log(res)
             }).catch((error) => {
                 log(error)
             })
@@ -1163,11 +1224,15 @@ function addFormForDelete(){
                     // BooklistsNum--
                 }
             }
-            log(posts)
+            log(list[0].postID)
+            // log(posts)
             //renewPage()
             document.getElementById("deleteForm").style.display="none"
-            location.reload()
+            // location.reload()
+            modifyUserpostList(list[0].postID, 'reduce')
+            displayPosts(pusertype, posts)
         }
+        // location.reload()
     }
     form.appendChild(submit)
 
