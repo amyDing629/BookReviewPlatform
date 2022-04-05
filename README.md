@@ -17,8 +17,9 @@ The overall objective of the project is to build a website for readers to share 
 * add or remove books from the database and update book descriptions
 * manage posts (specifically, delete posts of users)
 
+## Instructions
 
-## Page Details
+## Page Details (delete)
   ### HomeAndLogin
   - **Guest**
     - The home page for guests is index.html. They can view recommended books and posts demostrated in home page. They can also use top menu to visit other pages and login/register.
