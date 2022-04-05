@@ -3,57 +3,23 @@
 ## Overall Purpose
 The overall objective of the project is to build a website for readers to share their thoughts on readings with others. Through this platform, readers can view various kinds of book lists made by other readers, create their own book lists, and make friends that have similar reading tastes.
 
-## Specification
-### index.html location
-* The entrance of the website (index.html) is at *HomeAndLogin* folder: [here](./HomeAndLogin/index.html).
 ## Main Features
 ### Regular User
 * a basic user profile with a unique username, a signature (a short description of themselves), and a photo (the user's head portrait)
 * edit signature
 * make posts to share their opinions about books
-* collect or like the posts
+* collect or like posts
 * customize multiple book lists regarding different demands, as well as a collection of their favorite posts and booklists.
 
 ### Admin User
 * all regular users' features
-* manage the account status of regular users, including deactivating and reactivating accounts
+* manage the account status of regular users, including deactivating and reactivating accounts. Deactivated users cannot login
 * add or remove books from the database and update book descriptions
-* manage posts (specifically, delete the post of all users)
+* manage posts (specifically, delete posts of users)
 
-## Temp Structure (leave to phase2)
-- **HomeAndLogin**
-  - index.html (Home page for guest）
-  - index_end_after.html (Home page for end users）
-  - index_admin_after.html (Home page for admin users)
-  - login.html
-  - register.html
-  
-- **user**
-  - user.html (Regular user page)
-  - admin.html (Admin user page)
-  - amy.html (A user that hasn't done anything in her account, can only be accessed from admin's manage user page)
+## Instructions
 
-- **BookDetail**
-  - 6 folders(0-5), each folder name represents the book ID   
-  - BookDetail-ID.html (book detail page for guest）
-  - ID_end_after.html (book detail page for end users）
-  - ID_admin_after.html (book detail page for admin users)
-
-- **BooklistDetail**
-  - BooklistDetail.html (All users pages for all booklists. Different booklistID and userID regulates the page displaying and functionalities. Guests don't have userID, they only have booklistID as the path variable.)
-
-- **BookMainPage**
-  - BookMainPage.html (Books Main page for guest）
-  - BookMainPage_end_after.html (Books Main page for end users）
-  - BookMainPage_admin_after.html (Books Main page for admin users)
-
-- **BooklistMainPage**
-  - BooklistMainPage.html (Booklists Main page for guest）
-  - BooklistMainPage_end_after.html (Booklists Main page for end users）
-  - BooklistMainPage_admin_after.html (Booklists Main page for admin users)  
-
-
-## Page Details
+## Page Details (delete)
   ### HomeAndLogin
   - **Guest**
     - The home page for guests is index.html. They can view recommended books and posts demostrated in home page. They can also use top menu to visit other pages and login/register.
@@ -135,3 +101,6 @@ The overall objective of the project is to build a website for readers to share 
   - **Admin User**
     - All admin users have all the end users functionalities and displayings. 
     - Besides, admins could delete every booklists.
+
+## Copyright
+this project is written by @Yuewei Wang @Yongyi Xu @Yiyun Ding @Siwei Tang
