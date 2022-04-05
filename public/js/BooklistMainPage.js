@@ -4,7 +4,7 @@ let BooklistsNum = 0;
 let BooklistsList = [] 
 
 class Booklist {
-	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime, createrID) {
+	constructor(listName, listDescription, creator, bookCollection, id, likedBy, collectedBy, createTime, creatorID) {
 		this.listName = listName;
         if (listDescription.length === 0){
             this.listDescription = '__The creator hasn\'t add description yet...__'
@@ -12,7 +12,7 @@ class Booklist {
             this.listDescription = listDescription
         }
 		this.creator = creator // username
-        this.createrID = createrID // user id
+        this.creatorID = creatorID // user id
         this.books = bookCollection; // list of Book object
 		this.booklistID = id;
 		BooklistsNum++;
@@ -41,7 +41,7 @@ function getBooklists(){
                     each.creator, each.books, 
                     each._id, each.likedBy, 
                     each.collectedBy, each.createTime,
-                    each.createrID))
+                    each.creatorID))
         }
         displayAllBooklists(BooklistsList, getUserID())
         addFormForDelete()
@@ -290,7 +290,7 @@ function addCreator(creatorName, selfName, userType, authorID){
         if (creatorName === selfName){ 
             a2.href = "/user/"+getUserID() // go to self-main-page
         } else { // visit other user
-            a2.href = "user/"+getUserID()+"/"+authorID
+            a2.href = "/user/"+getUserID()+"/"+authorID
         }
         a2.onclick = function open(e){e.preventDefault(); window.location.href = a2.href}
     } else { // guest
@@ -460,7 +460,7 @@ function addBooklistCard(booklist, userID, userType){
 
     // li2: list creator
     const selfName = getUserName()
-    const li2 = addCreator(booklist.creator, selfName, userType, booklist.createrID)
+    const li2 = addCreator(booklist.creator, selfName, userType, booklist.creatorID)
     ul1.appendChild(li2)
 
     // li3: create time
