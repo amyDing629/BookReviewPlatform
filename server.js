@@ -267,12 +267,7 @@ app.get('/user/:userID', mongoChecker, async (req, res)=>{
 		return;
 	}
 	try {
-		const user = await User.findOne({_id: id}) 
-		if (!user) {
-			res.status(404).send('Resource not found')  // could not find this user
-		} else { 
-			res.redirect('/user/template?userID=' + id);
-		}
+		res.redirect('/user/template?userID=' + id);
 	} catch(error) {
 		log(error)
 		res.status(500).send('Internal Server Error')  // server error
@@ -281,12 +276,18 @@ app.get('/user/:userID', mongoChecker, async (req, res)=>{
 
 
 //todo
-app.get('/user/:visitID/:userID', mongoChecker, async (req, res)=>{
+app.get('/user/:userID/:visitID', mongoChecker, async (req, res)=>{
 	const userID = req.params.userID
 	const visitID = req.params.visitID
 	if (!ObjectId.isValid(userID) || !ObjectId.isValid(visitID)) {
 		res.status(404).send() 
 		return;
+	}
+	try {
+		res.redirect('/user/template?visitID=' + visitID + '&userID=' + userID);
+	} catch(error) {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
 	}
 
 
