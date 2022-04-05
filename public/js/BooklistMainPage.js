@@ -65,6 +65,7 @@ function displayAllBooklists(BooklistsList, userID) {
         try {
             const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
             const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
+            document.querySelector('#userLoginInfo').innerText = username
             booklistTable.addEventListener('click', deleteBooklist)
             const endUserActionsWrap = document.querySelector('#endUserActionsWrap')
             endUserActionsWrap.addEventListener('click', addNewBooklist)  
@@ -658,7 +659,7 @@ function _addCreator(creatorName, selfName, userType, authorID){
     const a2 = document.createElement('a')
     a2.className = "linkColor"
     if (userType === 'Admin' | userType === 'User'){
-        if (creatorName === selfName){ 
+        if (creatorName == selfName){ 
             a2.href = "/user/"+_getUserID() // go to self-main-page
         } else { // visit other user
             a2.href = "/user/"+_getUserID()+"/"+authorID
