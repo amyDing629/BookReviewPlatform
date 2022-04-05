@@ -404,7 +404,6 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 
 // create post
 app.post('/api/addPost', mongoChecker, async (req, res)=>{
-	try {
 	const newPost = new Post({
 		bookID: req.body.bookID,
 		userID: req.body.userID,
