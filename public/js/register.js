@@ -18,18 +18,20 @@ function change_page(){
     const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;
     if (username!='' && password!=''){
-        const url = '/login/'+username+'/'+password
+        const url = '/register/'+username
         fetch(url).then((res) => { 
+            console.log(res.status)
             if (res.status === 200) {
                 const p = document.querySelector('p')
                 p.innerText = 'username already been used, please try again'
            } 
            else {
+                console.log("register")
                 const url2 = '/api/addUser';
+                console.log(url2)
                 let data = {
                     username: username,
                     password: password,
-                    type: "user"
                 }
                 const request = new Request(url2, {
                     method: 'post', 

@@ -161,19 +161,44 @@ app.get('/login/:username/:password', mongoChecker, async (req, res) => {
     try {
 		const user = await User.findByNamePassword(username, password);
 		if (!user) {
-			res.status(404).send(error)
+			console.log("does not match")
+			res.status(404).send("user")
 		} else {   
 			// Add the user's id and username to the session.
             // We can check later if the session exists to ensure we are logged in.
-            req.session.user = user._id;
-            req.session.username = user.username
+			if (user.isActivate == false){
+				console.log("blocked")
+				res.status(400).send("status")
+			}
+			else{
+				req.session.user = user._id;
+            	req.session.username = user.username
+				res.send({user})
+			}
+		}
+    } catch (error) {
+    	if (isMongoError(error)) {
+			res.status(500).send(error)}
+		// } else {
+		// 	res.status(400).send(error)
+		// }
+    }
+})
+
+// register verify
+app.get('/register/:username', mongoChecker, async (req, res) => {
+	const username = req.params.username
+
+    try {
+		const user = await User.findOne({username: username});
+		if (!user) {
+			res.status(404).send("register")
+		} else {   
 			res.send({user})
 		}
     } catch (error) {
     	if (isMongoError(error)) {
 			res.status(500).send(error)
-		} else {
-			res.status(400).send(error)
 		}
     }
 })
