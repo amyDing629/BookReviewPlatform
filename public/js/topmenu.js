@@ -30,10 +30,10 @@ function t_blinkHandler(bid, usertype, userid){
     // handler for book *Detail* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BookDetail.html?bookID='+bid
+        result = '/BookDetail?bookID='+bid
     }
     else{
-        result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
+        result = '/BookDetail?bookID='+bid+"&userID="+userid
     }
     return result; 
 }  
@@ -42,13 +42,30 @@ function t_llinkHandler(lid, usertype, userid){
     // handler for book *list* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BooklistDetail.html?booklistID='+lid // guest
+        result = '/BooklistDetail.html?booklistID='+lid 
     }
-    else{
-        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID='+userid
+    else{           
+        result = '/Booklist/Detail?booklistID='+lid+'&userID='+userid
     }
     return result;
 }   
+
+/*************** Footer ********************/
+function footer(){
+    const mybutton = document.getElementById("myBtn");
+    window.onscroll = function() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+          } else {
+            mybutton.style.display = "none";
+          }
+    };
+}
+
+function topFunction() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
 
 /*************** display ********************/
 function displayMenu(usertype, username, userid){
@@ -65,22 +82,22 @@ function displayMenu(usertype, username, userid){
     const a2 = document.createElement("a")   
     if (usertype == 'guest'){
         homea.setAttribute('href', '/index.html')
-        booksa.setAttribute('href', '/public/html/BookMainPage.html') // here
-        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html') // here
+        booksa.setAttribute('href', '/BookMain') 
+        booklistsa.setAttribute('href', '/BooklistMain') 
         a.setAttribute("href", "/public/html/login.html")
         a.innerText = 'Login/Register'
         li.appendChild(a)
         ul.appendChild(li)
     }
     else{
-        homea.setAttribute('href', '/index.html?userID='+userid) // here 
-        booksa.setAttribute('href', '/public/html/BookMainPage.html?userID='+userid) // here
-        booklistsa.setAttribute('href', '/public/html/BooklistMainPage.html?userID='+userid) // here
+        homea.setAttribute('href', '/index.html?userID='+userid) 
+        booksa.setAttribute('href', '/BookMain?userID='+userid) 
+        booklistsa.setAttribute('href', '/BooklistMain?userID='+userid) 
         a.setAttribute("href","/logout")
         a.innerText = 'QUIT'
         li.append(a)
         li.className = 'quit'
-        a2.setAttribute("href", "/public/html/user.html?userID="+userid) // here
+        a2.setAttribute("href", "/user/"+userid)
         a2.innerText = username // dynamic
         li2.append(a2)
         ul.appendChild(li)
@@ -160,8 +177,8 @@ function filterFunction() {
 }
 
 /*************** display ********************/
-// /Booklist/Detail?booklistID=<int> & /Booklist/Detail?booklistID=6249d5d3c1beff129a61c21b&userID=624502b7f74745e5e3bc106a
-if ((String(window.location.href).includes("Detail?booklistID") && !String(window.location.href).includes("&userID")) || !String(window.location.href).includes("?")){
+
+if ((!String(window.location.href).includes("userID")) || !String(window.location.href).includes("?")){
     t_usertype = "guest"
     const url0 = '/api/two'
     fetch(url0).then((res) => { 
@@ -188,6 +205,7 @@ if ((String(window.location.href).includes("Detail?booklistID") && !String(windo
             t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
         }  
 
+        footer()
         displayMenu(t_usertype, t_username, t_user)
         displaySearchbox()
 
@@ -197,11 +215,11 @@ if ((String(window.location.href).includes("Detail?booklistID") && !String(windo
 }
 else{
     if (String(window.location.href).includes("&")){
-        // ./public/html/BooklistDetail.html?booklistID=<int>&userID=<int>
+  
         t_user = (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
     }
     else{
-        // /index.html?userID=<int> 
+
         t_user= String(window.location.href.split('?')[1].split('=')[1])
     }
     const url = '/api/users/'+t_user
@@ -241,7 +259,7 @@ else{
             for (let i=0; i<t_booklistsList.length; i++){
                 t_booklistsList[i].link = t_llinkHandler(t_booklistsList[i].booklistID, t_usertype, t_user)
             }  
-
+            footer()
             displayMenu(t_usertype, t_username, t_user)
             displaySearchbox()
 

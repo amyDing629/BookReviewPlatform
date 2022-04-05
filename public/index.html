@@ -20,8 +20,6 @@
  </head>
 
  <body>
-  <!-- for back to top-->
-  <a id="tips"></a>
  	<!-- The Top Menu -->
  	<div id="topMenu">
         <ul>
@@ -34,12 +32,12 @@
             <li><a class="active" href=''>Home</a></li>
             <li><a href=''>Books</a></li>
             <li><a href=''>Booklists</a></li>
-            <li class="book">
+            <li class="top_book">
                 <div class="dropdown">
                     <button onclick="bookFunction()" class="dropbtn">Search for books</button>
                   </div>
             </li>
-            <li class="list">
+            <li class="top_list">
                 <div class="dropdown">
                     <button onclick="listFunction()" class="dropbtn">Search for lists</button>
                   </div>
@@ -112,7 +110,7 @@
       <p><i>&copy; BookLand built by team10</i></p>
       <p>
           <!-- NEW ADDED -->	
-        <a href="#tips" class="linkColor">Back to top</a>
+          <button onclick="topFunction()" id="myBtn" class="btn btn-outline-primary">Back to Top</button>
       </p>
   </footer>
     
