@@ -12,11 +12,11 @@ const PostSchema = new mongoose.Schema({
     },
     booktitle: {
         type: String,
-        required: true, // false
+        required: true, 
     },
     username: {
         type: String,
-        required: true, // false
+        required: true, 
     },
     posterProfile: {
         type: String,
@@ -44,7 +44,12 @@ const PostSchema = new mongoose.Schema({
     collectedBy:{
         type: [mongoose.Schema.Types.ObjectId],
         default:[]
-    }
+    },
+    // for index.html display
+    order: {
+        type: Number,
+        default: -1
+    },
 });
 
 PostSchema.pre('save', function(next) {

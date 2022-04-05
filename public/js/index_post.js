@@ -5,7 +5,7 @@ const homeposts = []; // for home page display
 //const collectedPosts = []; // collection of posts made by current user
 
 class Post {
-	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes, collect) {
+	constructor(pid, bid, booktitle, userid, postername, posterProfile, pic, content, time, likes, collect, order) {
 		this.postID = pid;
         this.bookID = bid;
         this.booktitle = booktitle;
@@ -17,6 +17,7 @@ class Post {
         this.time = time;
         this.likes = likes;  // array contains users who liked this post
         this.collectedUser = collect; // array contains users who collected this post
+        this.order = order; // the order of post displayed
         this.booklink = null;
         this.posterlink = null;
     }
@@ -50,7 +51,7 @@ try {
         }).then((json) => {  //pass json into object locally
             const jsonposts = json.posts
             for (each of jsonposts){
-                posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy))
+                posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy, each.order))
             }
             // handle links
             for (let i=0; i<posts.length; i++){
@@ -83,16 +84,15 @@ try {
         log(json)
         const jsonposts = json.posts
         for (each of jsonposts){
-            posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likes))
+            posts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy, each.order))
         }
-       
         // handle links
         for (let i=0; i<posts.length; i++){
             posts[i].booklink = blinkHandlerinPost(posts[i].bookID, pusertype, puser)
             posts[i].posterlink = ulinkHandler(posts[i].userid, pusertype, puser)
         }
         homepostsCreate()
-        displayPosts(pusertype, puser)
+        displayPosts(pusertype)
     })
     .catch((error) => {
     log(error)})
@@ -138,8 +138,60 @@ function ulinkHandler(uid, usertype, userid){
 /************************ display ************************/
 
 function homepostsCreate(){
-    for (let i=0; i<3; i++){
-        homeposts.push(posts[i])
+    let flag = 0;
+    const temp = [];
+    for (let i=0; i<posts.length; i++){
+        temp.push(posts[i])
+        if (posts[i].order != -1){
+            flag = 1;
+        }
+    }
+    console.log(flag)
+    // brand new
+    if (flag == 0){
+        for (let i=0; i<3; i++){
+            // console.log(i)
+            posts[i].order = i;
+            homeposts.push(posts[i])
+            const url = '/api/postsorder/'+posts[i].postID
+            // console.log(url)
+            let data = {
+                value: i
+            }
+            // console.log(data)
+            const request = new Request(url, {
+                method: 'PATCH', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            fetch(request)
+            .then(function(res) {
+                if (res.status === 200) {
+                    console.log('success')          
+                } else {
+                    console.log('failed')        
+                }
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+    }
+    else{
+        for (let i=0; i<3; i++){
+            let maxIndex = 0
+            let max = temp[0]
+            for (let j = 1; j < temp.length; j++) {
+                if (temp[j].order > max.order) {
+                    maxIndex = j;
+                    max = temp[j];
+                }
+            }
+            temp.splice(maxIndex, 1)
+            homeposts.push(max)
+        }
     }
 }
 
@@ -542,20 +594,73 @@ function collectHandler(userid){
             // new
             const value1 = toreplace.value
             const value2 = replacedwith.value
+            let replacedpost
+            let replacedorder
             let targetpost
+            let targetorder
+            let index
             for (let i=0; i<posts.length; i++){
                 if (posts[i].postID == value2){
-                    targetpost = posts[i] // const targetpost = posts[value2]
+                    targetpost = posts[i] 
+                    targetorder = posts[i].order
+                    index = i
+                    break;
                 }
             }
-            console.log(targetpost)
             for (let j=0; j<homeposts.length; j++){
                 if (homeposts[j].postID == value1){
-                    homeposts[j] = targetpost // homeposts[value1] = targetpost 
-                }
+                    replacedpost = homeposts[j]
+                    replacedorder = homeposts[j].order
+                    console.log(targetpost)
+                    console.log(replacedpost)
+                    targetpost.order = replacedorder
+                    replacedpost.order = targetorder
+                    posts[index].order = replacedorder
+                    homeposts[j] = targetpost
+
+                    // update order
+                    for (let k=0; k<2; k++){
+                        console.log(k)
+                        let adminurl
+                        let data
+                        if (k==0){
+                            // update replace
+                            adminurl = '/api/postsorder/'+replacedpost.postID
+                            data = {
+                                value: replacedpost.order
+                            }
+                        }
+                        else{
+                            adminurl = '/api/postsorder/'+targetpost.postID
+                            data = {
+                                value: targetpost.order
+                            }
+                        }    
+                        console.log(adminurl)
+                        console.log(data)
+                        const request = new Request(adminurl, {
+                            method: 'PATCH', 
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json'
+                            },
+                        });
+                        fetch(request)
+                        .then(function(res) {
+                            if (res.status === 200) {
+                                console.log('admin success')          
+                            } else {
+                                console.log('admin failed')        
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    }
+                    console.log(homeposts)
+                    displayPosts('admin', puser)
+                 }
             }
-            console.log(homeposts) 
-            displayPosts('admin')
         })
 
         divadmin.appendChild(h5)
@@ -572,7 +677,7 @@ function collectHandler(userid){
             if (homeposts[i] != null){
                 const postid = homeposts[i].postID
                 const option1 = document.createElement("option")
-                option1.value = i; // postid
+                option1.value = i; 
                 option1.innerText = postid
                 option1.addEventListener('click', function(){
                     const input = document.querySelector('#modify_post1 #myInput')
@@ -583,11 +688,12 @@ function collectHandler(userid){
         }
     
         const t2 = document.querySelector('#modify_post2 #myDropdown')
-        for (let j=0; j<posts.length; j++){
-            if (posts[j] != null){
-                const postid = posts[j].postID
+        const options = posts.filter(post => !homeposts.includes(post));
+        for (let j=0; j<options.length; j++){
+            if (options[j] != null){
+                const postid = options[j].postID
                 const option2 = document.createElement("option")
-                option2.value = j; // postid
+                option2.value = j; 
                 option2.innerText = postid
                 option2.addEventListener('click', function(){
                     const input = document.querySelector('#modify_post2 #myInput')

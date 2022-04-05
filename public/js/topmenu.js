@@ -160,8 +160,8 @@ function filterFunction() {
 }
 
 /*************** display ********************/
-// /Booklist/Detail?booklistID=<int>
-if (String(window.location.href).includes("Detail?booklistID") || !String(window.location.href).includes("?")){
+// /Booklist/Detail?booklistID=<int> & /Booklist/Detail?booklistID=6249d5d3c1beff129a61c21b&userID=624502b7f74745e5e3bc106a
+if ((String(window.location.href).includes("Detail?booklistID") && !String(window.location.href).includes("&userID")) || !String(window.location.href).includes("?")){
     t_usertype = "guest"
     const url0 = '/api/two'
     fetch(url0).then((res) => { 

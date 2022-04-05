@@ -405,51 +405,71 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 // create post
 app.post('/api/addPost', mongoChecker, async (req, res)=>{
 	try {
-		const newPost = new Post({
-			bookID: req.body.bookID,
-			userID: req.body.userID,
-			booktitle: req.body.booktitle,
-			username: req.body.username,
-		})
-		if (req.body.pic){
-			newPost.pic = req.body.pic
-		}
-		if (req.body.booktitle){
-			newPost.booktitle = req.body.booktitle
-		}
-		if (req.body.username){
-			newPost.username = req.body.username
-		}
-		if (req.body.posterProfile){
-			newPost.posterProfile = req.body.posterProfile
-		}
-		if (req.body.content){
-			newPost.content = req.body.content
-		}
-		
-		if (!ObjectId.isValid(req.body.userID)) {
-			res.status(404).send('invalid user id type') 
-			return
-		}
-		const user = await User.findOne({_id:req.body.userID})
-			if (!user) {
-				res.status(404).send("no such a user")
-			} else{
-				user.postList.push(result._id);
-			}
+	const newPost = new Post({
+		bookID: req.body.bookID,
+		userID: req.body.userID,
+		booktitle: req.body.booktitle,
+		username: req.body.username,
+	})
+	if (req.body.pic){
+		newPost.pic = req.body.pic
+	}
+	if (req.body.posterProfile){
+		newPost.posterProfile = req.body.posterProfile
+	}
+	if (req.body.content){
+		newPost.content = req.body.content
+	}
+	if (req.body.order){
+		newPost.order = req.body.order
+	}
 
-		newPost.save().then((createdPost) => {
-			user.save().then((updatedUser) => {
-				res.send({post: createdPost, user: updatedUser})
-			})
-
-		})
-    } catch(error) {
+    try {
+		const result = await newPost.save()	
+		const user1 = await User.findById(req.body.userID)
+		if (!user1){
+			res.status(404).send("no such user")
+		}
+		else{
+			user1.postList.push(result)
+			const user = await user1.save()
+			res.send({post: result, user: user})
+		}
+	} catch(error) {
 		log(error)
 		res.status(500).send("server error to create post")
 	}
 
 })
+
+// update order
+app.patch('/api/postsorder/:postID', async (req, res)=>{
+    const postID = req.params.postID
+
+	if (!ObjectId.isValid(postID)) {
+		res.status(404).send('invalid post id type') 
+		return
+	}
+	const value = req.body.value // value: order
+	
+	try {
+		const post = await Post.findOne({_id: postID})
+		if (!post) {
+			res.status(404).send("no such a post or user")
+		}
+		else { 
+			 post.order = value;
+		}
+		post.save().then((updatedPost) => {
+				res.send({post: updatedPost})
+		})
+	} catch(error) {
+		log(error)
+		res.status(500).send("server error on find post")
+	}
+})
+
+
 
 // update post
 app.patch('/api/posts/:postID', async (req, res)=>{

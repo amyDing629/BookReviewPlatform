@@ -28,5 +28,6 @@
   "bugs": {
     "url": "https://github.com/csc309-winter-2022/team10/issues"
   },
-  "homepage": "https://github.com/csc309-winter-2022/team10#readme"
+  "homepage": "https://github.com/csc309-winter-2022/team10#readme",
+  "devDependencies": {}
 }
