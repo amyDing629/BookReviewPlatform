@@ -4,9 +4,14 @@
 const log = console.log
 const path = require('path')
 
+const http = require("http");
+const fs = require("fs");
+
 const express = require('express')
 // starting the express server
 const app = express();
+
+const httpServer = http.createServer(app);
 
 // mongoose and mongo connection
 const { ObjectID, ObjectId } = require('mongodb')
@@ -1011,6 +1016,46 @@ app.patch('/api/book/:bookID', async (req, res)=>{
 })
 
 /*************************************************/
+const multer = require("multer");
+const upload = multer({
+	dest: "../public/img/static"
+	// you might also want to set some limits: https://github.com/expressjs/multer#limits
+});
+const handleError = (err, res) => {
+	res
+		.status(500)
+		.contentType("text/plain")
+		.end("Oops! Something went wrong!");
+};
+
+  app.post("/upload",
+	upload.single("file" /* name attribute of <file> element in your form */),
+	(req, res) => {
+	  const tempPath = req.file.path;
+	  const targetPath = path.join(__dirname, "./uploads/image.png");
+  
+	  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+		fs.rename(tempPath, targetPath, err => {
+		  if (err) return handleError(err, res);
+  
+		  res
+			.status(200)
+			.contentType("text/plain")
+			.end("File uploaded!");
+		});
+	  } else {
+		fs.unlink(tempPath, err => {
+		  if (err) return handleError(err, res);
+  
+		  res
+			.status(403)
+			.contentType("text/plain")
+			.end("Only .png files are allowed!");
+		});
+	  }
+	}
+  );
+
 // a POST route to *create* an image
 app.post("/api/images", multipartMiddleware, (req, res) => {
 
@@ -1021,9 +1066,8 @@ app.post("/api/images", multipartMiddleware, (req, res) => {
 
             // Create a new image using the Image mongoose model
             var img = new Image({
-                imageID: result.public_id, // image id on cloudinary server
+                image_id: result.public_id, // image id on cloudinary server
                 image_url: result.url, // image url on cloudinary server
-				created_at: new Date(),
             });
 
             // Save image to the database

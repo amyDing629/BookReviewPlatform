@@ -38,7 +38,7 @@ function getBooks(){
         }
         selectBookToPlay(BooksList)
         // log(getUserID())
-        ifNeedaddButton(getUserID())
+        // ifNeedaddButton(getUserID())
         // checkDesButton(getUserID())
         // displayBookDescription(BooksList,getUserID())
         // filpPage(1,3)
@@ -116,6 +116,7 @@ function getPosts(){
                 displayPosts(pusertype, posts)
                 likeHandler()
                 collectHandler();
+                ifNeedaddButton(getUserID())
                 addHandler();
                 addFormForDelete()
                 addActive()
@@ -866,11 +867,13 @@ function addNewPost(e){
     const url2 = '/api/users/'+userID
     const url3 = '/api/posts'
     const url4= '/api/images'
-    let form = e.target.parentElement;
+    let childrenList = e.target.parentElement.children;
     let book = []
     let likes = 0
     let filterPosts = []
-    // const imageData = new FormData(form);
+    // log(childrenList[4])
+    const imageData = childrenList[4];
+    // let src = URL.createObjectURL(imageData);
     // let initialid = 11111111111
     // Create our request constructor with all the parameters we need
     // const request = new Request(url4, {
@@ -1035,9 +1038,11 @@ function ifNeedaddButton(userID){
             const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
             if(userType == 'User'){
                 displayAddPost()
+                addHandler()
             }else if(userType == 'Admin'){
                 addDesButton();
                 displayAddPost()
+                addHandler()
             }
         } catch {
             log("guest")
