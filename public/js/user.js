@@ -672,7 +672,7 @@ function displayUserPosts(user) {
     //ul.id = 'posts';
     let postID;
     for (postID of user.postList) {
-        let url = 'http://localhost:50001/api/posts/' + postID;
+        let url = '/api/posts/' + postID;
         console.log(url);
         fetch(url).then((res) => {
             if (res.status === 200) {
@@ -1042,7 +1042,7 @@ function _createBooklistDiv(booklist) {
     button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
     iconImgLike.className = "likeIcon"   
-    iconImgLike.src = 'http://localhost:50001/public/img/static/like_icon.png'
+    iconImgLike.src = '../img/static/like_icon.png'
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
 
@@ -1069,7 +1069,7 @@ function _createBooklistDiv(booklist) {
     button2.addEventListener('click', collectOnClick);
     const iconImgCollect = document.createElement('img')
     iconImgCollect.className = "collectIcon"
-    iconImgCollect.src = 'http://localhost:50001/public/img/static/click-&-collect.png'
+    iconImgCollect.src = '/public/img/static/click-&-collect.png'
     button2.appendChild(iconImgCollect)
     liCollect.appendChild(button2)
 
@@ -1098,7 +1098,7 @@ function displayUserBooklists(user) {
     let ul = document.createElement('ul');
     let booklistID;
     for (booklistID of user.booklistList) {
-        let url = 'http://localhost:50001/api/booklists/' + booklistID;
+        let url = '/api/booklists/' + booklistID;
         fetch(url).then((res) => {
             if (res.status === 200) {
                 return res.json() 
@@ -1130,7 +1130,7 @@ function displayCollectedPost(user){
     let ul = document.createElement('ul');
     let postCollectionID;
     for (postCollectionID of user.postCollection) {
-        let url = 'http://localhost:50001/api/posts/' + postCollectionID;
+        let url = '/api/posts/' + postCollectionID;
         console.log(url);
         fetch(url).then((res) => {
             if (res.status === 200) {
@@ -1164,7 +1164,7 @@ function displayCollectedBooklist(user){
     let booklistCollectionID;
     for (booklistCollectionID of user.booklistCollection) {
         console.log(booklistCollectionID);
-        let url = 'http://localhost:50001/api/booklists/' + booklistCollectionID;
+        let url = '/api/booklists/' + booklistCollectionID;
         fetch(url).then((res) => {
             if (res.status === 200) {
                 return res.json() 
