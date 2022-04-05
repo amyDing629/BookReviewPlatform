@@ -1,4 +1,3 @@
-const log = console.log
 /******************* Index Book *******************/
 let user;
 let usertype;
@@ -42,8 +41,6 @@ try {
     }).then((json) => { 
         usertype = json.user.type.toLowerCase()
         username = json.user.username
-        log(usertype)
-        log(username)
 
         const url2 = '/api/two'
         fetch(url2).then((res) => { 
@@ -77,10 +74,9 @@ try {
             displayRecommendations()
             })
         }).catch((error) => {
-        log(error)})
+        console.log(error)})
 } catch { 
     usertype= 'guest'
-    log(usertype)
     const url0 = '/api/two'
     fetch(url0).then((res) => { 
         if (res.status === 200) {
@@ -113,7 +109,7 @@ try {
        
         })
     .catch((error) => {
-    log(error)})
+    console.log(error)})
 }
 
 /*************** Welcome Section ********************/

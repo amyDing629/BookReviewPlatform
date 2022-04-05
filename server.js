@@ -243,8 +243,11 @@ app.post('/api/addUser', mongoChecker, async (req, res)=>{
     const newUser = new User({
 		username: req.body.username,
         password: req.body.password
-		// type: req.body.type
 	})
+	// initially admin create
+	if (req.body.type){
+		newUser.type = req.body.type
+	}
 
     try {
 		const user = await newUser.save()
