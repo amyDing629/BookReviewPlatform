@@ -21,16 +21,26 @@ function change_page(){
     const password = document.querySelector('#password').value;  
     const url = '/login/'+username+'/'+password
     fetch(url).then((res) => { 
+        console.log(res.status)
         if (res.status === 200) {
            return res.json() 
        } 
        else {
+           if (res.status == 404){
             const p = document.querySelector('p')
             p.innerText = 'username or password not correct, please try again'
             log("invalid input")
+           }
+           else if (res.status == 400){
+            const p = document.querySelector('p')
+            p.innerText = 'you are blocked'
+            log("status invalid")
+           }  
        }   
     }).then((json) => { 
-        window.location.href = "/index.html?userID=" + json.user._id
+        if (json != null){
+            window.location.href = "/index.html?userID=" + json.user._id
+        }
     }).catch((error) => {
         log(error)
     })

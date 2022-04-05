@@ -57,7 +57,6 @@ const UserSchema = new mongoose.Schema({
 // in the database.
 UserSchema.pre('save', function(next) {
 	const user = this; // binds this to User document instance
-
 	// checks to ensure we don't hash password more than once
 	if (user.isModified('password')) {
 		// generate salt and hash the password
@@ -71,6 +70,7 @@ UserSchema.pre('save', function(next) {
 		next()
 	}
 })
+
 
 UserSchema.statics.findByNamePassword = function(username, password) {
 	const User = this // binds this to the User model
@@ -92,6 +92,7 @@ UserSchema.statics.findByNamePassword = function(username, password) {
 		})
 	})
 }
+
 
 
 const User  = mongoose.model('User', UserSchema);
