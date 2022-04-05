@@ -1250,7 +1250,10 @@ function displayManageWindow() {
 
     let ul = document.createElement('ul');
     ul.id = 'userManage';
-
+    content.appendChild(ul);
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(pageFliper);
     const url = '/api/users';
     fetch(url).then((res) => {
         if (res.status === 200) {
@@ -1319,13 +1322,9 @@ function displayManageWindow() {
                         li.appendChild(userInfoDiv);
                         li.appendChild(manageButton);
                         ul.appendChild(li);
+                        filpPage(1, 8);
                     }
                 }
-                content.appendChild(ul);
-                let pageFliper = document.createElement('div');
-                pageFliper.id = 'pageFliper';
-                content.appendChild(pageFliper);
-                filpPage(1, 8);
             })
         }
     })
