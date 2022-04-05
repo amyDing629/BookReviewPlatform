@@ -215,8 +215,8 @@ app.get('/api/users/:id', mongoChecker, async (req, res)=>{
 app.post('/api/addUser', mongoChecker, async (req, res)=>{ 
     const newUser = new User({
 		username: req.body.username,
-        password: req.body.password,
-		type: req.body.type
+        password: req.body.password
+		// type: req.body.type
 	})
 
     try {
