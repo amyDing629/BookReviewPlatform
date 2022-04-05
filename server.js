@@ -712,12 +712,13 @@ app.post('/api/booklist', mongoChecker, async (req, res)=>{
 	let curr = []
 	try{
 		const user = await User.findOne({_id: req.body.creatorID})
-		if(user.creator != req.body.creator){
+		if(user.username != req.body.creator){
 			res.status(400).send("unmatched creator info")
+			return
 		} else { // valid creator
 			curr = user.booklistList
 		}
-	} catch{
+	} catch(error){
 		log(error) 
 		if (isMongoError(error)) { 
 			res.status(500).send('Internal server error')
@@ -777,76 +778,6 @@ app.delete('/api/booklist/:booklistID', async (req, res)=>{
 	} catch(error) {
 		log(error)
 		res.status(500).send("server error on delete booklist")
-	}
-})
-
-// update post likes
- // target: likes, collects
- // operation: add, reduce
- // value: userID
- app.patch('/api/booklists/:booklistID', async (req, res)=>{
-	const booklistID = req.params.booklistID;
-	if (!ObjectId.isValid(booklistID)) {
-		res.status(404).send('invalid booklist id type') 
-		return
-	}
-	const operation = req.body.operation
-	const value = req.body.value
-	const target = req.body.target
-
-	try {
-		const booklist = await BookList.findOne({_id: booklistID})
-		const user = await User.findOne({_id:value})
-		if (!booklist || !user) {
-			res.status(404).send("no such a booklist or user")
-		} else { 
-			if (target == 'likes') {
-				if (operation == 'add'){
-					if (!booklist.likedBy.includes(value)){
-						booklist.likedBy.push(value);
-					}	
-				} else if (operation == 'reduce'){
-					let user_index = booklist.likedBy.indexOf(value);
-					if (user_index != -1){
-						booklist.likedBy.splice(user_index, 1);
-					}
-				} else {
-					res.status(404).send('invalid operation in request body')
-				}	
-			} else if (target == 'collects') {
-				if (operation == 'add') {
-					if (!booklist.collectedBy.includes(value)){
-						booklist.collectedBy.push(value);
-					}
-					if (!user.booklistCollection.includes(booklistID)){
-						user.booklistCollection.push(booklistID);
-					}
-
-
-				} else if (operation == 'reduce') {
-					let user_index = booklist.collectedBy.indexOf(value);
-					let booklist_index = user.booklistCollection.indexOf(booklistID);
-					if ((user_index != -1) && (booklist_index != -1)) {
-						booklist.collectedBy.splice(user_index, 1)
-						user.booklistCollection.splice(booklist_index, 1)
-					}
-				} else {
-					res.status(404).send('invalid operation in request body')
-				}
-			} else {
-				res.status(404).send('invalid target in request body')
-			}
-
-		}
-		booklist.save().then((updatedBooklist) => {
-			user.save().then((updatedUser) => {
-				res.send({booklist: updatedBooklist, user: updatedUser})
-			})
-
-		})
-	} catch(error) {
-		log(error)
-		res.status(500).send("server error on find booklist")
 	}
 })
 
