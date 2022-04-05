@@ -188,6 +188,7 @@ a.book {
     float: right;
     padding: 10px;
     height: 100%;
+    text-align: center;
 }
 #randomBooks{
     list-style: none;
