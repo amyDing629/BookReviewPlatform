@@ -756,7 +756,7 @@ app.post('/api/booklist', mongoChecker, async (req, res)=>{
 	}
 })
 
-// delete a booklist & remove from the creator list
+// delete a booklist & remove from the creator list & remove from all collected list in all users
 app.delete('/api/booklist/:booklistID', async (req, res)=>{
     const booklist = req.params.booklistID
     if (!ObjectID.isValid(booklist)) {
@@ -773,6 +773,12 @@ app.delete('/api/booklist/:booklistID', async (req, res)=>{
 			const newValue = curr_booklists.filter((bl) => !bl.equals(booklist))
 			const result = await BookList.findByIdAndDelete({_id: booklist})
 			const update = await User.findOneAndUpdate({_id: forDelete.creatorID}, {$set: {booklistList:newValue}}, {new: true})
+			const allUsers = await User.find()
+			for (let i=0;i<allUsers.length;i++){
+				const curr_booklists = allUsers[i].booklistCollection   
+				const newValue = curr_booklists.filter((bl) => !bl.equals(booklist))
+				const update = await User.findOneAndUpdate({_id: allUsers[i]._id}, {$set: {booklistCollection:newValue}}, {new: true})
+			}
 			res.send({ booklist:result, creator: update})
 		}
 	} catch(error) {
