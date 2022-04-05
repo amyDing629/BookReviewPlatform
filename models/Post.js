@@ -52,11 +52,28 @@ const PostSchema = new mongoose.Schema({
     },
 });
 
+const imageSchema = mongoose.Schema({
+    image_id: {
+        type: String,
+        required: true
+    },
+    image_url: {
+        type: String,
+        required: true
+    },
+    created_at: {
+        type: String,
+        required: false
+    },
+});
+
+
 PostSchema.pre('save', function(next) {
     this.time = moment(this.time).format('MM-DD-YYYY');
     next();
 });
 
 const Post = mongoose.model("Post", PostSchema);
+const Image = mongoose.model('Image', imageSchema);
 
-module.exports = { Post };
+module.exports = { Post, Image };

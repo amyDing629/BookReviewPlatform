@@ -411,7 +411,13 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 			const newValue = curr_posts.filter((post) => !post.equals(postID))
 			const result = await Post.findByIdAndDelete({_id: postID})
 			const update = await User.findOneAndUpdate({_id: forDelete.userID}, {$set: {postList:newValue}}, {new: true})
-			res.send({ post:result, creator: update})
+			const allUsers = await User.find()
+			for (let i=0;i<allUsers.length;i++){
+				const curr_postlists = allUsers[i].postCollection   
+				const newValue = curr_postlists.filter((bl) => !bl.equals(postID))
+				const update = await User.findOneAndUpdate({_id: allUsers[i]._id}, {$set: {postCollection:newValue}}, {new: true})
+			}
+			res.send({ postID:result, creator: update})
 		}
 		    // TODO: pending deleting collection list
 			// const users = await User.find();

@@ -18,7 +18,7 @@
     border-bottom: 1px solid rgb(116, 116, 116);
 }
 
-.listId, .creator, .createTime, .likes, .collects{
+.listId, .creator, .createTime, .likes, .collects, .listName{
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     font-size: medium;
     width: 30%;
