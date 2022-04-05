@@ -42,7 +42,7 @@ function t_llinkHandler(lid, usertype, userid){
     // handler for book *list* page link
     let result;
     if (usertype == 'guest'){
-        result = '/BooklistDetail.html?booklistID='+lid 
+        result = '/Booklist/Detail?booklistID='+lid 
     }
     else{           
         result = '/Booklist/Detail?booklistID='+lid+'&userID='+userid
@@ -113,8 +113,8 @@ function displaySearchbox(){
             const name1 = t_allBooks[i].title
             const a1 = document.createElement("a")
             // HERE!
-            let link1 = t_blinkHandler(id1, t_usertype)
-
+            // let link1 = t_blinkHandler(id1, t_usertype)
+            let link1 = t_allBooks[i].link
             a1.setAttribute("href", link1)
             a1.innerText = name1
             bookoptionfield.appendChild(a1)
@@ -128,7 +128,8 @@ function displaySearchbox(){
             const name2 = "[" + t_booklistsList[i].listName + "] -- " +t_booklistsList[i].creator
             const a2 = document.createElement("a")
             // HERE!
-            let link2 = t_llinkHandler(id2, t_usertype)
+            // let link2 = t_llinkHandler(id2, t_usertype)
+            let link2 = t_booklistsList[i].link
             a2.setAttribute("href", link2)
             a2.innerText = name2
             listoptionfield.appendChild(a2)
@@ -215,12 +216,10 @@ if ((!String(window.location.href).includes("userID")) || !String(window.locatio
 }
 else{
     if (String(window.location.href).includes("&")){
-  
-        t_user = (window.location.href.split('?')[1].split('&')[1].split('=')[1].split('.')[0])
+        t_user = String(window.location.href).split('?')[1].split('&')[1].split('=')[1]
     }
     else{
-
-        t_user= String(window.location.href.split('?')[1].split('=')[1])
+        t_user= String(window.location.href).split('?')[1].split('=')[1]
     }
     const url = '/api/users/'+t_user
     fetch(url).then((res) => { 
@@ -232,9 +231,6 @@ else{
     }).then((json) => {  
         t_usertype = json.user.type.toLowerCase()
         t_username = json.user.username
-        console.log(t_usertype)
-        console.log(t_username)
-
         const url2 = '/api/two'
         fetch(url2).then((res) => { 
             if (res.status === 200) {
