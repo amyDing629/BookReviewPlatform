@@ -26,7 +26,13 @@ function change_page(){
        } 
        else {
             const p = document.querySelector('p')
-            p.innerText = 'username or password not correct, please try again'
+            if (res.status === 400){
+                p.innerText = 'your account is blocked'
+
+            } else{
+                p.innerText = 'username or password not correct, please try again'
+            }
+            
             log("invalid input")
        }   
     }).then((json) => { 

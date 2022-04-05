@@ -161,13 +161,20 @@ app.get('/login/:username/:password', mongoChecker, async (req, res) => {
     try {
 		const user = await User.findByNamePassword(username, password);
 		if (!user) {
-			res.status(404).send(error)
-		} else {   
+			console.log('does not match')
+			res.status(404).send("user")
+		} else {
 			// Add the user's id and username to the session.
-            // We can check later if the session exists to ensure we are logged in.
-            req.session.user = user._id;
-            req.session.username = user.username
-			res.send({user})
+			// We can check later if the session exists to ensure we are logged in.
+			if (user.isActivate == false) {
+				console.log('blocked')
+				res.status(400).send('status')
+			} 
+			else {
+				req.session.user = user._id;
+				req.session.username = user.username
+				res.send({user})
+			}  		
 		}
     } catch (error) {
     	if (isMongoError(error)) {
