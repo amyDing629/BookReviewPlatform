@@ -377,26 +377,32 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 		return
 	}
 	try {
-		const deletePost = await Post.findOneAndRemove({_id: postID})
-		if (!deletePost) {
-			res.status(404).send("no such a post")
-		} else {  
-			const users = await User.find();
-			let user;
-			for (user of users) {
-				let postIndex = user.postList.indexOf(postID)
-				if (postIndex != -1){
-					user.postList.splice(postIndex, 1);
-				}
-				let postCollectIndex = user.postCollection.indexOf(postID);
-				if (postCollectIndex != -1){
-					user.postCollection.splice(postCollectIndex, 1);
-				}
-			}
-			users.save().then((users) => {
-				res.send({post: deletePost, user: users})
-			})
+		const forDelete = await Post.findOne({_id: postID})
+		const user = await User.findOne({_id:forDelete.userID})
+		if (!forDelete | !user) {
+			res.status(404).send("no such a book or user")
+		} else {
+			const curr_posts = user.postList  
+			const newValue = curr_posts.filter((post) => !post.equals(postID))
+			const result = await Post.findByIdAndDelete({_id: postID})
+			const update = await User.findOneAndUpdate({_id: forDelete.userID}, {$set: {postList:newValue}}, {new: true})
+			res.send({ post:result, creator: update})
 		}
+		    // TODO: pending deleting collection list
+			// const users = await User.find();
+			// users.forEach(function(user){
+			// 	let postIndex = user.postList.indexOf(postID)
+			// 	if (postIndex != -1){
+			// 		user.postList.splice(postIndex, 1);
+			// 	}
+			// 	let postCollectIndex = user.postCollection.indexOf(postID);
+			// 	if (postCollectIndex != -1){
+			// 		user.postCollection.splice(postCollectIndex, 1);
+			// 	}
+			// 	user.save();
+			// }).then(
+			// 	res.send({users})
+			// )
 	} catch(error) {
 		log(error)
 		res.status(500).send('Internal Server Error')

@@ -358,7 +358,7 @@ function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
-
+        console.log(post._id);
         let url = '/api/posts/' + post._id;
         fetch(url).then((res) => {
             if (res.status === 200) {
@@ -478,18 +478,10 @@ function _createPostDiv(post) {
 
     function deletePostButtonOnClick(e) {
         let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[0].removeChild(deletePostDiv);
-        let url = '/api/post/' + id
-        let request = new Request(url, {
-            method: 'DELETE',
-        });
-        fetch(request).then(function(res){
-            if (res.status === 200) {
-                console.log('deleted')
-            } else {
-                console.log('failed to delete')
-            }
-        })
+        addFormForDelete('post', deletePostDiv, post._id)
+        const form = document.getElementById("myForm")
+        form.style.display="block"
+        
 
     }
 
@@ -673,7 +665,7 @@ function displayUserPosts(user) {
     let postID;
     for (postID of user.postList) {
         let url = '/api/posts/' + postID;
-        console.log(url);
+        console.log(postID);
         fetch(url).then((res) => {
             if (res.status === 200) {
                 return res.json() 
@@ -1422,6 +1414,68 @@ function filpPage(pageNo, pageLimit) {
         }
     }
     document.getElementById("pageFliper").innerHTML = strHolder;
+}
+
+// admin only action: remove book---form for confirming delete
+// type: post/booklist
+function addFormForDelete(type, deletedPost, objectID){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the ' + type + '?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        let url;
+        if (type == 'post'){
+            document.getElementById('contents').children[0].removeChild(deletedPost);
+            url = '../../api/posts/' + objectID
+        } else {
+            // TODO
+
+        }
+        
+        console.log(url);
+        let request = new Request(url, {
+            method: 'DELETE',
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('deleted')
+            } else {
+                console.log('failed to delete')
+            }
+        })
+        document.querySelector('body').removeChild(document.querySelector('body').lastElementChild);
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){
+        e.preventDefault; 
+        document.querySelector('body').removeChild(document.querySelector('body').lastElementChild)
+
+    }
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
 }
 
 displayUserInfo(window.location.href.indexOf('visitID') !== -1);
