@@ -92,6 +92,7 @@ const booklistModifyValidation = (req, res, next) =>{
 /*** Session handling **************************************/
 // express-session for managing user sessions
 const session = require('express-session');
+const res = require('express/lib/response');
 
 /// Middleware for creating sessions and session cookies.
 // A session is created on every request, but whether or not it is saved depends on the option flags provided.
@@ -278,8 +279,16 @@ app.get('/user/:userID', mongoChecker, async (req, res)=>{
 	}
 })
 
+
 //todo
-app.get('/user/:userID/:visitID', mongoChecker, async (req, res)=>{
+app.get('/user/:visitID/:userID', mongoChecker, async (req, res)=>{
+	const userID = req.params.userID
+	const visitID = req.params.visitID
+	if (!ObjectId.isValid(userID) || !ObjectId.isValid(visitID)) {
+		res.status(404).send() 
+		return;
+	}
+
 
 })
 
@@ -370,8 +379,22 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 		const deletePost = await Post.findOneAndRemove({_id: postID})
 		if (!deletePost) {
 			res.status(404).send("no such a post")
-		} else {   
-			res.send(deletePost)
+		} else {  
+			const users = await User.find();
+			let user;
+			for (user of users) {
+				postIndex = user.postList.indexOf(postID)
+				if (postIndex != -1){
+					user.postList.splice(postIndex, 1);
+				}
+				postCollectIndex = user.postCollection.indexOf(postID);
+				if (postCollectIndex != -1){
+					user.postCollection.splice(postCollectIndex, 1);
+				}
+			}
+			users.save().then((users) => {
+				res.send({post: deletePost, user: users})
+			})
 		}
 	} catch(error) {
 		log(error)
@@ -381,39 +404,51 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 
 // create post
 app.post('/api/addPost', mongoChecker, async (req, res)=>{
-	const newPost = new Post({
-		bookID: req.body.bookID,
-		userID: req.body.userID,
-		booktitle: req.body.booktitle,
-		username: req.body.username,
-	})
-	if (req.body.pic){
-		newPost.pic = req.body.pic
-	}
-	// if (req.body.booktitle){
-	// 	newPost.booktitle = req.body.booktitle
-	// }
-	// if (req.body.username){
-	// 	newPost.username = req.body.username
-	// }
-	if (req.body.posterProfile){
-		newPost.posterProfile = req.body.posterProfile
-	}
-	if (req.body.content){
-		newPost.content = req.body.content
+	try {
+		const newPost = new Post({
+			bookID: req.body.bookID,
+			userID: req.body.userID,
+			booktitle: req.body.booktitle,
+			username: req.body.username,
+		})
+		if (req.body.pic){
+			newPost.pic = req.body.pic
+		}
+		if (req.body.booktitle){
+			newPost.booktitle = req.body.booktitle
+		}
+		if (req.body.username){
+			newPost.username = req.body.username
+		}
+		if (req.body.posterProfile){
+			newPost.posterProfile = req.body.posterProfile
+		}
+		if (req.body.content){
+			newPost.content = req.body.content
+		}
+		
+		if (!ObjectId.isValid(req.body.userID)) {
+			res.status(404).send('invalid user id type') 
+			return
+		}
+		const user = await User.findOne({_id:req.body.userID})
+			if (!user) {
+				res.status(404).send("no such a user")
+			} else{
+				user.postList.push(result._id);
+			}
+
+		newPost.save().then((createdPost) => {
+			user.save().then((updatedUser) => {
+				res.send({post: createdPost, user: updatedUser})
+			})
+
+		})
+    } catch(error) {
+		log(error)
+		res.status(500).send("server error to create post")
 	}
 
-    try {
-		const result = await newPost.save()	
-		res.send({result})
-	} catch(error) {
-		log(error)
-		if (isMongoError(error)) { 
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') 
-		}
-	}  
 })
 
 // update post
@@ -488,6 +523,7 @@ app.patch('/api/booklists/:booklistID', async (req, res)=>{
     const booklistID = req.params.booklistID;
     if (!ObjectId.isValid(booklistID)) {
 		res.status(404).send('invalid booklist id type') 
+		return
 	}
 	const operation = req.body.operation
 	const value = req.body.value
@@ -495,12 +531,15 @@ app.patch('/api/booklists/:booklistID', async (req, res)=>{
 	
 	try {
 		const booklist = await BookList.findOne({_id: booklistID})
-		if (!booklist) {
-			res.status(404).send("no such a book")
+		const user = await User.findOne({_id:value})
+		if (!booklist || !user) {
+			res.status(404).send("no such a booklist or user")
 		} else { 
 			if (target == 'likes') {
 				if (operation == 'add'){
-					booklist.likedBy.push(value);
+					if (!booklist.likedBy.includes(value)){
+						booklist.likedBy.push(value);
+					}	
 				} else if (operation == 'reduce'){
 					let user_index = booklist.likedBy.indexOf(value);
 					if (user_index != -1){
@@ -511,11 +550,20 @@ app.patch('/api/booklists/:booklistID', async (req, res)=>{
 				}	
 			} else if (target == 'collects') {
 				if (operation == 'add') {
-					booklist.collectedBy.push(value);
+					if (!booklist.collectedBy.includes(value)){
+						booklist.collectedBy.push(value);
+					}
+					if (!user.booklistCollection.includes(booklistID)){
+						user.booklistCollection.push(booklistID);
+					}
+					
+					
 				} else if (operation == 'reduce') {
 					let user_index = booklist.collectedBy.indexOf(value);
-					if (user_index != -1) {
+					let booklist_index = user.booklistCollection.indexOf(booklistID);
+					if ((user_index != -1) && (booklist_index != -1)) {
 						booklist.collectedBy.splice(user_index, 1)
+						user.booklistCollection.splice(booklist_index, 1)
 					}
 				} else {
 					res.status(404).send('invalid operation in request body')
@@ -526,7 +574,10 @@ app.patch('/api/booklists/:booklistID', async (req, res)=>{
 			
 		}
 		booklist.save().then((updatedBooklist) => {
-			res.send({updatedBooklist})
+			user.save().then((updatedUser) => {
+				res.send({booklist: updatedBooklist, user: updatedUser})
+			})
+			
 		})
 	} catch(error) {
 		log(error)
@@ -689,8 +740,17 @@ app.post('/api/booklist', async (req, res)=>{
 		})
 	}
     try {
-		const result = await booklist.save()	
-		res.send(result)
+		const result = await booklist.save()
+		const user = await User.findOne({_id:req.body.creatorID})
+		if (!user.booklistList.includes(result._id)){
+			user.booklistList.push(result._id);
+		}
+		booklist.save().then((createdBooklist) => {
+			user.save().then((updatedUser) => {
+                res.send({updatedUser, createdBooklist})
+			})
+		})
+		
 	} catch(error) {
 		log(error) 
 		if (isMongoError(error)) { 
