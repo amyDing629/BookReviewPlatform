@@ -651,18 +651,20 @@ function _createPostDiv(post) {
     return postDiv;
 }
 function displayUserPosts(user) {
-    console.log(user);
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    console.log(user.postList);
     if (user.postList.length == 0){
         content.innerHTML = "Don't have any post.";
         return
     }
 
     let ul = document.createElement('ul');
-    //ul.id = 'posts';
+    
     let postID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (postID of user.postList) {
         let url = '/api/posts/' + postID;
         console.log(postID);
@@ -676,14 +678,9 @@ function displayUserPosts(user) {
             let li = document.createElement('li');
             li.appendChild(_createPostDiv(post));
             ul.appendChild(li);
-
+            filpPage(1, 2);
         })
-    }
-    content.appendChild(ul);
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
+    }   
 }
 
 function _createBooklistDiv(booklist) {
@@ -1081,6 +1078,10 @@ function displayUserBooklists(user) {
     }
     let ul = document.createElement('ul');
     let booklistID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (booklistID of user.booklistList) {
         let url = '/api/booklists/' + booklistID;
         fetch(url).then((res) => {
@@ -1093,13 +1094,9 @@ function displayUserBooklists(user) {
             let li = document.createElement('li');
             li.appendChild(_createBooklistDiv(booklist));
             ul.appendChild(li);
+            filpPage(1, 2);
         })        
     }
-    content.appendChild(ul);
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
 
 }
 
@@ -1113,6 +1110,10 @@ function displayCollectedPost(user){
 
     let ul = document.createElement('ul');
     let postCollectionID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (postCollectionID of user.postCollection) {
         let url = '/api/posts/' + postCollectionID;
         console.log(url);
@@ -1126,14 +1127,9 @@ function displayCollectedPost(user){
             let li = document.createElement('li');
             li.appendChild(_createPostDiv(post));
             ul.appendChild(li);
+            filpPage(1, 2);
         })
-    }
-
-    content.appendChild(ul); 
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
+    }    
 }
 
 function displayCollectedBooklist(user){
@@ -1146,6 +1142,10 @@ function displayCollectedBooklist(user){
 
     let ul = document.createElement('ul');
     let booklistCollectionID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (booklistCollectionID of user.booklistCollection) {
         console.log(booklistCollectionID);
         let url = '/api/booklists/' + booklistCollectionID;
@@ -1159,13 +1159,9 @@ function displayCollectedBooklist(user){
             let li = document.createElement('li');
             li.appendChild(_createBooklistDiv(booklist));
             ul.appendChild(li);
+            filpPage(1, 2);
         })        
     }
-    content.appendChild(ul); 
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
 }
 
 
