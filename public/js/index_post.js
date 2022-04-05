@@ -107,10 +107,10 @@ function blinkHandlerinPost(bid, usertype, userid){
         // handler for book *Detail* page link
         let result;
         if (usertype == 'guest'){
-            result = '/public/html/BookDetail.html?bookID='+bid
+            result = '/BookDetail?bookID='+bid
         }
         else{
-            result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
+            result = '/BookDetail?bookID='+bid+"&userID="+userid
         }
         return result; 
     }  
@@ -125,10 +125,10 @@ function ulinkHandler(uid, usertype, userid){
         else{
             if (uid == userid){
                 // visit myself
-                result = "/public/html/user.html?userID="+userid
+                result = "/user/"+userid
             }
             else{
-                result = '/public/html/user.html?visitID='+uid+"&userID="+userid
+                result = '/user/'+uid+"/"+userid
             }
         }
         return result; 

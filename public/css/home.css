@@ -116,31 +116,19 @@ a {
     background-color: grey;
 }
 
-/*trash*/
-#search-button1{
-    margin-left:5px;
-    margin-right:20px;
-}
-
-#search-button2{
-    margin-left:5px;
-    margin-right:10px;
-}
-/**/
 
 /*phase2*/
-#topMenu li.book{
-    margin-left:5px;
+#topMenu li.top_book{
+    margin-left:8%;
     max-width: none;
 }
-#topMenu li.list{
+#topMenu li.top_list{
     margin-left:8%;
     max-width: none;
 }
 
-
 .search-book{
-    margin-left: 25%;   
+    margin-left: 32%;   
     width: 200px;
     z-index: 1;
     float:left;
@@ -148,7 +136,7 @@ a {
 }
 
 .search-list{
-    margin-left: 44%;
+    margin-left: 51%;
     width: 200px;
     z-index: 1;
     float:left;
@@ -167,7 +155,6 @@ a {
     margin-left: 5px;
   }
   
-  /* Dropdown button on hover & focus */
 .dropbtn:focus {
     background-color: #ccc
   }
@@ -183,7 +170,6 @@ a {
     width: 200px;
   }
   
-  /* The search field when it gets focus/clicked on */
   #myInput:focus {outline: 3px solid #ddd;}
   
   
@@ -191,7 +177,6 @@ a {
   .dropdown-content {
     display: block;
     font-size: small;
-    /*position: relative;*/
     background-color: white;
     border: 1px solid #ddd;
   }
@@ -204,7 +189,6 @@ a {
   }
 
   
-  /* Change color of dropdown links on hover */
   .dropdown-content a:hover {background-color: #f1f1f1}
   
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -231,7 +215,7 @@ a {
     border: 1px solid #ddd;
   }
   
-  /* Links inside the dropdown */
+
   .postdropdown-content option {
     color: black;
     padding: 12px 12px;
@@ -239,7 +223,7 @@ a {
     display: block;
   }
   
-  /* Change color of dropdown links on hover */
+ 
   .postdropdown-content option:hover {
       background-color: #ccc;
       cursor: pointer;
@@ -440,3 +424,7 @@ a {
   .blog-footer p:last-child {
     margin-bottom: 0;
   }
+
+ #myBtn{
+     margin-left: 45%;
+ } 

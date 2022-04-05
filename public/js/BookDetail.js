@@ -36,7 +36,6 @@ function getBooks(){
         for (each of books){
             BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
         }
-        displaySearchbox()//for search bar function
         selectBookToPlay(BooksList)
         // log(getUserID())
         ifNeedaddButton(getUserID())
@@ -119,6 +118,7 @@ function getPosts(){
                 collectHandler();
                 addHandler();
                 addFormForDelete()
+                addActive()
                 if(pusertype == 'Admin'){
                     deleteHandler();
                 }
@@ -471,19 +471,19 @@ function displayAddPost(){
     addPostContent.appendChild(br)
 
     addPostContent.innerHTML += 'Picture:' +'<br>'
-    addPostContent.appendChild(br)
+    // addPostContent.appendChild(br)
 
-    let picForm = document.createElement('form');
-    picForm.className = "image-form"
+    // let picForm = document.createElement('form');
+    // picForm.className = "image-form"
     let pic = document.createElement('input');
     pic.type = 'file';
     pic.id = 'myFile';
     pic.size = '1';
     pic.name = 'image'
     // pic.onchange = "myFunction()";
-    // pic.multiple = true;
-    // addPostContent.appendChild(pic) 
-    picForm.appendChild(pic)
+    pic.multiple = true;
+    addPostContent.appendChild(pic) 
+    // picForm.appendChild(pic)
     
     // let uploadButton = document.createElement('button');
     // uploadButton.variant = 'contained';
@@ -495,9 +495,9 @@ function displayAddPost(){
 
     // addPostContent.appendChild(picForm)
 
-    // let demo = document.createElement('p');
-    // demo.id = 'demo';
-    // addPostContent.appendChild(demo);
+    let demo = document.createElement('p');
+    demo.id = 'demo';
+    addPostContent.appendChild(demo);
     // picForm.appendChild(br)
     // picForm.appendChild(br)
     // picForm.appendChild(br)
@@ -509,9 +509,9 @@ function displayAddPost(){
     submit.innerText = 'Add';
     // submit.variant = 'contained'
     submit.className = "addSubmit, btn btn-outline-dark";
-    picForm.appendChild(submit) 
+    // picForm.appendChild(submit) 
 
-    addPostContent.appendChild(picForm)
+    addPostContent.appendChild(submit)
 }
 
 
@@ -633,6 +633,20 @@ function selectNarviBarUser(userType){
     } //else guest
 }
 
+function addActive(){
+    const userBlock = document.getElementById('userLoginInfo');
+    const topmenu = document.getElementById('topMenu');
+    log(000)
+    if(pusertype != 'guest'){
+        log(111)
+        if(userBlock && userBlock.children){
+            log(222)
+            userBlock.children[0].className = 'active';
+        }
+        // userBlock.children[0].className = 'active';
+    }
+}
+
 // getBooks()
 // displaySearchbox()
 // selectBookToPlay()
@@ -700,7 +714,7 @@ function like(e){
         onePost = e.target.parentElement.parentElement.parentElement.parentElement
     } 
     let i
-    if(e.target.parentElement){
+    if(e.target.parentElement && onePost.parentElement){
         i = Array.from(onePost.parentElement.children).indexOf(onePost)
     }
     let postID
@@ -856,13 +870,18 @@ function addNewPost(e){
     let book = []
     let likes = 0
     let filterPosts = []
-    const imageData = new FormData(form);
+    // const imageData = new FormData(form);
+    // let initialid = 11111111111
     // Create our request constructor with all the parameters we need
-    const request = new Request(url4, {
-        method: "post",
-        body: imageData,
-    });
+    // const request = new Request(url4, {
+    //     method: "post",
+    //     body: imageData,
+    // });
     if (e.target.classList.contains('addSubmit,')){
+        // location.reload()
+        // if(window.location.href == 'http://127.0.0.1:50001/BookDetail?image='){
+        //     window.location.href = 'http://127.0.0.1:50001/BookDetail?bookID='+ getBookID()+'&userID='+getUserID()
+        // }
         const postContent = document.getElementById('postContent').value
 
         // fetch(request).then(function (res) {
@@ -925,21 +944,27 @@ function addNewPost(e){
                     }
                     // log(filterPosts)
                     // modifyUserpostList(filterPosts[0].postID, 'add')
-                    displayPosts(pusertype, posts)
+                    // displayPosts(pusertype, posts)
+                    // location.reload()
+                    log(filterPosts)
+                    location.reload()
                     const newPost = new Post(filterPosts[0].postID, currentBookID, booktitle, userID, pusername,posterProfile, pic, postContent, filterPosts[0].time, [], [])
                     newPost.booklink = blinkHandlerinPost(currentBookID, pusertype, getUserID())
                     newPost.posterlink = ulinkHandler(puser, pusertype, puser)
                     posts.push(newPost);
                     // log(posts)
-                    displayPosts(pusertype, posts)
-                    modifyUserpostList(filterPosts[0].postID, 'add')
+                    // modifyUserpostList(filterPosts[0].postID, 'add')
                     const postContentInput = document.getElementById('postContent')
                     postContentInput.value = 'add successfully!'
                     postContentInput.style = 'color: red'
                     setTimeout(() => {
+                        displayPosts(pusertype, posts)
                         postContentInput.value = '';
                         postContentInput.style = 'color: black'
+                        // location.reload()
                     }, 3 * 1000)
+                    
+                    // location.reload()
                 })
             })
         })
@@ -1053,6 +1078,7 @@ function modifyDescription(id, target, content){
     }).catch((error) => {
         log(error)
     })
+    location.reload()
 }
 
 function modifyLikeorCollect(id, target, operation, userID){

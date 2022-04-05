@@ -39,7 +39,7 @@ try {
        } else {
            alert('Could not get this user')
        }   
-    }).then((json) => {  //pass json into object locally
+    }).then((json) => { 
         usertype = json.user.type.toLowerCase()
         username = json.user.username
         log(usertype)
@@ -52,7 +52,7 @@ try {
            } else {
                 console.log("not found")
            }                
-        }).then((json) => {  //pass json into object locally
+        }).then((json) => {  
             const books = json.books
             for (each of books){
                 allBooks.push(new Book(each._id, each.name, each.author, each.coverURL, each.description))
@@ -145,10 +145,10 @@ function blinkHandler(bid, usertype, userid){
     // handler for book *Detail* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BookDetail.html?bookID='+bid
+        result = '/BookDetail?bookID='+bid
     }
     else{
-        result = '/public/html/BookDetail.html?bookID='+bid+"&userID="+userid
+        result = '/BookDetail?bookID='+bid+"&userID="+userid
     }
     return result; 
 }  
@@ -157,25 +157,13 @@ function llinkHandler(lid, usertype, userid){
     // handler for book *list* page link
     let result;
     if (usertype == 'guest'){
-        result = '/public/html/BooklistDetail.html?booklistID='+lid // guest
+        result = '/BooklistDetail.html?booklistID='+lid 
     }
     else{
-        result = '/public/html/BooklistDetail.html?booklistID='+lid+'&userID='+userid
+        result = '/Booklist/Detail?booklistID='+lid+'&userID='+userid
     }
     return result;
-}   
-
-function ulinkHandler(uid, usertype, userid){
-    // handler for book *Detail* page link
-    let result;
-    if (usertype == 'guest'){
-        result = '/public/html/login.html'
-    }
-    else{
-        result = '/public/html/user.html?visitID='+userid+'&'+'userID='+uid 
-    }
-    return result; 
-}      
+}    
 
 /********** Recommendation book display **********/
 
