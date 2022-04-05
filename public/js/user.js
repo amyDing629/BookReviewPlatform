@@ -145,7 +145,8 @@ function profileButtonsOnClick(e) {
         userInfo.insertBefore(newSignature, profileButton);
         profileButton.innerHTML = 'Edit Signature';
         
-        let userID = parseInt(document.getElementById('id').innerText.replace('user ID: ', ''))
+        let userID = window.location.href.split('?')[1].split('=')[1];
+
         let url = '/api/users/' + userID
         let request = new Request(url, {
             method: 'PATCH',
@@ -628,6 +629,7 @@ function _createPostDiv(post) {
     // end user: delete button only for lists created by self
     
     likeh5.appendChild(icon)
+    let button3 = document.createElement('button');
     const url = '/api/users/' + userID;
     fetch(url).then((res) => { 
         if (res.status === 200) {
@@ -639,16 +641,15 @@ function _createPostDiv(post) {
                }                
             }).then((user) => {
                 if (userID == post.userID || user.type == 'Admin') {
-                    let button3 = document.createElement('button');
                     button3.className = "btn btn-outline-danger";
                     button3.classList.add('delete');
                     button3.addEventListener('click', deletePostButtonOnClick);
                     button3.innerText = 'Delete';
-                    likeh5.appendChild(button3);
                 }
             })
         }
     })
+    likeh5.appendChild(button3);
     likeh5.appendChild(button2)
     likeh5.appendChild(button)
     contentDiv.appendChild(likeh5)
@@ -959,11 +960,7 @@ function _createBooklistDiv(booklist) {
     strong3.appendChild(time)
     const span3 = document.createElement('span')
     span3.className = "timeContent"
-    let date = new Date(parseInt(booklist.createTime))
-    console.log(booklist.createTime)
-    console.log(date)
-    let formatted_time = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-    const timeContent = document.createTextNode(formatted_time)
+    const timeContent = document.createTextNode(booklist.createTime)
     span3.appendChild(timeContent)
     li3.appendChild(strong3)
     li3.appendChild(span3)
