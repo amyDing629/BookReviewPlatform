@@ -719,7 +719,9 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length + 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('likeButton');
+                        e.target.parentElement.classList.add('btn-success');
                         e.target.parentElement.classList.add('dislikeButton');
+                        e.target.parentElement.classList.remove('btn-outline-success');
                         
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
@@ -743,7 +745,9 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length - 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('dislikeButton');
+                        e.target.parentElement.classList.add('btn-outline-success');
                         e.target.parentElement.classList.add('likeButton');
+                        e.target.parentElement.classList.remove('btn-success');
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
                             body: JSON.stringify({'operation': 'reduce', 'target': 'likes', 'value': String(userID)}),
@@ -785,6 +789,8 @@ function _createBooklistDiv(booklist) {
                         collectNum.innerText = 'Collected: '+ collectNumData;
                         e.target.parentElement.classList.remove('collectButton');
                         e.target.parentElement.classList.add('uncollectButton');
+                        e.target.parentElement.classList.remove('btn-outline-success');
+                        e.target.parentElement.classList.add('btn-success');
                         
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
@@ -809,6 +815,8 @@ function _createBooklistDiv(booklist) {
                         collectNum.innerText = 'Collected: '+ collectNumData;
                         e.target.parentElement.classList.remove('uncollectButton');
                         e.target.parentElement.classList.add('collectButton');
+                        e.target.parentElement.classList.add('btn-outline-success');
+                        e.target.parentElement.classList.remove('btn-success');
                         
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
@@ -1000,7 +1008,7 @@ function _createBooklistDiv(booklist) {
         const newBookLink = document.createElement('th')
         const bookLink = document.createElement('a')
         bookLink.className = "book"
-        let bid = book.bookID;
+        let bid = book._id;
         bookLink.href = '/public/html/BookDetail.html?bookID=' + bid + '&userID=' + userID;
 
         bookLink.appendChild(document.createTextNode(book.name))
@@ -1021,10 +1029,14 @@ function _createBooklistDiv(booklist) {
     liLike.className = "infoElement"
     const button1 = document.createElement('button')
     if (booklist.likedBy.indexOf(userID) != -1){
-        button1.className = "dislikeButton"
+        button1.classList.add('dislikeButton');
+        button1.classList.add('btn');
+        button1.classList.add('btn-success');
 
     } else {
-        button1.className = "likeButton";
+        button1.classList.add('likeButton');
+        button1.classList.add('btn');
+        button1.classList.add('btn-outline-success');
     }
     
     button1.addEventListener('click', likeOnClick);
@@ -1045,10 +1057,14 @@ function _createBooklistDiv(booklist) {
     liCollect.className = "infoElement"
     const button2 = document.createElement('button')
     if (booklist.collectedBy.indexOf(userID) != -1){
-        button2.classList.add("uncollectButton")
+        button2.classList.add('uncollectButton');
+        button2.classList.add('btn');
+        button2.classList.add('btn-success');
 
     } else {
-        button2.classList.add("collectButton");
+        button2.classList.add('collectButton');
+        button2.classList.add('btn');
+        button2.classList.add('btn-outline-success');
     }
     button2.addEventListener('click', collectOnClick);
     const iconImgCollect = document.createElement('img')
@@ -1408,78 +1424,80 @@ function filpPage(pageNo, pageLimit) {
     document.getElementById("pageFliper").innerHTML = strHolder;
 }
 
+displayUserInfo(window.location.href.indexOf('visitID') !== -1);
+
 
 /*************** actions ****************/
-let regularUser = new User('user', 'user');
-regularUser.profilePhoto = 'https://avatars.githubusercontent.com/u/71192401?v=4';
-let adminUser = new AdminUser('admin', 'admin');
-adminUser.profilePhoto = 'https://avatars.githubusercontent.com/u/73209681?v=4';
-let regularAmy = new User('amy', 'amy');
-let postSolarisWithImg = new Post(1, 0, 'Solaris',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-    'I really like this book! I really like this book! I really like this book! I really like this book!',
-    '2022-03-01 18:05', 1);
-let postSolarisWithoutImg = new Post(0, 0, 'Solaris',null, 'admin',
-    "https://avatars.githubusercontent.com/u/73209681?v=4", 
-    null,
-    'It was stunning. An ocean with life, a planet covered by an ocean.',
-    '2022-02-20 3:02', 0);
-let postSongOfSolomon = new Post(2, 4, 'Song of Solomon',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
-    'I have to read it every day otherwise I cannot sleep',
-    '2022-03-05 00:05', 5);
-let postWarAndPeace = new Post(3, 3, 'War and Peace',null, 'user',
-    'https://avatars.githubusercontent.com/u/71192401?v=4', 
-    null,
-    "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
-    '2022-03-05 16:00', 0);
+// let regularUser = new User('user', 'user');
+// regularUser.profilePhoto = 'https://avatars.githubusercontent.com/u/71192401?v=4';
+// let adminUser = new AdminUser('admin', 'admin');
+// adminUser.profilePhoto = 'https://avatars.githubusercontent.com/u/73209681?v=4';
+// let regularAmy = new User('amy', 'amy');
+// let postSolarisWithImg = new Post(1, 0, 'Solaris',null, 'user',
+//     'https://avatars.githubusercontent.com/u/71192401?v=4', 
+//     'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+//     'I really like this book! I really like this book! I really like this book! I really like this book!',
+//     '2022-03-01 18:05', 1);
+// let postSolarisWithoutImg = new Post(0, 0, 'Solaris',null, 'admin',
+//     "https://avatars.githubusercontent.com/u/73209681?v=4", 
+//     null,
+//     'It was stunning. An ocean with life, a planet covered by an ocean.',
+//     '2022-02-20 3:02', 0);
+// let postSongOfSolomon = new Post(2, 4, 'Song of Solomon',null, 'user',
+//     'https://avatars.githubusercontent.com/u/71192401?v=4', 
+//     'https://reviewed-com-res.cloudinary.com/image/fetch/s--vRlwGaKY--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1615411074746/EreadersBG3.jpg',
+//     'I have to read it every day otherwise I cannot sleep',
+//     '2022-03-05 00:05', 5);
+// let postWarAndPeace = new Post(3, 3, 'War and Peace',null, 'user',
+//     'https://avatars.githubusercontent.com/u/71192401?v=4', 
+//     null,
+//     "I have a version of War and Peace that's been lying around for years on my desk. The French dialogues aren't translated in the footnotes. I read that the use of Frech in this book functions as a 'literary device', but I really want to know what is being said. How important are these dialogues in French?",
+//     '2022-03-05 16:00', 0);
 
-regularUser.postList.push(postSolarisWithImg);
-regularUser.postList.push(postSongOfSolomon);
-regularUser.postList.push(postWarAndPeace);
-adminUser.postList.push(postSolarisWithoutImg);
-posts.push(postSolarisWithImg);
-posts.push(postSongOfSolomon);
-posts.push(postWarAndPeace);
-posts.push(postSolarisWithoutImg);
+// regularUser.postList.push(postSolarisWithImg);
+// regularUser.postList.push(postSongOfSolomon);
+// regularUser.postList.push(postWarAndPeace);
+// adminUser.postList.push(postSolarisWithoutImg);
+// posts.push(postSolarisWithImg);
+// posts.push(postSongOfSolomon);
+// posts.push(postWarAndPeace);
+// posts.push(postSolarisWithoutImg);
 
-books.push(new Book('Solaris', 'Stanisław Herman Lem', 
-        'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
-        'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
-        )); // currently link is empty
-books.push(
-    new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
-    'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
-    'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
-    ));
-books.push(
-    new Book('The Story of the Lost Child', 'Elena Ferrante', 
-    'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
-    "The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
-    ));    
-books.push(
-        new Book('War and Peace', 'Leo Tolstoy', 
-        'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
-        'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
-        )); 
-books.push(
-        new Book('Song of Solomon', 'Toni Morrison', 
-        'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
-        'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
-        ));   
+// books.push(new Book('Solaris', 'Stanisław Herman Lem', 
+//         'https://upload.wikimedia.org/wikipedia/en/d/d1/SolarisNovel.jpg',
+//         'It follows a crew of scientists on a research station as they attempt to understand an extraterrestrial intelligence, which takes the form of a vast ocean on the titular alien planet.',
+//         )); // currently link is empty
+// books.push(
+//     new Book('Tres Tristes Tigres', 'Guillermo Cabrera Infante', 
+//     'https://upload.wikimedia.org/wikipedia/en/0/0f/Tres_tristes_tigres_%28Guillermo_Cabrera_Infante%29.png', 
+//     'It is a highly experimental, Joycean novel, playful and rich in literary allusions.',
+//     ));
+// books.push(
+//     new Book('The Story of the Lost Child', 'Elena Ferrante', 
+//     'https://www.irishtimes.com/polopoly_fs/1.2348652.1441974000!/image/image.jpg', 
+//     "The fourth of Elena Ferrante’s celebrated Neapolitan novels, has a lot to deliver on.",
+//     ));    
+// books.push(
+//         new Book('War and Peace', 'Leo Tolstoy', 
+//         'https://images-na.ssl-images-amazon.com/images/I/A1aDb5U5myL.jpg', 
+//         'The novel chronicles the French invasion of Russia and the impact of the Napoleonic era on Tsarist society through the stories of five Russian aristocratic families.',
+//         )); 
+// books.push(
+//         new Book('Song of Solomon', 'Toni Morrison', 
+//         'https://images-na.ssl-images-amazon.com/images/I/61EKxawb6xL.jpg', 
+//         'It tells the story of Macon "Milkman" Dead, a young man alienated from himself and estranged from his family, his community, and his historical and cultural roots.',
+//         ));   
 
 
-let novelBooklist = new Booklist('novels', 'All novels liked.', 'admin', [books[0],books[1]]);
-let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [books[1]]);
-let before20list = new Booklist('Before 20th', 'Before 20 centuries', 'user', [books[0],books[1], books[3], books[4]]);
-adminUser.booklistList.push(novelBooklist);
-adminUser.booklistList.push(spanishBooklist);
-regularUser.booklistList.push(before20list);
-booklists.push(novelBooklist);
-booklists.push(spanishBooklist);
-booklists.push(before20list);
+// let novelBooklist = new Booklist('novels', 'All novels liked.', 'admin', [books[0],books[1]]);
+// let spanishBooklist = new Booklist('All spanish', 'All Spanish novels.', 'admin', [books[1]]);
+// let before20list = new Booklist('Before 20th', 'Before 20 centuries', 'user', [books[0],books[1], books[3], books[4]]);
+// adminUser.booklistList.push(novelBooklist);
+// adminUser.booklistList.push(spanishBooklist);
+// regularUser.booklistList.push(before20list);
+// booklists.push(novelBooklist);
+// booklists.push(spanishBooklist);
+// booklists.push(before20list);
 
 // regularUser.postCollectionList.push(postSolarisWithoutImg);
 // regularUser.booklistCollectionList.push(spanishBooklist);
@@ -1490,9 +1508,9 @@ booklists.push(before20list);
 // adminUser.booklistCollectionList.push(novelBooklist);
 // adminUser.booklistCollectionList.push(before20list);
 
-users.push(adminUser);
-users.push(regularUser);
-users.push(regularAmy);
+// users.push(adminUser);
+// users.push(regularUser);
+// users.push(regularAmy);
 
             
 // handle links
@@ -1521,7 +1539,7 @@ users.push(regularAmy);
 //     }
 // }
 
-displayUserInfo(window.location.href.indexOf('visitID') !== -1);
+
 
 
 // Setup onclick
@@ -1538,49 +1556,49 @@ if (profileButtons != null) {
 }
 
 // Search Book 
-const searchArea1 = document.querySelector('#search-button1')
-searchArea1.addEventListener('click', searchBook)
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        const select = document.getElementById('search-book');
-        if (select.selectedIndex!=0){
-            const value = select.options[select.selectedIndex].value;
-            let link;
-            if (window.location.href.indexOf('user') != -1) {
-                link = '../BookDetail/'+value+'/'+value+'_end_after.html';
-            }else if (window.location.href.indexOf('admin') != -1) {
-                link = '../BookDetail/'+value+'/'+value+'_admin_after.html';
-            }else{
-                link = '../BookDetail/'+value+'/BookDetail-'+value+'.html';
-            }
-            window.location.href = (link)
-        }
+// const searchArea1 = document.querySelector('#search-button1')
+// searchArea1.addEventListener('click', searchBook)
+// function searchBook(e){
+//     e.preventDefault();
+//     if (e.target.id == 'search-button1'){
+//         const select = document.getElementById('search-book');
+//         if (select.selectedIndex!=0){
+//             const value = select.options[select.selectedIndex].value;
+//             let link;
+//             if (window.location.href.indexOf('user') != -1) {
+//                 link = '../BookDetail/'+value+'/'+value+'_end_after.html';
+//             }else if (window.location.href.indexOf('admin') != -1) {
+//                 link = '../BookDetail/'+value+'/'+value+'_admin_after.html';
+//             }else{
+//                 link = '../BookDetail/'+value+'/BookDetail-'+value+'.html';
+//             }
+//             window.location.href = (link)
+//         }
         
-    }  
-}
+//     }  
+// }
 
 // Search List 
-const searchArea2 = document.querySelector('#search-button2')
-searchArea2.addEventListener('click', searchList)
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        const select = document.getElementById('search-list');
-        if (select.selectedIndex!=0){
-            const value = select.options[select.selectedIndex].value;
-            let link;
-            if (window.location.href.indexOf('user.html') != -1) {
-                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html';
-            }else if (window.location.href.indexOf('admin.html') != -1) {
-                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html';
-            }else{
-                link = '../BooklistDetail/BooklistDetail.html?booklistID='+value;
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-displaySearchbox()
+// const searchArea2 = document.querySelector('#search-button2')
+// searchArea2.addEventListener('click', searchList)
+// function searchList(e){
+//     e.preventDefault();
+//     if (e.target.id == 'search-button2'){
+//         const select = document.getElementById('search-list');
+//         if (select.selectedIndex!=0){
+//             const value = select.options[select.selectedIndex].value;
+//             let link;
+//             if (window.location.href.indexOf('user.html') != -1) {
+//                 link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=0.html';
+//             }else if (window.location.href.indexOf('admin.html') != -1) {
+//                 link = '../BooklistDetail/BooklistDetail.html?booklistID='+value+'&userID=1.html';
+//             }else{
+//                 link = '../BooklistDetail/BooklistDetail.html?booklistID='+value;
+//             }
+//             window.location.href = (link)
+//         }
+//     }  
+// }
+// displaySearchbox()
 
 
