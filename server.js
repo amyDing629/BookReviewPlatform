@@ -384,11 +384,11 @@ app.delete('/api/posts/:postID', mongoChecker, async (req, res)=>{
 			const users = await User.find();
 			let user;
 			for (user of users) {
-				postIndex = user.postList.indexOf(postID)
+				let postIndex = user.postList.indexOf(postID)
 				if (postIndex != -1){
 					user.postList.splice(postIndex, 1);
 				}
-				postCollectIndex = user.postCollection.indexOf(postID);
+				let postCollectIndex = user.postCollection.indexOf(postID);
 				if (postCollectIndex != -1){
 					user.postCollection.splice(postCollectIndex, 1);
 				}
