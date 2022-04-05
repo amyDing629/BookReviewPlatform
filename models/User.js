@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     profilePhoto: {
         type: String,
 		required:false,
-        default: ''
+        default: '/public/img/static/bookLandLogo.png'
     },
     postList: {
         type: [mongoose.Schema.Types.ObjectId],
