@@ -535,76 +535,6 @@ app.patch('/api/posts/:postID', async (req, res)=>{
 	}
 })
 
-// update post likes
-// target: likes, collects
-// operation: add, reduce
-// value: userID
-app.patch('/api/booklists/:booklistID', async (req, res)=>{
-    const booklistID = req.params.booklistID;
-    if (!ObjectId.isValid(booklistID)) {
-		res.status(404).send('invalid booklist id type') 
-		return
-	}
-	const operation = req.body.operation
-	const value = req.body.value
-	const target = req.body.target
-	
-	try {
-		const booklist = await BookList.findOne({_id: booklistID})
-		const user = await User.findOne({_id:value})
-		if (!booklist || !user) {
-			res.status(404).send("no such a booklist or user")
-		} else { 
-			if (target == 'likes') {
-				if (operation == 'add'){
-					if (!booklist.likedBy.includes(value)){
-						booklist.likedBy.push(value);
-					}	
-				} else if (operation == 'reduce'){
-					let user_index = booklist.likedBy.indexOf(value);
-					if (user_index != -1){
-						booklist.likedBy.splice(user_index, 1);
-					}
-				} else {
-					res.status(404).send('invalid operation in request body')
-				}	
-			} else if (target == 'collects') {
-				if (operation == 'add') {
-					if (!booklist.collectedBy.includes(value)){
-						booklist.collectedBy.push(value);
-					}
-					if (!user.booklistCollection.includes(booklistID)){
-						user.booklistCollection.push(booklistID);
-					}
-					
-					
-				} else if (operation == 'reduce') {
-					let user_index = booklist.collectedBy.indexOf(value);
-					let booklist_index = user.booklistCollection.indexOf(booklistID);
-					if ((user_index != -1) && (booklist_index != -1)) {
-						booklist.collectedBy.splice(user_index, 1)
-						user.booklistCollection.splice(booklist_index, 1)
-					}
-				} else {
-					res.status(404).send('invalid operation in request body')
-				}
-			} else {
-				res.status(404).send('invalid target in request body')
-			}
-			
-		}
-		booklist.save().then((updatedBooklist) => {
-			user.save().then((updatedUser) => {
-				res.send({booklist: updatedBooklist, user: updatedUser})
-			})
-			
-		})
-	} catch(error) {
-		log(error)
-		res.status(500).send("server error on find booklist")
-	}
-})
-
 
 /*********** BOOKs ************/
 
@@ -734,9 +664,10 @@ app.get('/api/booklists/:booklistID', mongoChecker, async(req, res)=>{
 	}
 })
 
-// add booklist
-app.post('/api/booklist', async (req, res)=>{
+// add booklist & add into the creator's booklist collection
+app.post('/api/booklist', mongoChecker, async (req, res)=>{
 	const booksIDs = req.body.books
+	// check books validation
 	let books = []
 	for (let i=0;i<booksIDs.length;i++){
 		const book = await Book.findOne({_id: booksIDs[i]})
@@ -746,6 +677,25 @@ app.post('/api/booklist', async (req, res)=>{
 			books.push(book)
 		}
 	}
+	// check user validation
+	let curr = []
+	try{
+		const user = await User.findOne({_id: req.body.creatorID})
+		if(user.creator != req.body.creator){
+			res.status(400).send("unmatched creator info")
+		} else { // valid creator
+			curr = user.booklistList
+		}
+	} catch{
+		log(error) 
+		if (isMongoError(error)) { 
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('no such a user could be creator') 
+		}
+	}
+
+	// save the booklist
 	let booklist = null
 	if (books.length != booksIDs.length){
 		res.status(404).send("Fail, has unfound book")
@@ -761,16 +711,9 @@ app.post('/api/booklist', async (req, res)=>{
 	}
     try {
 		const result = await booklist.save()
-		const user = await User.findOne({_id:req.body.creatorID})
-		if (!user.booklistList.includes(result._id)){
-			user.booklistList.push(result._id);
-		}
-		booklist.save().then((createdBooklist) => {
-			user.save().then((updatedUser) => {
-                res.send({updatedUser, createdBooklist})
-			})
-		})
-		
+		curr.push(result._id)
+		const update = await User.findOneAndUpdate({_id: req.body.creatorID}, {$set: {booklistList:curr}}, {new: true})
+		res.send({ booklist:result, creator:update })
 	} catch(error) {
 		log(error) 
 		if (isMongoError(error)) { 
@@ -781,7 +724,7 @@ app.post('/api/booklist', async (req, res)=>{
 	}
 })
 
-// delete a booklist
+// delete a booklist & remove from the creator list
 app.delete('/api/booklist/:booklistID', async (req, res)=>{
     const booklist = req.params.booklistID
     if (!ObjectID.isValid(booklist)) {
@@ -789,11 +732,16 @@ app.delete('/api/booklist/:booklistID', async (req, res)=>{
 		return
 	}
 	try {
-		const forDelete = await BookList.findOneAndRemove({_id: booklist})
-		if (!forDelete) {
-			res.status(404).send("no such a book")
-		} else {   
-			res.send(forDelete)
+		const forDelete = await BookList.findOne({_id: booklist})
+		const user = await User.findOne({_id:forDelete.creatorID})
+		if (!forDelete | !user) {
+			res.status(404).send("no such a book or user")
+		} else {
+			const curr_booklists = user.booklistList   
+			const newValue = curr_booklists.filter((bl) => !bl.equals(booklist))
+			const result = await BookList.findByIdAndDelete({_id: booklist})
+			const update = await User.findOneAndUpdate({_id: forDelete.creatorID}, {$set: {booklistList:newValue}}, {new: true})
+			res.send({ booklist:result, creator: update})
 		}
 	} catch(error) {
 		log(error)
@@ -804,6 +752,7 @@ app.delete('/api/booklist/:booklistID', async (req, res)=>{
 // update like/collect
 app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res)=>{
     const booklist = req.params.booklistID
+	const user = req.params.userID
     if (!ObjectID.isValid(booklist)) {
 		res.status(404).send('invalid booklist id type') 
 		return
@@ -813,7 +762,7 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 	const fieldsToUpdate = {}
 	//let curr = 0
 	let curr = []
-
+	let who_result = null
 	// check booklist validation
 	try {
 		const item = await BookList.findOne({_id: booklist})
@@ -847,6 +796,15 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 				res.status(404).send('invalid request body') 
 				return;
 			}
+			// modify collect action into the booklistcolleciton
+			let curr_collection = user.booklistCollection
+			if( target == 'collectedBy' && operation == 'add'){ // validation check already done in the middleware
+				curr_collection.push(booklist)
+				who_result = await User.findOneAndUpdate({_id: user._id}, {$set: {booklistCollection:curr_collection}},{new: true})
+			} else if (target == 'collectedBy' && operation == 'reduce'){
+				const newValue = curr_collection.filter((bl) => !bl.equals(booklist))
+				who_result = await User.findOneAndUpdate({_id: user._id}, {$set: {booklistCollection:newValue}},{new: true})
+			}
 		}
 	} catch(error) {
 		log(error)
@@ -858,7 +816,7 @@ app.patch('/api/booklist/:booklistID', booklistModifyValidation, async (req, res
 		if (!list) {
 			res.status(404).send('Resource not found')
 		} else {   
-			res.send(list)
+			res.send({ booklist:list, user:who_result})
 		}
 	} catch (error) {
 		log(error)
