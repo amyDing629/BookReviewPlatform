@@ -398,7 +398,7 @@ function _createPostDiv(post) {
                     }
                     else if (e.target.classList.contains('dislike')){
                         likeNum = post.likedBy.length - 1;
-                        icon.innerText = ' '+ likeNum; //TODO: update db
+                        icon.innerText = ' '+ likeNum;
                         e.target.classList.remove('dislike');
                         e.target.classList.add('like');
                         e.target.innerText = 'Like';
@@ -711,9 +711,8 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length + 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('likeButton');
-                        e.target.parentElement.classList.add('btn-success');
                         e.target.parentElement.classList.add('dislikeButton');
-                        e.target.parentElement.classList.remove('btn-outline-success');
+                        e.target.src = '../img/static/heart_icon.png'
                         
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
@@ -737,9 +736,8 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length - 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('dislikeButton');
-                        e.target.parentElement.classList.add('btn-outline-success');
                         e.target.parentElement.classList.add('likeButton');
-                        e.target.parentElement.classList.remove('btn-success');
+                        e.target.src = '../img/static/like_icon.png';
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
                             body: JSON.stringify({'operation': 'reduce', 'target': 'likes', 'value': String(userID)}),
@@ -1020,20 +1018,23 @@ function _createBooklistDiv(booklist) {
     const liLike = document.createElement('li')
     liLike.className = "infoElement"
     const button1 = document.createElement('button')
+    button1.className = 'btn btn-outline-success'
     if (booklist.likedBy.indexOf(userID) != -1){
         button1.classList.add('dislikeButton');
-        button1.classList.add('btn');
-        button1.classList.add('btn-success');
 
     } else {
         button1.classList.add('likeButton');
-        button1.classList.add('btn');
-        button1.classList.add('btn-outline-success');
     }
     
     button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
     iconImgLike.className = "likeIcon"   
+    if (booklist.likedBy.indexOf(userID) != -1){
+        iconImgLike.src = '../img/static/like_icon.png';
+
+    } else {
+        iconImgLike.src = '../img/static/heart_icon.png'
+    }
     iconImgLike.src = '../img/static/like_icon.png'
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
