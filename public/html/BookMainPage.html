@@ -8,92 +8,54 @@
        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     </head>
     <body>
-    <!-- old top menu -->
-<!--      <div id="topMenu">
+     <!-- The Top Menu -->
+     <div id="topMenu">
         <ul>
             <li>
                 <div class="logoContainer">
-                    <img class="logo" src="https://i.pinimg.com/736x/49/f7/25/49f725a9f2b62ea80603f3fe51289735--le-design-icon-design.jpg" alt="logo">
+                  <img class="logo" src="/public/img/static/bookLandLogo.png" alt="logo">
                 </div>
             </li>
-            <li><a id="home" class="addUserIdToLink" href="../HomeAndLogin/index.html">Home</a ></li>
-                <li><a id="bookmain" class="active addUserIdToLink" href="./BookMainPage.html">Books</a ></li>
-                <li><a id="booklistmain" class="addUserIdToLink" href="../BooklistMainPage/BooklistMainPage.html">Booklists</a ></li>
-            <li class="search-book">
-                <select class="form-select form-select-sm" id="search-book">
-                    <option selected disabled>Search for...</option>
-                </select>     
+            <!-- New -->
+            <li><a href=''>Home</a></li>
+            <li><a class="active" href=''>Books</a></li>
+            <li><a href=''>Booklists</a></li>
+            <li class="top_book">
+                <div class="dropdown">
+                    <button onclick="bookFunction()" class="dropbtn">Search for books</button>
+                  </div>
             </li>
-            <li>
-                <button type="submit" class="btn btn-dark" id="search-button1"><i class="fa fa-search"></i> Books</button>
+            <li class="top_list">
+                <div class="dropdown">
+                    <button onclick="listFunction()" class="dropbtn">Search for lists</button>
+                  </div>
             </li>
-            <li class="search-list">
-                <select class="form-select form-select-sm" id="search-list">
-                    <option selected disabled>Search for...</option>
-                </select> 
-            </li>
-            <li>
-                <button type="submit" class="btn btn-dark" id="search-button2"><i class="fa fa-search"></i> Booklists</button>
-            </li>
-            <li class="quit">
-                <a href="../HomeAndLogin/index.html">QUIT</a>
-            </li>
-            <li>
-                <a id="userLoginInfo" class="addUserIdToLink" href="../HomeAndLogin/login.html">Login/Register</a>
-            </li>
-        </ul>
-    </div> -->
+          </ul>
+  </div>
+  <div class="search-book">
+    <div calss="dropdown">
+      <span id="myDropdown" class="hide">
+        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+      </span>
+    </div>
+  </div>
+  <div class="search-list">
+    <div calss="dropdown">
+      <span id="myDropdown" class="hide">
+        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+      </span>
+      <ul id="dom_display">
+        <li class="quit">
+            <a href="../HomeAndLogin/index.html">QUIT</a>
+        </li>
+        <li>
+            <a id="userLoginInfo" class="addUserIdToLink" href="../HomeAndLogin/login.html">Login/Register</a>
+        </li>
+    </ul>
 
+    </div>
+  </div>
 
-     <!-- for back to top-->
-     <a id="tips"></a>
-     <!-- The Top Menu -->
-     <div id="topMenu">
-         <ul>
-             <li>
-                 <div class="logoContainer">
-                 <img class="logo" src="/public/img/static/bookLandLogo.png" alt="logo">
-                 </div>
-             </li>
-             <!-- New -->
-             <li><a id="home" href=''>Home</a></li>
-             <li><a class='active' id="bookmain" href=''>Books</a></li>
-             <li><a id='booklistmain' href=''>Booklists</a></li>
-             <li class="book">
-                 <div class="dropdown">
-                     <button onclick="bookFunction()" class="dropbtn">Search for books</button>
-                 </div>
-             </li>
-             <li class="list">
-                 <div class="dropdown">
-                     <button onclick="listFunction()" class="dropbtn">Search for lists</button>
-                 </div>
-             </li>
-         </ul>
-     </div>
-     <div class="search-book">
-     <div calss="dropdown">
-     <span id="myDropdown" class="hide">
-         <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-     </span>
-     </div>
-     </div>
-     <div class="search-list">
-     <div calss="dropdown">
-     <span id="myDropdown" class="hide">
-         <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-     </span>
-     <ul id="dom_display">
-         <li class="quit">
-             <a href="../HomeAndLogin/index.html">QUIT</a>
-         </li>
-         <li>
-             <a id="userLoginInfo" class="addUserIdToLink" href="../HomeAndLogin/login.html">Login/Register</a>
-         </li>
-     </ul>
-
-     </div>
-     </div>
 
     <!-- books-->
     <div id="bookTable">
@@ -132,10 +94,10 @@
     <footer class="blog-footer">
         <p><i>&copy; BookLand built by team10</i></p>
         <p>
-            <!-- NEW ADDED --> 
-          <a href="#tips" class="linkColor">Back to top</a>
+            <!-- NEW ADDED -->	
+            <button onclick="topFunction()" id="myBtn" class="btn btn-outline-primary">Back to Top</button>
         </p>
-    </footer>
+    </footer>  
     <script type="text/javascript" src="../js/topmenu.js"></script>
     <script type="text/javascript" src="../js/BookMainPage.js"></script>
     </body>

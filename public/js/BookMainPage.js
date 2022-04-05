@@ -3,6 +3,7 @@ const log = console.log
 let BooksNum = 0; 
 let BooksList = [] 
 
+// class for saving json retrieved results
 class Book {
 	constructor(name, author, year, coverURL, description,id) {
 		this.name = name;
@@ -16,7 +17,9 @@ class Book {
 	}
 }
 
-// get all books 
+/*********************************** DOM functions *************************************/
+
+// get all books (defaul on load function )
 function getBooks(){
     const url = '/api/books'
     fetch(url).then((res) => { 
@@ -31,42 +34,14 @@ function getBooks(){
         for (each of books){
             BooksList.push(new Book(each.name, each.author, each.year, each.coverURL, each.description, each._id))
         }
-        ifNeedDeleteForm(getUserID())
-        displayAllBooks(BooksList,getUserID())
+        ifNeedDeleteForm(_getUserID())
+        displayAllBooks(BooksList,_getUserID())
     }).catch((error) => {
         log(error)
     })
 }
 
-function deleteBookFromAdminUser(id){
-    const book = BooksList.filter((book)=> book.bookID == id )
-    const url = '/api/book/'+id
-
-    let data = {
-        _id: book[0].bookID
-    }
-    const request = new Request(url, {
-        method: 'delete', 
-        body: JSON.stringify(data),
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-    });
-    fetch(request)
-    .then(function(res) {
-        if (res.status === 200) {
-            console.log('delete book')    
-        } else {
-            console.log('Failed to delete')
-        }
-        log(res)
-    }).catch((error) => {
-        log(error)
-    })
-}
-
-// Display all books in the book main page
+// display all books according to user id and booklist collection order
 function displayAllBooks(BooksList, userID) {
     const bookTable = document.querySelector('#bookTable')
     const url = '/api/users/'+userID
@@ -83,19 +58,10 @@ function displayAllBooks(BooksList, userID) {
         try { // check if logined
             userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
             const username = userInfo.split("\"username\":\"")[1].split("\"")[0]
-
-            // change navi bar username
-            document.querySelector('#userLoginInfo').innerText = username
-
-            // set navi bar link
-            /* document.querySelector('#home').href = "/index.html?userID="+userID
-            //document.querySelector('#bookmain').href = "./public/html/BookMainPage.html?userID="+userID
-            document.querySelector('#booklistmain').href = "/BooklistMain?userID="+userID
-            document.querySelector('#userLoginInfo').href = "./public/html/user.html?userID="+userID // need check */
-            if(userType === 'Admin'){
+            if(userType === 'Admin'){ // admin has additonal operation allowed
                 document.querySelector('#tableResult').addEventListener('click', deleteBook)
                 document.querySelector('#addButton').addEventListener('click', addNewBook)
-                document.getElementById('coverButton').addEventListener('change', uploadPicture)
+                document.getElementById('coverButton').addEventListener('change', _uploadPicture)
             } else {
                 document.querySelector('#adminActionsWrap').parentElement.removeChild(document.querySelector('#adminActionsWrap'))
             }
@@ -136,9 +102,9 @@ function displayAllBooks(BooksList, userID) {
             span1.className="bookTitle"
             const a = document.createElement('a')
             a.className = "linkColor"
-            a.href = "/BookDetail?bookID=" + String(BooksList[i].bookID) //need check
+            a.href = "/BookDetail?bookID=" + String(BooksList[i].bookID)
             if (userType === 'Admin' | userType === 'User'){
-                a.href += ("&userID="+getUserID()) // need check
+                a.href += ("&userID="+_getUserID())
             }
             a.onclick = function open(e){e.preventDefault(); window.location.href = (a.href)}
             const nameContent = document.createTextNode(BooksList[i].name)
@@ -207,85 +173,83 @@ function displayAllBooks(BooksList, userID) {
             tr.appendChild(div)
             tableResultTBODY.appendChild(tr)
         }
-        flipPage(1,3)
+        _flipPage(1,3)
     }).catch((error)=>{log(error)})
     
 }
 
-function flipPage(pageNo, pageLimit) {
-    const allBooks = document.getElementById("tableResultTBODY")
-    const totalSize = allBooks.rows.length
-    let totalPage = 0
-    const pageSize = pageLimit
-    
-    // calculate the page num and set up every page:
-    if (totalSize / pageSize > parseInt(totalSize / pageSize)) {
-        totalPage = parseInt(totalSize / pageSize) + 1;
-    } else {
-        totalPage = parseInt(totalSize / pageSize);
-    }
-
-    // build every page label and assign onclick function
-    const curr = pageNo
-    const startRow = (curr - 1) * pageSize + 1
-    let endRow = curr * pageSize
-    endRow = (endRow > totalSize) ? totalSize : endRow;
-    let strHolder = ""
-    let previousStr = "Previous"
-    let nextStr = "Next"
-    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"flipPage("
-    let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
-    // single page is enough
-    if (totalPage <= 1){
-        strHolder = disabled + previousStr + "</span></li>"+
-        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + "</a></li>" + disabled + nextStr + "</span></li>"
-    } else { //multipages
-        if (curr > 1) {
-            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
-            for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + "</a></li>"
+// check if the current user need the pop up form to delete
+function ifNeedDeleteForm(userID){
+    const url = '/api/users/'+userID
+    fetch(url).then((res) => { 
+        if (res.status === 200) {
+           return res.json() 
+       } else {
+            log('faild to get user info. as guest.')
+       }                
+    }).then((json) => {
+        return JSON.stringify(json)
+    }).then((userInfo)=>{
+        try{
+            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
+            if(userType == 'Admin'){
+                addFormForDelete()
             }
-        } else {
-            strHolder += disabled + previousStr + "</span></li>"
-            for (let j = 1; j <= totalPage; j++) {
-                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j +"</a></li>"
-            }
+        } catch {
+            log("guest")
         }
-        if (curr < totalPage) {
-            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a></li>"
-            
-        } else { strHolder += disabled + nextStr + "</span></li>"}
-    }
-
-
-    //separate different display style for different tr element
-    for (let i = 1; i < (totalSize + 1); i++) {
-        const each = allBooks.rows[i - 1];
-        if (i >= startRow && i <= endRow) {
-            each.className="normalTR"
-        } else {
-            each.className="endTR"
-        }
-    }
-    document.querySelector("#pageFliperUL").innerHTML = strHolder;
-
-    // set up current page 
-    const allPageButton = document.querySelectorAll(".page-item")
-    for (each of allPageButton){
-        if (each.children[0].innerText == pageNo){
-            each.className = "page-item active"
-            each.ariaCurrent = "page"
-        }
-    }
+        
+    }).catch((error)=>{
+        log(error)
+        return
+    })
 }
 
-// update display
-function renewBooklist(){
-    BooksList = []
-    getBooks()
+// admin only: pop up form for "delete book"---form for confirming delete
+function addFormForDelete(){
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the book?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        if (e.target.id == 'submit'){
+            const ID = document.getElementById("myForm").name
+            _deleteBookFromAdminUser(ID)
+            _renewBooklist();
+            document.getElementById("myForm").style.display="none";
+            location.reload();
+        }
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("myForm").style.display='none'}
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
 }
 
-// admin only: add book
+
+/*********************************** event listener functions for DOM *************************************/
+
+// admin only: add book event 
 function addNewBook(e){
     e.preventDefault();
     if (e.target.className == 'addSubmit, btn btn-primary'){
@@ -350,7 +314,7 @@ function addNewBook(e){
     }
 }
 
-// admin only: delete book
+// admin only: delete book event
 function deleteBook(e){
     e.preventDefault();
     if (e.target.className == 'deleteButton, btn btn-danger'){
@@ -363,51 +327,114 @@ function deleteBook(e){
     }
 }
 
-// admin only action: remove book---form for confirming delete
-function addFormForDelete(){
-    //// dialog modal
-    const wrapper = document.createElement('div')
-    wrapper.id ='myForm'
-    wrapper.className='form-popup'
 
-    const form = document.createElement('form')
-    form.className='form-container'
+/*********************************** helper functions for DOM *************************************/
 
-    const h5 = document.createElement('h5')
-    h5.innerText= 'Confirm to delete the book?'
-    form.appendChild(h5)
+// admin only: delete book post request
+function _deleteBookFromAdminUser(id){
+    const book = BooksList.filter((book)=> book.bookID == id )
+    const url = '/api/book/'+id
 
-    const submit = document.createElement('button')
-    submit.type = "submit"
-    submit.className='addSubmit, btn'
-    submit.id = 'submit'
-    submit.innerText='Confirm'
-    submit.onclick = function confirmDelete(e){
-        e.preventDefault();
-        if (e.target.id == 'submit'){
-            const ID = document.getElementById("myForm").name
-            deleteBookFromAdminUser(ID)
-            renewBooklist();
-            document.getElementById("myForm").style.display="none";
-            location.reload();
-        }
+    let data = {
+        _id: book[0].bookID
     }
-    form.appendChild(submit)
-
-    const cancel = document.createElement('button')
-    cancel.type = "button"
-    cancel.className='btn cancel'
-    cancel.id = "cancel"
-    cancel.onclick = function cancelDelete(e){e.preventDefault; document.getElementById("myForm").style.display='none'}
-    cancel.innerText='Cancel'
-    form.appendChild(cancel)
-    wrapper.appendChild(form)
-    document.querySelector('body').appendChild(wrapper)
-    ///
+    const request = new Request(url, {
+        method: 'delete', 
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    });
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            console.log('delete book')    
+        } else {
+            console.log('Failed to delete')
+        }
+        log(res)
+    }).catch((error) => {
+        log(error)
+    })
 }
 
-// helper: get user id
-function getUserID(){
+// add flip page
+function _flipPage(pageNo, pageLimit) {
+    const allBooks = document.getElementById("tableResultTBODY")
+    const totalSize = allBooks.rows.length
+    let totalPage = 0
+    const pageSize = pageLimit
+    
+    // calculate the page num and set up every page:
+    if (totalSize / pageSize > parseInt(totalSize / pageSize)) {
+        totalPage = parseInt(totalSize / pageSize) + 1;
+    } else {
+        totalPage = parseInt(totalSize / pageSize);
+    }
+
+    // build every page label and assign onclick function
+    const curr = pageNo
+    const startRow = (curr - 1) * pageSize + 1
+    let endRow = curr * pageSize
+    endRow = (endRow > totalSize) ? totalSize : endRow;
+    let strHolder = ""
+    let previousStr = "Previous"
+    let nextStr = "Next"
+    let setupStr = "<li class=\"page-item\"><a class=\"page-link\" href=\"#\" onClick=\"_flipPage("
+    let disabled = "<li class=\"page-item disabled\"> <span class=\"page-link\">" 
+    // single page is enough
+    if (totalPage <= 1){
+        strHolder = disabled + previousStr + "</span></li>"+
+        setupStr + totalPage + "," + pageLimit + ")\">" + "1" + "</a></li>" + disabled + nextStr + "</span></li>"
+    } else { //multipages
+        if (curr > 1) {
+            strHolder += setupStr + (curr - 1) + "," + pageLimit + ")\">"+previousStr+"</a></li>"
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j + "</a></li>"
+            }
+        } else {
+            strHolder += disabled + previousStr + "</span></li>"
+            for (let j = 1; j <= totalPage; j++) {
+                strHolder += setupStr+ j + "," + pageLimit + ")\">" + j +"</a></li>"
+            }
+        }
+        if (curr < totalPage) {
+            strHolder += setupStr + (curr + 1) + "," + pageLimit + ")\">"+nextStr+"</a></li>"
+            
+        } else { strHolder += disabled + nextStr + "</span></li>"}
+    }
+
+
+    //separate different display style for different tr element
+    for (let i = 1; i < (totalSize + 1); i++) {
+        const each = allBooks.rows[i - 1];
+        if (i >= startRow && i <= endRow) {
+            each.className="normalTR"
+        } else {
+            each.className="endTR"
+        }
+    }
+    document.querySelector("#pageFliperUL").innerHTML = strHolder;
+
+    // set up current page 
+    const allPageButton = document.querySelectorAll(".page-item")
+    for (each of allPageButton){
+        if (each.children[0].innerText == pageNo){
+            each.className = "page-item active"
+            each.ariaCurrent = "page"
+        }
+    }
+}
+
+// update display
+function _renewBooklist(){
+    BooksList = []
+    getBooks()
+}
+
+// get user id
+function _getUserID(){
     try{
         return (window.location.href.split('?')[1].split('userID=')[1])
     } catch{
@@ -415,13 +442,8 @@ function getUserID(){
     }
 }
 
-//helper: get user name by user id
-function getUserName(userID){
-    return document.querySelector('#userLoginInfo').innerText 
-}
-
-// helper: upload img
-function uploadPicture(e){
+// upload img
+function _uploadPicture(e){
     e.preventDefault
     if (e.target.id == 'coverInput'){
         let x = document.getElementById('coverInput')
@@ -452,33 +474,8 @@ function uploadPicture(e){
         }
         document.getElementById("coverUploaded").innerHTML = txt;
     }
-  }
-
-function ifNeedDeleteForm(userID){
-    const url = '/api/users/'+userID
-    fetch(url).then((res) => { 
-        if (res.status === 200) {
-           return res.json() 
-       } else {
-            log('faild to get user info. as guest.')
-       }                
-    }).then((json) => {
-        return JSON.stringify(json)
-    }).then((userInfo)=>{
-        try{
-            const userType = userInfo.split("\"type\":\"")[1].split("\"")[0]
-            if(userType == 'Admin'){
-                addFormForDelete()
-            }
-        } catch {
-            log("guest")
-        }
-        
-    }).catch((error)=>{
-        log(error)
-        return
-    })
 }
 
-  
+
+/*********************************** on load function *************************************/
 getBooks()
