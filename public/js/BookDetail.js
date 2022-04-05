@@ -1,80 +1,6 @@
 const log = console.log;
 // global variables
 var BooklistsNum = 0;
-/************** temp for search bar ******************/
-function displaySearchbox(){
-    const searchbookArea = document.querySelector('.search-book')
-    const t = searchbookArea.children[0]
-    for (let i=0; i<BooksNum; i++){
-        if (BooksList[i] != null){
-            const id = BooksList[i].bookID
-            const name = BooksList[i].name
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            t.appendChild(option)
-        }
-    }
-    const searchlistArea = document.querySelector('.search-list')
-    const column = searchlistArea.children[0]
-    for (let i=0; i<BooklistsNum; i++){
-        if (BooklistsList[i] != null){
-            const id = BooklistsList[i].booklistID
-            const name = "[" + BooklistsList[i].listName + "] -- " + BooklistsList[i].creator
-            const option = document.createElement('option')
-            option.value = id
-            option.innerText = name
-            column.appendChild(option)
-        }
-    }
-}
-
-/********** Search Book **********/
-const searchArea1 = document.querySelector('#search-button1')
-if(searchArea1){
-    searchArea1.addEventListener('click', searchBook)
-}
-function searchBook(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button1'){
-        const select = document.getElementById('search-book');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = document.querySelector('.right').innerText
-            let link = '../BookDetail/'
-            if (user.length === 1){ // ['Login/Register']
-                link+=value+'/BookDetail-'+value+'.html'
-            } else if (user === 'Admin'){
-                link+=value+'/'+value+'_admin_after.html'
-            } else if (user === 'User'){
-                link+=value+'/'+value+'_end_after.html'
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-
-/********** Search List **********/
-const searchArea2 = document.querySelector('#search-button2')
-if(searchArea2){
-    searchArea2.addEventListener('click', searchList)
-}
-function searchList(e){
-    e.preventDefault();
-    if (e.target.id == 'search-button2'){
-        const select = document.getElementById('search-list');
-        if (select.selectedIndex!=0 ){
-            const value = select.options[select.selectedIndex].value;
-            const user = getUserID()
-            let link = "../BooklistDetail/BooklistDetail.html?booklistID=" + value
-            if (!isNaN(user)){
-                link += ("&userID="+user)
-            }
-            window.location.href = (link)
-        }
-    }  
-}
-/************** temp for search bar [END] ******************/
 
 
 /************** temp hardcode for all books ******************/
@@ -968,12 +894,17 @@ function addNewPost(e){
                    }                
                 }).then((json) =>{
                     const jsonposts = json.posts
+                    // let postID_filter
+                    // let time
                     for(each of jsonposts){
                         if(each.content == postContent && each.userID == userID){
+                            log(each)
                             filterPosts.push(new Post(each._id, each.bookID, each.booktitle, each.userID, each.username, each.posterProfile, each.pic, each.content, each.time, each.likedBy, each.collectedBy))
+                            // postID_filter = each._id
+                            // time = each.time
                         }
                     }
-                    // log(filterPosts[0].postID)
+                    // log(filterPosts)
                     const newPost = new Post(filterPosts[0].postID, currentBookID, booktitle, userID, pusername,posterProfile, pic, postContent, filterPosts[0].time, [], [])
                     posts.push(newPost);
                     // log(posts)
@@ -1217,9 +1148,9 @@ function addFormForDelete(){
             fetch(request)
             .then(function(res) {
                 if (res.status === 200) {
-                    console.log('delete booklist')    
+                    console.log('delete post')    
                 } else {
-                    console.log('Failed to delete the booklist')
+                    console.log('Failed to delete the post')
                 }
                 log(res)
             }).catch((error) => {
