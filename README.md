@@ -102,5 +102,22 @@ The overall objective of the project is to build a website for readers to share 
     - All admin users have all the end users functionalities and displayings. 
     - Besides, admins could delete every booklists.
 
+  ### BookDetailnPage
+  - **Guest**
+    - All guests have top menu bar that allows to navigate specific book detail or booklist detail pages for guests.
+    - All guests have login/register button at the top-right corner that allows to login or register. 
+    - The bottom of each page has button to flip to different pages.
+    - There are no like or collect button for guests
+  - **Regular User**
+    - All end users have top menu bar as well. 
+    - All end users have quit button at the top-right corner that allows to quit the sign-in. Or a grey button that naigate to their own user page.
+    - Users can add post for book they like. 
+    - All posts have links that allow to navigate to specific creator, book detail pages for end users.
+    - Like and collect buttons are availble to end users for like or collect. It only allows to like or collect once, double click will cancel the previous action.
+  - **Admin User**
+    - All admin users have all the end users functionalities and displayings. 
+    - Besides, admins could delete every posts.
+    - admin users can edit book description
+
 ## Copyright
 this project is written by @Yuewei Wang @Yongyi Xu @Yiyun Ding @Siwei Tang
