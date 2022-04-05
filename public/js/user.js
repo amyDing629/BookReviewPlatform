@@ -358,7 +358,7 @@ function _createPostDiv(post) {
     function likeOnClick(e){
         e.preventDefault(); // prevent default action
         let icon = e.target.parentElement.getElementsByClassName('fa fa-heart')[0];
-
+        console.log(post._id);
         let url = '/api/posts/' + post._id;
         fetch(url).then((res) => {
             if (res.status === 200) {
@@ -398,7 +398,7 @@ function _createPostDiv(post) {
                     }
                     else if (e.target.classList.contains('dislike')){
                         likeNum = post.likedBy.length - 1;
-                        icon.innerText = ' '+ likeNum; //TODO: update db
+                        icon.innerText = ' '+ likeNum;
                         e.target.classList.remove('dislike');
                         e.target.classList.add('like');
                         e.target.innerText = 'Like';
@@ -478,18 +478,10 @@ function _createPostDiv(post) {
 
     function deletePostButtonOnClick(e) {
         let deletePostDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[0].removeChild(deletePostDiv);
-        let url = '/api/post/' + id
-        let request = new Request(url, {
-            method: 'DELETE',
-        });
-        fetch(request).then(function(res){
-            if (res.status === 200) {
-                console.log('deleted')
-            } else {
-                console.log('failed to delete')
-            }
-        })
+        addFormForDelete('post', deletePostDiv, post._id)
+        const form = document.getElementById("myForm")
+        form.style.display="block"
+        
 
     }
 
@@ -659,21 +651,23 @@ function _createPostDiv(post) {
     return postDiv;
 }
 function displayUserPosts(user) {
-    console.log(user);
     let content = document.getElementById('contents');
     content.innerHTML = ''; // Clean up contents
-    console.log(user.postList);
     if (user.postList.length == 0){
         content.innerHTML = "Don't have any post.";
         return
     }
 
     let ul = document.createElement('ul');
-    //ul.id = 'posts';
+    
     let postID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (postID of user.postList) {
         let url = '/api/posts/' + postID;
-        console.log(url);
+        console.log(postID);
         fetch(url).then((res) => {
             if (res.status === 200) {
                 return res.json() 
@@ -684,14 +678,9 @@ function displayUserPosts(user) {
             let li = document.createElement('li');
             li.appendChild(_createPostDiv(post));
             ul.appendChild(li);
-
+            filpPage(1, 2);
         })
-    }
-    content.appendChild(ul);
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
+    }   
 }
 
 function _createBooklistDiv(booklist) {
@@ -719,9 +708,8 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length + 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('likeButton');
-                        e.target.parentElement.classList.add('btn-success');
                         e.target.parentElement.classList.add('dislikeButton');
-                        e.target.parentElement.classList.remove('btn-outline-success');
+                        e.target.src = '../img/static/heart_icon.png'
                         
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
@@ -745,9 +733,8 @@ function _createBooklistDiv(booklist) {
                         let likeNumData = booklist.likedBy.length - 1;
                         likeNum.innerText = 'Liked: '+ likeNumData
                         e.target.parentElement.classList.remove('dislikeButton');
-                        e.target.parentElement.classList.add('btn-outline-success');
                         e.target.parentElement.classList.add('likeButton');
-                        e.target.parentElement.classList.remove('btn-success');
+                        e.target.src = '../img/static/like_icon.png';
                         let request = new Request('/api/booklists/' + booklist._id, {
                             method: 'PATCH',
                             body: JSON.stringify({'operation': 'reduce', 'target': 'likes', 'value': String(userID)}),
@@ -844,18 +831,9 @@ function _createBooklistDiv(booklist) {
 
     function deleteBooklistButtonOnClick(e) {
         let booklistDiv = e.target.parentElement.parentElement.parentElement.parentElement;
-        document.getElementById('contents').children[0].removeChild(booklistDiv);
-        let url = '/api/booklist/' + booklist._id
-        let request = new Request(url, {
-            method: 'DELETE',
-        });
-        fetch(request).then(function(res){
-            if (res.status === 200) {
-                console.log('deleted')
-            } else {
-                console.log('failed to delete')
-            }
-        })
+        addFormForDelete('booklist', booklistDiv, booklist._id)
+        const form = document.getElementById("myForm")
+        form.style.display="block"
     }
 
     const div = document.createElement('div')
@@ -1028,20 +1006,23 @@ function _createBooklistDiv(booklist) {
     const liLike = document.createElement('li')
     liLike.className = "infoElement"
     const button1 = document.createElement('button')
+    button1.className = 'btn btn-outline-success'
     if (booklist.likedBy.indexOf(userID) != -1){
         button1.classList.add('dislikeButton');
-        button1.classList.add('btn');
-        button1.classList.add('btn-success');
 
     } else {
         button1.classList.add('likeButton');
-        button1.classList.add('btn');
-        button1.classList.add('btn-outline-success');
     }
     
     button1.addEventListener('click', likeOnClick);
     const iconImgLike = document.createElement('img')
     iconImgLike.className = "likeIcon"   
+    if (booklist.likedBy.indexOf(userID) != -1){
+        iconImgLike.src = '../img/static/like_icon.png';
+
+    } else {
+        iconImgLike.src = '../img/static/heart_icon.png'
+    }
     iconImgLike.src = '../img/static/like_icon.png'
     button1.appendChild(iconImgLike)
     liLike.appendChild(button1)
@@ -1097,6 +1078,10 @@ function displayUserBooklists(user) {
     }
     let ul = document.createElement('ul');
     let booklistID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (booklistID of user.booklistList) {
         let url = '/api/booklists/' + booklistID;
         fetch(url).then((res) => {
@@ -1109,13 +1094,9 @@ function displayUserBooklists(user) {
             let li = document.createElement('li');
             li.appendChild(_createBooklistDiv(booklist));
             ul.appendChild(li);
+            filpPage(1, 2);
         })        
     }
-    content.appendChild(ul);
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
 
 }
 
@@ -1129,6 +1110,10 @@ function displayCollectedPost(user){
 
     let ul = document.createElement('ul');
     let postCollectionID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (postCollectionID of user.postCollection) {
         let url = '/api/posts/' + postCollectionID;
         console.log(url);
@@ -1142,14 +1127,9 @@ function displayCollectedPost(user){
             let li = document.createElement('li');
             li.appendChild(_createPostDiv(post));
             ul.appendChild(li);
+            filpPage(1, 2);
         })
-    }
-
-    content.appendChild(ul); 
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
+    }    
 }
 
 function displayCollectedBooklist(user){
@@ -1162,6 +1142,10 @@ function displayCollectedBooklist(user){
 
     let ul = document.createElement('ul');
     let booklistCollectionID;
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(ul);
+    content.appendChild(pageFliper);
     for (booklistCollectionID of user.booklistCollection) {
         console.log(booklistCollectionID);
         let url = '/api/booklists/' + booklistCollectionID;
@@ -1175,13 +1159,9 @@ function displayCollectedBooklist(user){
             let li = document.createElement('li');
             li.appendChild(_createBooklistDiv(booklist));
             ul.appendChild(li);
+            filpPage(1, 2);
         })        
     }
-    content.appendChild(ul); 
-    let pageFliper = document.createElement('div');
-    pageFliper.id = 'pageFliper';
-    content.appendChild(pageFliper);
-    filpPage(1, 2);
 }
 
 
@@ -1270,7 +1250,10 @@ function displayManageWindow() {
 
     let ul = document.createElement('ul');
     ul.id = 'userManage';
-
+    content.appendChild(ul);
+    let pageFliper = document.createElement('div');
+    pageFliper.id = 'pageFliper';
+    content.appendChild(pageFliper);
     const url = '/api/users';
     fetch(url).then((res) => {
         if (res.status === 200) {
@@ -1339,13 +1322,9 @@ function displayManageWindow() {
                         li.appendChild(userInfoDiv);
                         li.appendChild(manageButton);
                         ul.appendChild(li);
+                        filpPage(1, 8);
                     }
                 }
-                content.appendChild(ul);
-                let pageFliper = document.createElement('div');
-                pageFliper.id = 'pageFliper';
-                content.appendChild(pageFliper);
-                filpPage(1, 8);
             })
         }
     })
@@ -1422,6 +1401,67 @@ function filpPage(pageNo, pageLimit) {
         }
     }
     document.getElementById("pageFliper").innerHTML = strHolder;
+}
+
+// admin only action: remove book---form for confirming delete
+// type: post/booklist
+function addFormForDelete(type, deletedDiv, objectID){
+    //// dialog modal
+    const wrapper = document.createElement('div')
+    wrapper.id ='myForm'
+    wrapper.className='form-popup'
+
+    const form = document.createElement('form')
+    form.className='form-container'
+
+    const h5 = document.createElement('h5')
+    h5.innerText= 'Confirm to delete the ' + type + '?'
+    form.appendChild(h5)
+
+    const submit = document.createElement('button')
+    submit.type = "submit"
+    submit.className='addSubmit, btn'
+    submit.id = 'submit'
+    submit.innerText='Confirm'
+    submit.onclick = function confirmDelete(e){
+        e.preventDefault();
+        document.getElementById('contents').children[0].removeChild(deletedDiv);
+        let url;
+        if (type == 'post'){
+            url = '../../api/posts/' + objectID
+        } else {
+            url = '../../api/booklist/' + objectID
+        }
+        
+        console.log(url);
+        let request = new Request(url, {
+            method: 'DELETE',
+        });
+        fetch(request).then(function(res){
+            if (res.status === 200) {
+                console.log('deleted')
+            } else {
+                console.log('failed to delete')
+            }
+        })
+        document.querySelector('body').removeChild(document.querySelector('body').lastElementChild);
+    }
+    form.appendChild(submit)
+
+    const cancel = document.createElement('button')
+    cancel.type = "button"
+    cancel.className='btn cancel'
+    cancel.id = "cancel"
+    cancel.onclick = function cancelDelete(e){
+        e.preventDefault; 
+        document.querySelector('body').removeChild(document.querySelector('body').lastElementChild)
+
+    }
+    cancel.innerText='Cancel'
+    form.appendChild(cancel)
+    wrapper.appendChild(form)
+    document.querySelector('body').appendChild(wrapper)
+    ///
 }
 
 displayUserInfo(window.location.href.indexOf('visitID') !== -1);
