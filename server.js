@@ -179,9 +179,10 @@ app.get('/login/:username/:password', mongoChecker, async (req, res) => {
     } catch (error) {
     	if (isMongoError(error)) {
 			res.status(500).send(error)}
-		// } else {
-		// 	res.status(400).send(error)
-		// }
+		else {
+			console.log("does not match")
+			res.status(404).send("user")
+		}
     }
 })
 
