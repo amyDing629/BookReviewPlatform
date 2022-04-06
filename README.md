@@ -163,7 +163,7 @@ then port **50001** is running, can access the page by this link :**localhost:50
 - app.get('/api/book'): get individual book. Used in Page: book detail page, etc.
 - app.post('/api/book'): post individual book. Used in Page: book main page add new book function, etc.
 - app.delete('/api/book/:bookID'): delete individual book. Used in Page: book main page delete book function, etc.
-- app.patch(''): 
+- app.patch('/api/book/:bookID): edit the description of the book, etc. 
 
 ### Booklist
 ----------------
