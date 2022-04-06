@@ -127,7 +127,7 @@ function ulinkHandler(uid, usertype, userid){
                 result = "/user/"+userid
             }
             else{
-                result = '/user/'+uid+"/"+userid
+                result = '/user/'+userid+"/"+uid
             }
         }
         return result; 
