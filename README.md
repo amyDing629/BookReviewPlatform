@@ -19,8 +19,9 @@ The overall objective of the project is to build a website for readers to share 
 
 ## Instructions
 ### Online access
-link:
-database link: mongodb+srv://team10:bookland@cluster0.ur99l.mongodb.net/BookLandAPI?retryWrites=true&w=majority
+* link: https://csc309-book-land.herokuapp.com/
+
+* database link: `mongodb+srv://team10:bookland@cluster0.ur99l.mongodb.net/BookLandAPI?retryWrites=true&w=majority`
 ### Local access
 Please `cd` to the repo and run following cmds:  
 Start your local Mongo database.  For example, in a separate terminal window:
