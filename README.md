@@ -132,6 +132,7 @@ then port **50001** is running, can access the page by this link :**localhost:50
 ## Routers
 ----------------
 - app.get('/'): redirect to home page
+- app.get('/logout'): for user logout
 - app.get('/login'): redirect to login page
 - app.get('/register'): redirect to register page
 - app.get('/BookMain'): redirect to book main page
