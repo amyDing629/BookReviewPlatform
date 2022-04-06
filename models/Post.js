@@ -53,10 +53,6 @@ const PostSchema = new mongoose.Schema({
 });
 
 const imageSchema = mongoose.Schema({
-    image_id: {
-        type: String,
-        required: true
-    },
     image_url: {
         type: String,
         required: true

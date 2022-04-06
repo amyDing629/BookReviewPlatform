@@ -1416,3 +1416,57 @@ menuButtonSelected.addEventListener('click', menuButtonsOnClick);
 if (profileButtons != null) {
     profileButtons.addEventListener('click', profileButtonsOnClick);
 }
+
+
+function handleSubmit (e) {
+	// Stop the form from reloading the page
+	e.preventDefault();
+    let file = document.getElementById('file').files[0];
+    document.getElementsByClassName('profilePic')[0].src = URL.createObjectURL(file);
+    console.log(file)
+
+    let upload_url = '/upload-profile'
+    console.log(file)
+    console.log(document.getElementById('upload'))
+    console.log(new FormData(document.getElementById('upload')));
+    let upload_request = new Request(upload_url, {
+        method: 'POST',
+        body: new FormData(document.getElementById('upload')),
+
+    });
+    fetch(upload_request).then(function(res){
+        if (res.status === 200) {
+            console.log('updated')
+        } else {
+            console.log('failed to update')
+        }
+    })
+
+    let userID;
+    if (window.location.href.indexOf('visitID') !== -1) {
+        userID = window.location.href.split('?')[1].split('&')[0].split('=')[1];
+    } else{
+        userID = window.location.href.split('?')[1].split('=')[1];
+    }
+    let url = '/api/users/' + userID;
+    let imageUrl = '/images/' + file.name.replace(/\s/g, '');
+    let request = new Request(url, {
+        method: 'PATCH',
+        body: JSON.stringify({'operation': 'profile', 'value': imageUrl}),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        }
+
+    });
+    fetch(request).then(function(res){
+        if (res.status === 200) {
+            console.log('updated')
+        } else {
+            console.log('failed to update')
+        }
+    })
+
+}
+let uploadButton = document.getElementById('uploadButton');
+uploadButton.addEventListener('click', handleSubmit);

@@ -3,7 +3,7 @@
 'use strict';
 const log = console.log
 const path = require('path')
-
+const fs = require('fs')
 const express = require('express')
 // starting the express server
 const app = express();
@@ -35,6 +35,59 @@ app.use(bodyParser.urlencoded({ extended: true }));
 function isMongoError(error) { // checks for first error returned by promise rejection if Mongo database suddently disconnects
 	return typeof error === 'object' && error !== null && error.name === "MongoNetworkError"
 }
+
+/*********************************/
+app.post('/upload-profile', multipartMiddleware, async (req, res) => {
+    try {
+		console.log(req.files);
+		console.log(req.files == {});
+        if(req.files == {}) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+			console.log(req.files.profile.name);
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            
+            //Use the mv() method to place the file in upload directory (i.e. "uploads")
+			let oldPath = req.files.profile.path;
+			
+			let noSpaceName = req.files.profile.name.replace(/\s/g, '');
+			let newPath = __dirname + '/images/' + noSpaceName
+			console.log(newPath);
+			fs.mkdir(__dirname + '/images', function (error) {
+				if (error) {
+					console.log(error);
+				}
+			});
+			fs.readFile(oldPath , function(err, data) {
+				fs.writeFile(newPath, data, function(err) {
+					if (err) throw err;
+					res.send("File uploaded to: " + newPath);
+				}); 
+			});
+        }
+    } catch (err) {
+		console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/images/:imageName', multipartMiddleware, async (req, res) => {
+    try {
+		try {
+			const images = await Image.find()
+			res.send({users})
+		
+    } catch (err) {
+		console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+
+
 
 // helper: check mongo connection error
 const mongoChecker = (req, res, next) => {
@@ -93,6 +146,7 @@ const booklistModifyValidation = (req, res, next) =>{
 // express-session for managing user sessions
 const session = require('express-session');
 const res = require('express/lib/response');
+const { fstat } = require('fs');
 
 /// Middleware for creating sessions and session cookies.
 // A session is created on every request, but whether or not it is saved depends on the option flags provided.
