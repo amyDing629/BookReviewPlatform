@@ -123,14 +123,25 @@ then port **50001** is running, can access the page by this link :**localhost:50
 
 ## Routers
 ----------------
-- '/': redirect to home page
-- '/login': redirect to login page
-- '/register': redirect to register page
+- app.get('/'): redirect to home page
+- app.get('/login'): redirect to login page
+- app.get('/register'): redirect to register page
 - 
 ----------------
-- '/login/:username/:password': will verify if the user can be found by the provided parameter username and password. In addition, if the user exists, it will check if the user is currently blocked. If all passed, it will send the corresponding user.
-- '/register/:username': for register verify. If a user can be found by the provided parameter username, it will send the corresponding user. If not, it will send error then register page will handle.
-- 
+- app.get('/login/:username/:password'): will verify if the user can be found by the provided parameter username and password. In addition, if the user exists, it will check if the user is currently blocked. If all passed, it will send the corresponding user. Used in Page: login
+- app.get('/register/:username'): for register verify. If a user can be found by the provided parameter username, it will send the corresponding user. If not, it will send error then register page will handle. Used in Page: register
+- app.get('/api/users'): return all users. Used in Page: 
+- app.get('/api/users/:id')： return the corresponding user if user exists. Used in Page: 
+- app.post('/api/addUser'): add a user. Request body must include username and password. If the type is not provided, will be 'User' by default. Used in Page: register
+- app.delete('/api/deleteUser/:userID'): delete a user by userID.
+
+
+----------------
+- app.get('/api/posts'): get all posts. Used in Page: index
+- app.get('/api/posts/:postID'): get post by postID. Used in Page: index
+- app.post('/api/addPost'): create a post. Request body must indluce bookID, userID, booktitle, username. Used in Page:
+- app.patch('/api/postsorder/:postID'): update a post's order. Order is used to keep track of the display order in index page. Used in Page: index
+- app.patch('/api/posts/:postID'): update a post's info and related user's info. Request body should provides: operation (add/reduce), value (userID), target(likes, collects). Used in Page: index
 
 
 ## Copyright
