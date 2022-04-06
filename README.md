@@ -23,6 +23,12 @@ link:
 database link: mongodb+srv://team10:bookland@cluster0.ur99l.mongodb.net/BookLandAPI?retryWrites=true&w=majority
 ### Local access
 Please `cd` to the repo and run following cmds:  
+Start your local Mongo database.  For example, in a separate terminal window:
+
+
+### create and run local Mongo database in the root directory of the repo
+`mkdir mongo-data`
+`mongod --dbpath mongo-data`
 `npm install`  
 `npm init`  
 `npm start`  
@@ -126,6 +132,7 @@ then port **50001** is running, can access the page by this link :**localhost:50
 ## Routers
 ----------------
 - app.get('/'): redirect to home page
+- app.get('/logout'): for user logout
 - app.get('/login'): redirect to login page
 - app.get('/register'): redirect to register page
 - app.get('/BookMain'): redirect to book main page
@@ -157,7 +164,7 @@ then port **50001** is running, can access the page by this link :**localhost:50
 - app.get('/api/book'): get individual book. Used in Page: book detail page, etc.
 - app.post('/api/book'): post individual book. Used in Page: book main page add new book function, etc.
 - app.delete('/api/book/:bookID'): delete individual book. Used in Page: book main page delete book function, etc.
-- app.patch(''): 
+- app.patch('/api/book/:bookID): edit the description of the book, etc. 
 
 ### Booklist
 ----------------
