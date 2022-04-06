@@ -512,7 +512,7 @@ function _createPostDiv(post) {
     p.innerText = content;
     contentDiv.appendChild(p);
 
-    if (pic != null){
+    if (pic != null && pic != ''){
         let img2 = document.createElement('img');
         img2.className='postContentPicture';
         img2.setAttribute('src', pic);
