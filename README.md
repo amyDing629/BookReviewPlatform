@@ -20,6 +20,7 @@ The overall objective of the project is to build a website for readers to share 
 ## Instructions
 ### Online access
 link:
+database link: mongodb+srv://team10:bookland@cluster0.ur99l.mongodb.net/BookLandAPI?retryWrites=true&w=majority
 ### Local access
 Please `cd` to the repo and run following cmds:  
 `npm install`  
@@ -99,7 +100,8 @@ then port **50001** is running, can access the page by this link :**localhost:50
     - All booklist cards have links that allow to navigate to specific booklist detail, creator, book detail pages for end users.
     - Like and collect buttons are availble to end users for like or collect. It only allows to like or collect once, double click will cancel the previous action.
     - Below the sorting buttons, Add new booklist columns allows end users to create new booklist. List name is required, description is optional. 
-    - Inside adding booklist prompted box, all books are listed as reference, end users will enter the book IDs into a string, and then create.
+    - Inside adding booklist prompted box, all books are listed as reference, end users will click browser button to randomly discover their new booklist, click the book name button to load the book IDs into input box, and then create.
+    - End users could delete their own created booklist, once deleted all users that have collected or liked the list will be removed.
   - **Admin User**
     - All admin users have all the end users functionalities and displayings. 
     - Besides, admins could delete every booklists.
@@ -126,7 +128,12 @@ then port **50001** is running, can access the page by this link :**localhost:50
 - app.get('/'): redirect to home page
 - app.get('/login'): redirect to login page
 - app.get('/register'): redirect to register page
-- 
+- app.get('/BookMain'): redirect to book main page
+- app.get('/BooklistMain'): redirect to booklist main page
+- app.get('/Booklist/Detail'): redirect to individual booklist detail page, but with the query of booklistID(i.e. '/Booklist/Detail?booklistID=<booklistID>')
+-
+
+### User
 ----------------
 - app.get('/login/:username/:password'): will verify if the user can be found by the provided parameter username and password. In addition, if the user exists, it will check if the user is currently blocked. If all passed, it will send the corresponding user. Used in Page: login
 - app.get('/register/:username'): for register verify. If a user can be found by the provided parameter username, it will send the corresponding user. If not, it will send error then register page will handle. Used in Page: register
@@ -134,8 +141,9 @@ then port **50001** is running, can access the page by this link :**localhost:50
 - app.get('/api/users/:id')： return the corresponding user if user exists. Used in Page: 
 - app.post('/api/addUser'): add a user. Request body must include username and password. If the type is not provided, will be 'User' by default. Used in Page: register
 - app.delete('/api/deleteUser/:userID'): delete a user by userID.
+-
 
-
+### Post
 ----------------
 - app.get('/api/posts'): get all posts. Used in Page: index
 - app.get('/api/posts/:postID'): get post by postID. Used in Page: index
@@ -143,6 +151,22 @@ then port **50001** is running, can access the page by this link :**localhost:50
 - app.patch('/api/postsorder/:postID'): update a post's order. Order is used to keep track of the display order in index page. Used in Page: index
 - app.patch('/api/posts/:postID'): update a post's info and related user's info. Request body should provides: operation (add/reduce), value (userID), target(likes, collects). Used in Page: index
 
+### Book
+----------------
+- app.get('/api/books'): get all books. Used in Page: book main page, etc.
+- app.get('/api/book'): get individual book. Used in Page: book detail page, etc.
+- app.post('/api/book'): post individual book. Used in Page: book main page add new book function, etc.
+- app.delete('/api/book/:bookID'): delete individual book. Used in Page: book main page delete book function, etc.
+- app.patch(''): 
+
+### Booklist
+----------------
+- app.get('/api/booklists'): get all booklists. Used in Page: booklist main page, etc.
+- app.get('/api/booklists/:booklistID'): get individual booklist. Used in Page: booklist detail page, etc.
+- app.post('/api/booklist'): post individual booklist. Used in Page: booklist main page add new booklist function, etc.
+- app.delete('/api/booklist/booklistID'): delete individual booklist. Used in Page: booklist main page delete booklist function, etc.
+- app.patch('/api/booklist/booklistID'): update individual booklist infomation for who liked or collected. Used in Page: booklist main page click like/collect function, etc.
+- app.patch('/api/booklist/content/:booklistID'): update individual booklist content operated by the creator. Used in Page: booklist detail page edit description/books function, etc.
 
 ## Copyright
 this project is written by @Yuewei Wang @Yongyi Xu @Yiyun Ding @Siwei Tang
