@@ -435,7 +435,7 @@ function collectHandler(userid){
                         collectoperation = "reduce"
                         for (let j=0; i<posts[i].collectedUser.length; i++){
                             if (posts[i].collectedUser[j] == userid){
-                                collectedPosts.splice(j, 1)
+                                posts[i].collectedPosts.splice(j, 1)
                                 break;
                             }
                         }
