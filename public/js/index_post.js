@@ -387,7 +387,6 @@ function likeHandler(userid){
                             value: userid,
                             target: "likes"
                         }
-                        log(likedata)
                         const likerequest = new Request(likeurl, {
                             method: 'PATCH', 
                             body: JSON.stringify(likedata),
@@ -434,9 +433,9 @@ function collectHandler(userid){
                     }
                     else if (e.target.classList.contains('collected')){
                         collectoperation = "reduce"
-                        for (let j=0; i<collectedPosts.length; i++){
-                            if (collectedPosts[j] == posts[i]){
-                                collectedPosts.splice(j, 1)
+                        for (let j=0; i<posts[i].collectedUser.length; i++){
+                            if (posts[i].collectedUser[j] == userid){
+                                posts[i].collectedPosts.splice(j, 1)
                                 break;
                             }
                         }
@@ -452,7 +451,6 @@ function collectHandler(userid){
                             value: userid,
                             target: "collects"
                         }
-                        log(collectdata)
                         const collectrequest = new Request(collecturl, {
                             method: 'PATCH', 
                             body: JSON.stringify(collectdata),
