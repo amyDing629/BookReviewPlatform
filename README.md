@@ -22,6 +22,12 @@ The overall objective of the project is to build a website for readers to share 
 link:
 ### Local access
 Please `cd` to the repo and run following cmds:  
+Start your local Mongo database.  For example, in a separate terminal window:
+
+
+### create and run local Mongo database in the root directory of the repo
+`mkdir mongo-data`
+`mongod --dbpath mongo-data`
 `npm install`  
 `npm init`  
 `npm start`  
