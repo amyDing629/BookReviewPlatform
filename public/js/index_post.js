@@ -387,7 +387,6 @@ function likeHandler(userid){
                             value: userid,
                             target: "likes"
                         }
-                        log(likedata)
                         const likerequest = new Request(likeurl, {
                             method: 'PATCH', 
                             body: JSON.stringify(likedata),
@@ -452,7 +451,6 @@ function collectHandler(userid){
                             value: userid,
                             target: "collects"
                         }
-                        log(collectdata)
                         const collectrequest = new Request(collecturl, {
                             method: 'PATCH', 
                             body: JSON.stringify(collectdata),
