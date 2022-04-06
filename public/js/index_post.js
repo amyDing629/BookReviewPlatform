@@ -433,8 +433,8 @@ function collectHandler(userid){
                     }
                     else if (e.target.classList.contains('collected')){
                         collectoperation = "reduce"
-                        for (let j=0; i<collectedPosts.length; i++){
-                            if (collectedPosts[j] == posts[i]){
+                        for (let j=0; i<posts[i].collectedUser.length; i++){
+                            if (posts[i].collectedUser[j] == userid){
                                 collectedPosts.splice(j, 1)
                                 break;
                             }
