@@ -12,7 +12,7 @@ const app = express();
 // mongoose and mongo connection
 const { ObjectID, ObjectId } = require('mongodb')
 const { mongoose } = require('./db/mongoose');
-const { Post, Image } = require('./models/post')
+const { Post, Image } = require('./models/Post')
 const { Book, BookList } = require('./models/book')
 const { User } = require('./models/user')
 
