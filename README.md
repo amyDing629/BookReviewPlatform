@@ -1,4 +1,4 @@
-## BookLand
+# BookLand
 
 ## Overall Purpose
 The overall objective of the project is to build a website for readers to share their thoughts on readings with others. Through this platform, readers can view various kinds of book lists made by other readers, create their own book lists, and make friends that have similar reading tastes.
@@ -18,26 +18,28 @@ The overall objective of the project is to build a website for readers to share 
 * manage posts (specifically, delete posts of users)
 
 ## Instructions
+### Online access
+link:
+### Local access
+Please `cd` to the repo and run following cmds:  
+`npm install`  
+`npm init`  
+`npm start`  
+then port **50001** is running, can access the page by this link :**localhost:50001**
 
-## Page Details (delete)
-  ### HomeAndLogin
-  - **Guest**
-    - The home page for guests is index.html. They can view recommended books and posts demostrated in home page. They can also use top menu to visit other pages and login/register.
-    - Three books appears most frequently among users' created booklists will become recommended books displayed in the home page (including homepage for end users & admin uses)
-    - There should be maximum of 5 posts demostrated in home page.
-    - Guests cannot visit profiles of users whose posts are demostrated in this home page. Guests have to login/register first.
-    - For **login/register**, the default users are two: 
-      - End user( username: user, password: user )
-      - Admin user ( username: admin, password: admin )
-      - Guests can also create an account to become a new end user. The required username or password has max length of 10
-  - **Regular User**
-    - The home page for regular users is index_end_after.html. The main differences between this html and index.html are:
-        - There is a welcome header in index_end_after.html (Hello [username], what would you like to read today), the username will be replaced to the corresponding user's username in phase 2. We use 'user' temporarily for phase 1.
-        - End users can now visit profiles of users whose posts are demostrated in this home page. They can also like/dislike and collect/uncollect posts
-        - They can visit their own profile by go to the 'User' block in the top menu.
-  - **Admin User**
-  - The home page for admin users is index_admin_after.html. The main differences between this html and index_end_after.html is:
-  - Admin user can manage posts demostrated in the home page. They can choose which post needs to be replaced in the first select box, and the replacement in the second select box.
+## Page Details
+### Home Page (Index)
+ - The home page is index.html. They can view recommended books and posts demostrated in home page. They can also use top menu to visit other pages and login/register.
+ - There is a welcome header for signed in users (Hello [username], what would you like to read today), the username will be dynamically. 
+ - Three books appears most frequently among users' created booklists will become recommended books displayed in the home page (including homepage for end users & admin uses)
+ - There should be maximum of 3 posts demostrated in home page.
+ - Guests cannot visit profiles of users whose posts are demostrated in this home page. Guests have to login/register first.
+ - Admin user can manage posts demostrated in the home page. They can choose which post needs to be replaced in the first select box, and the replacement in the second select box.
+ 
+### Login/Register
+  - If a use is blocked (deactivated by admin users), this user cannot sign in
+  - Guests can register to be a end-user. The required username or password has max length of 10
+
     
   ### User
   - **Regular User**
@@ -118,6 +120,18 @@ The overall objective of the project is to build a website for readers to share 
     - All admin users have all the end users functionalities and displayings. 
     - Besides, admins could delete every posts.
     - admin users can edit book description
+
+## Routers
+----------------
+- '/': redirect to home page
+- '/login': redirect to login page
+- '/register': redirect to register page
+- 
+----------------
+- '/login/:username/:password': will verify if the user can be found by the provided parameter username and password. In addition, if the user exists, it will check if the user is currently blocked. If all passed, it will send the corresponding user.
+- '/register/:username': for register verify. If a user can be found by the provided parameter username, it will send the corresponding user. If not, it will send error then register page will handle.
+- 
+
 
 ## Copyright
 this project is written by @Yuewei Wang @Yongyi Xu @Yiyun Ding @Siwei Tang
